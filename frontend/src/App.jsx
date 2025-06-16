@@ -15,15 +15,14 @@ export default function App() {
     const password = formData.get("password")
     const courseid = formData.get("courseid")
 
-    fetch('/api/login', {
+    fetch('/api/create_user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password, courseid }),
+      body: JSON.stringify({ username, password }),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data)
-        setLoginStatus(data.message === "true" ? true : false);
       })
       .catch((err) => console.error('Error:', err));
 }
