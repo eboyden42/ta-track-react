@@ -7,10 +7,6 @@ from database import driver
 
 app = Flask(__name__)
 
-username = None
-courseID = None
-ta_list = None
-
 
 @app.route('/api/data')
 def get_data():

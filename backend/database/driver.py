@@ -13,6 +13,28 @@ def create_tables():
         cursor.execute(f.read())
     conn.commit()
 
+def delete_tables():
+    cursor.execute("DELETE * FROM users")
+    conn.commit()
+
+def get_hashed_pass(username: str) -> str:
+    cursor.execute("SELECT password_hash FROM users WHERE username = %s", (username,))
+    result = cursor.fetchone()
+    if result:
+        return result[0]
+    return None
+
+def check_user_exists(username: str) -> bool:
+    cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+    result = cursor.fetchone()
+    if result:
+        return True
+    else:
+        return False
+
+def check_user_login(check_pass: str, real_pass:str) -> bool:
+
+
 def add_user(username: str, password_hash: str):
     cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
     conn.commit()

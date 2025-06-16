@@ -13,7 +13,6 @@ export default function App() {
     const formData = new FormData(event.currentTarget)
     const username = formData.get("username")
     const password = formData.get("password")
-    const courseid = formData.get("courseid")
 
     fetch('/api/create_user', {
       method: 'POST',

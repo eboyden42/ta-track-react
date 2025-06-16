@@ -10,8 +10,6 @@ export default function LoginPage({ handleSubmit }) {
                     <input type="text" placeholder="username" name="username" id="username" />
                 <label htmlFor="passoword">Password:</label>
                     <input type="password" name="password" id="password" />
-                <label htmlFor="courseid">Course ID:</label>
-                    <input type="text" name="courseid" id="courseid" />
                 <button>Login</button>
             </form>
         </div>
