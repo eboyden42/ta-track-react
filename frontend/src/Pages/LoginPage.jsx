@@ -10,7 +10,7 @@ export default function LoginPage() {
     const username = formData.get("username")
     const password = formData.get("password")
 
-    fetch('/api/user_login', {
+    fetch(`${import.meta.env.VITE_API_URL}/api/user_login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),

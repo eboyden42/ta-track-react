@@ -5,8 +5,12 @@ from .encryption import hashing
 
 load_dotenv()  # Load environment variables from .env file
 
-db_password = os.environ.get("PASSWORD")
-conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password=db_password)
+conn = psycopg2.connect(
+    host=os.environ.get("HOST"), 
+    dbname=os.environ.get("NAME"), 
+    user=os.environ.get("DB_USER"), 
+    password=os.environ.get("PASSWORD")
+)
 cursor = conn.cursor()
 
 def create_tables():
