@@ -22,3 +22,53 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# dotenv environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+build
+coverage
+
+# Mac system files
+__MACOSX/
+
+# Parcel cache
+.cache
+
+# Storybook files
+storybook-static
+
+# Test output
+test-output/
+
+# VS Code settings
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+
+# SASS cache
+.sass-cache
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Optional REACT_APP_ prefixed env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
