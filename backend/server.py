@@ -1,11 +1,16 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
+from flask_cors import CORS
+from dotenv import load_dotenv
 # import scrape
 import sys
 import os
 from database.encryption.hashing import hash_password
 from database import driver
 
+load_dotenv()
 app = Flask(__name__)
+app.secret_key = os.environ.get("COOKIES_KEY")
+CORS(app, supports_credentials=True)
 
 
 @app.route('/api/data')
@@ -54,8 +59,34 @@ def user_login():
     password = data.get('password')
 
     response = driver.check_user_login(password=password, username=username)
-    return jsonify({'message': response})
-    #
+    user_id = driver.get_user_id(username=username)
+
+    if response == "verified":
+        session['user_id'] = user_id
+    return jsonify({
+        'message': response,
+        'user': {
+            'id': user_id,
+            'username': username,
+        }   
+    })
+
+@app.route('/api/session_check', methods=["GET"])
+def session_check():
+    user_id = session.get('user_id')
+    
+    if user_id is None:
+        return jsonify({'loggedIn': False}), 401
+
+    user = driver.get_user_by_id(user_id)
+    
+    return jsonify({
+        'loggedIn': True,
+        'user': {
+            'id': user_id,
+            'username': user[1]
+        }
+    })
 
 # @app.route('/api/talist', methods=['GET'])
 # def getTas():

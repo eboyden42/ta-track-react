@@ -47,6 +47,17 @@ def check_user_login(password: str, username:str) -> str:
     else:
         return "username not found"
     
+def get_user_id(username: str) -> int:
+    cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+    user_id = cursor.fetchone()
+    if user_id:
+        return user_id
+    return -1
+
+def get_user_by_id(id: int):
+    cursor.execute("SELECT * FROM users WHERE id = %s", (id,))
+    response = cursor.fetchone()
+    return response
 
 
 def add_user(username: str, password_hash: str):

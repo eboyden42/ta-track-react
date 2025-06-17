@@ -1,8 +1,11 @@
+import { useEffect, useState } from "react"
 import "./LoginPage.scss"
 
 export default function LoginPage() {
 
-    // Handle login submit, update login status
+  const [user, setUser] = useState(null)
+
+  // Handle login submit, update login status
   function handleSubmit(event) {
     console.log("Authenticating...")
     event.preventDefault()
@@ -13,19 +16,49 @@ export default function LoginPage() {
     fetch(`${import.meta.env.VITE_API_URL}/api/user_login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: "include",
       body: JSON.stringify({ username, password }),
     })
       .then((res) => res.json())
       .then((data) => {
-        // reroute based on response
+        // execute code based on response
         console.log(data)
+        const message = data.message
+        switch (message) {
+          case "verified":
+            setUser(data.user)
+            break
+          case "failed":
+            console.log("Incorrect username or password")
+            break
+          case "username not found":
+            console.log("Username not found")
+            break
+        }
       })
       .catch((err) => console.error('Error:', err));
 }
 
+useEffect(() => {
+  fetch(`${import.meta.env.VITE_API_URL}/api/session_check`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: "include",
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Not logged in")
+      return res.json()
+    })
+    .then(data => {
+      console.log("Session persisted...")
+      setUser(data.user)
+    })
+    .catch(() => console.log("User not logged in"))
+}, [])
 
     return (
         <>
+        {!user ? 
         <div className="login-container">
             <form onSubmit={handleSubmit} className="login-form" >
                 <label htmlFor="username">Username</label>
@@ -34,7 +67,9 @@ export default function LoginPage() {
                     <input type="password" name="password" id="password" />
                 <button>Login</button>
             </form>
-        </div>
+        </div> : 
+        <h1>Logged in!</h1>
+        }
         </>
     )
 }
