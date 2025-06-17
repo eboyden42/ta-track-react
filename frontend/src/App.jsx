@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import LoginPage from './Pages/LoginPage';
-import Account from './Account'
+import LoginPage from './Pages/LoginPage/LoginPage';
+import AppRoutes from './AppRoutes';
 
 export default function App() {
   // Check server connection automatically 
@@ -13,7 +13,7 @@ export default function App() {
 
   return (
     <>
-      <LoginPage />
+      <AppRoutes />
     </>
   )
 }
