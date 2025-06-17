@@ -46,6 +46,16 @@ def create_user():
     # Close the database connection
     return jsonify({'message': 'User created!'})
 
+@app.route('/api/user_login', methods=["POST"])
+def user_login():
+    # Get login data
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    response = driver.check_user_login(password=password, username=username)
+    return jsonify({'message': response})
+    #
 
 # @app.route('/api/talist', methods=['GET'])
 # def getTas():

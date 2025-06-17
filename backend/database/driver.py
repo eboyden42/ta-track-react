@@ -1,6 +1,7 @@
 import psycopg2
 import os
 from dotenv import load_dotenv
+from .encryption import hashing
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -32,7 +33,16 @@ def check_user_exists(username: str) -> bool:
     else:
         return False
 
-def check_user_login(check_pass: str, real_pass:str) -> bool:
+def check_user_login(password: str, username:str) -> str:
+    cursor.execute("SELECT password_hash FROM users WHERE username = %s", (username,))
+    stored_hash = cursor.fetchone()
+    if stored_hash:
+        if hashing.check_password(password, stored_hash[0]):
+            return "verified"
+        return "failed"
+    else:
+        return "username not found"
+    
 
 
 def add_user(username: str, password_hash: str):

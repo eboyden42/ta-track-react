@@ -1,40 +1,19 @@
 import { useEffect, useState } from 'react';
-import LoginPage from './LoginPage';
+import LoginPage from './Pages/LoginPage';
 import Account from './Account'
 
 export default function App() {
-  // Login status 
-  const [loginStatus, setLoginStatus] = useState(false)
-
-  // Handle login submit, update login status
-  function handleSubmit(event) {
-    console.log("Authenticating...")
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    const username = formData.get("username")
-    const password = formData.get("password")
-
-    fetch('/api/create_user', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-      })
-      .catch((err) => console.error('Error:', err));
-}
-
+  // Check server connection automatically 
   useEffect(() => {
     fetch('/api/data')
       .then(res => res.json())
-      .then(data => console.log(data.message));
+      .then(data => console.log(data.message))
+      .catch(err => console.log(err));
   }, []);
 
   return (
     <>
-      {!loginStatus ? <LoginPage handleSubmit={handleSubmit}/> : <Account /> }
+      <LoginPage />
     </>
   )
 }
