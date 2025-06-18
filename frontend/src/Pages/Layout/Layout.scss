@@ -8,6 +8,8 @@ body {
 
     .nav-container {
     background-color: $silver-lake;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    margin-bottom: 5px;
 
         nav {
             display: flex;

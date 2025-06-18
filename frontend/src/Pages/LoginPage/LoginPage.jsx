@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import "./LoginPage.scss"
+import Application from "../Application/Application"
 
 export default function LoginPage() {
 
@@ -68,7 +69,7 @@ useEffect(() => {
                 <button>Login</button>
             </form>
         </div> : 
-        <h1>Logged in!</h1>
+        <Application user={user} />
         }
         </>
     )

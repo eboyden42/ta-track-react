@@ -1,0 +1,11 @@
+.service-box {
+    // border: 1px solid black;
+    border-radius: 8px;
+    margin: 5px 10px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
