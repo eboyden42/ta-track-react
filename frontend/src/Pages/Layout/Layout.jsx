@@ -1,7 +1,12 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useContext } from "react"
+import { NavLink, Outlet } from "react-router-dom"
+import { UserContext } from "../../App"
 import "./Layout.scss"
 
 export default function Layout() {
+
+    const { user } = useContext(UserContext)
+
     return (
         <>
         <div className="nav-container">
@@ -16,7 +21,7 @@ export default function Layout() {
                         About
                     </NavLink>
                     <NavLink className="login" to="/login">
-                        Login
+                        {user ? user.username : "Login"}
                     </NavLink>
                 </div>
             </nav>

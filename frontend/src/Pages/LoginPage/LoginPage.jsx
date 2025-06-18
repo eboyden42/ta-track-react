@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import "./LoginPage.scss"
-import Application from "../Application/Application"
+import Application from "../Application/ApplicationLayout"
+import { UserContext } from "../../App"
+import { useNavigate } from "react-router-dom"
 
 export default function LoginPage() {
 
-  const [user, setUser] = useState(null)
+  // User context
+  const {user, setUser} = useContext(UserContext)
+
+  // Navigation
+  const navigate = useNavigate()
 
   // Handle login submit, update login status
   function handleSubmit(event) {
@@ -41,6 +47,10 @@ export default function LoginPage() {
 }
 
 useEffect(() => {
+  if (user) {
+    navigate("/user")
+  }
+
   fetch(`${import.meta.env.VITE_API_URL}/api/session_check`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
@@ -53,6 +63,7 @@ useEffect(() => {
     .then(data => {
       console.log("Session persisted...")
       setUser(data.user)
+      navigate("/user")
     })
     .catch(() => console.log("User not logged in"))
 }, [])
@@ -69,7 +80,7 @@ useEffect(() => {
                 <button>Login</button>
             </form>
         </div> : 
-        <Application user={user} />
+         null
         }
         </>
     )

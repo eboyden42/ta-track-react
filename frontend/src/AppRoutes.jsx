@@ -4,6 +4,8 @@ import Layout from "./Pages/Layout/Layout"
 import LoginPage from "./Pages/LoginPage/LoginPage"
 import About from "./Pages/About/About"
 import Home from "./Pages/Home/Home"
+import ApplicationLayout from "./Pages/Application/ApplicationLayout"
+import Dashboard from "./Pages/Application/Dashboard/Dashboard"
 
 export default function AppRoutes() {
     return (
@@ -15,6 +17,12 @@ export default function AppRoutes() {
                     <Route path="/about" element={<About/>} />
                     <Route path="/login" element={<LoginPage/>} />
                 </Route>
+                <Route path="/user" element={<ApplicationLayout />} >
+                    <Route index element={<Dashboard />} />
+                    <Route path="/user/dashboard" element={<Dashboard />} />
+                    {/* <Route path="/courses" element={<Courses />} /> */}
+                </Route>
+                
             </Routes>
         </BrowserRouter>
         </>

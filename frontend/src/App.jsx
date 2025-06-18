@@ -1,8 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext } from 'react';
 import LoginPage from './Pages/LoginPage/LoginPage';
 import AppRoutes from './AppRoutes';
 
+// Set up user context
+const UserContext = createContext()
+
 export default function App() {
+
+  // State for user context
+  const [user, setUser] = useState(null)
+
   // Check server connection automatically 
   useEffect(() => {
     fetch('/api/data')
@@ -13,8 +20,12 @@ export default function App() {
 
   return (
     <>
+    <UserContext.Provider value={{user, setUser}}>
       <AppRoutes />
+    </UserContext.Provider>
     </>
   )
 }
+
+export { UserContext }
 
