@@ -1,0 +1,42 @@
+body {
+    padding: 0;
+    margin: 0;
+
+    nav {
+        background-color: floral-white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: larger;
+
+        .left-tabs {
+            padding: 30px 40px;
+            display: flex;
+            gap: 10px;
+
+            a {
+                all: unset;
+                cursor: pointer;
+            }
+        }
+
+        .right-tabs {
+            padding: 30px 40px;
+
+            a {
+                all: unset;
+                cursor: pointer;
+            }
+
+            .profile {
+                margin-right: 20px;
+
+                svg {
+                    margin-left: 10px;
+                }
+            }
+        }
+    }
+}

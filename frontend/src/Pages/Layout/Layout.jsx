@@ -1,11 +1,39 @@
-import { useContext } from "react"
-import { NavLink, Outlet } from "react-router-dom"
+import { useContext, useEffect } from "react"
+import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { UserContext } from "../../App"
 import "./Layout.scss"
 
 export default function Layout() {
 
-    const { user } = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
+
+    
+      // Navigation
+      const navigate = useNavigate()
+    
+      useEffect(() => {
+      // if user is logged in simply navigate to the user page
+      if (user) {
+        navigate("/user")
+      }
+    
+      // get user info with session cookies if possible
+      fetch(`${import.meta.env.VITE_API_URL}/api/session_check`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: "include",
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("Not logged in")
+          return res.json()
+        })
+        .then(data => {
+          console.log("Session persisted...")
+          setUser(data.user)
+          navigate("/user")
+        })
+        .catch((err) => console.log("User not logged in: ", err))
+    }, [])
 
     return (
         <>

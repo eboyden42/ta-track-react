@@ -34,6 +34,7 @@ export default function LoginPage() {
         switch (message) {
           case "verified":
             setUser(data.user)
+            navigate("/user")
             break
           case "failed":
             console.log("Incorrect username or password")
@@ -45,28 +46,6 @@ export default function LoginPage() {
       })
       .catch((err) => console.error('Error:', err));
 }
-
-useEffect(() => {
-  if (user) {
-    navigate("/user")
-  }
-
-  fetch(`${import.meta.env.VITE_API_URL}/api/session_check`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: "include",
-    })
-    .then(res => {
-      if (!res.ok) throw new Error("Not logged in")
-      return res.json()
-    })
-    .then(data => {
-      console.log("Session persisted...")
-      setUser(data.user)
-      navigate("/user")
-    })
-    .catch(() => console.log("User not logged in"))
-}, [])
 
     return (
         <>

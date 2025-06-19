@@ -1,4 +1,5 @@
 import { useEffect, useState, createContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LoginPage from './Pages/LoginPage/LoginPage';
 import AppRoutes from './AppRoutes';
 
@@ -9,7 +10,7 @@ export default function App() {
 
   // State for user context
   const [user, setUser] = useState(null)
-
+  
   // Check server connection automatically 
   useEffect(() => {
     fetch('/api/data')
