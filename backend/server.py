@@ -88,6 +88,11 @@ def session_check():
         }
     })
 
+@app.route("/api/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({'message': 'Logged out'})
+
 # @app.route('/api/talist', methods=['GET'])
 # def getTas():
 #     global driver, courseID, ta_list

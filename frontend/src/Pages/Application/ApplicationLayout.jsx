@@ -44,12 +44,12 @@ export default function ApplicationLayout() {
     }
 
     function handleProfile() {
-        // add logic later
+        navigate("/user/profile") 
         setShowDropdown(false)
     }
 
     function handleLogout() {
-        // Add your logout logic here
+        
         setShowDropdown(false)
     }
 
