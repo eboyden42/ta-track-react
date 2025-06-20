@@ -49,7 +49,20 @@ export default function ApplicationLayout() {
     }
 
     function handleLogout() {
-        
+        fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(res => res.json())
+        .then(() => {
+            setUser(null);
+            setShowDropdown(false);
+            navigate("/login");
+        })
+        .catch(err => {
+            console.error("Logout failed", err);
+        });
         setShowDropdown(false)
     }
 
