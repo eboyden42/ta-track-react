@@ -7,19 +7,21 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 export default function ApplicationLayout() {
 
+    // Access user state and setter from context
     const { user, setUser } = useContext(UserContext)
+    // State to control profile dropdown visibility
     const [showDropdown, setShowDropdown] = useState(false);
 
-    // Navigation
+    // React Router navigation hook
     const navigate = useNavigate()
     
     useEffect(() => {
-        // if user is logged in simply navigate to the user page
+        // If user is already logged in, redirect to user dashboard
         if (user) {
             navigate("/user")
         }
         
-        // get user info with session cookies if possible
+        // Attempt to restore session from cookies
         fetch(`${import.meta.env.VITE_API_URL}/api/session_check`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -30,6 +32,7 @@ export default function ApplicationLayout() {
                 return res.json()
         })
         .then(data => {
+            // Session found, update user context and redirect
             console.log("Session persisted...")
             setUser(data.user)
             navigate("/user")
@@ -37,17 +40,19 @@ export default function ApplicationLayout() {
         .catch(() => console.log("User not logged in"))
     }, [])
     
+    // Toggle profile dropdown menu
     function openDropdown(e) {
         e.preventDefault();
         setShowDropdown((prev) => !prev)
-        console.log(showDropdown)
     }
 
+    // Navigate to user profile page and close dropdown
     function handleProfile() {
         navigate("/user/profile") 
         setShowDropdown(false)
     }
 
+    // Log out user, clear context, close dropdown, and redirect to login
     function handleLogout() {
         fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
             method: "POST",
@@ -68,13 +73,16 @@ export default function ApplicationLayout() {
 
     return (
         <>
+        {/* Navigation bar */}
         <nav>
             <div className="left-tabs">
+                {/* Main navigation links */}
                 <NavLink to="/user">Dashboard</NavLink>
                 <NavLink to="/user/courses">Courses</NavLink>
                 <NavLink to="/user/info">Info</NavLink>
             </div>
             <div className="right-tabs">
+                {/* Profile section with dropdown */}
                 <div className="profile" onClick={openDropdown} >
                     <span>
                         {user ? user.username : "Login"}
@@ -82,10 +90,12 @@ export default function ApplicationLayout() {
                     <FaRegUserCircle />
                     {showDropdown && (
                         <div className="profile-dropdown">
+                            {/* Profile button */}
                             <button onClick={handleProfile}>
                                 <FaUser />
                                 {" Profile"}
                             </button>
+                            {/* Logout button */}
                             <button onClick={handleLogout}>
                                 <IoIosExit />
                                 {" Logout"}
@@ -95,6 +105,7 @@ export default function ApplicationLayout() {
                 </div>
             </div>
         </nav>
+        {/* Render child routes */}
         <Outlet />
         </>
     )
