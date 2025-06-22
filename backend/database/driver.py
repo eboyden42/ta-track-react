@@ -59,6 +59,12 @@ def get_user_by_id(id: int):
     response = cursor.fetchone()
     return response
 
+def get_gradescope_info(username: str):
+    cursor.execute("SELECT gradescope_username, gradescope_password_hash FROM users WHERE username = %s", (username,))
+    response = cursor.fetchone()
+    if response:
+        return {"gradescope_username": response[0], "gradescope_password_hash": response[1]}
+    return None
 
 def add_user(username: str, password_hash: str):
     cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
