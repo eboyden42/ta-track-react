@@ -66,6 +66,13 @@ def get_gradescope_info(username: str):
         return {"gradescope_username": response[0], "gradescope_password_hash": response[1]}
     return None
 
+def update_gradescope_info(username: str, gradescope_username: str, gradescope_password_hash: str):
+    cursor.execute(
+        "UPDATE users SET gradescope_username = %s, gradescope_password_hash = %s WHERE username = %s",
+        (gradescope_username, gradescope_password_hash, username)
+    )
+    conn.commit()   
+
 def add_user(username: str, password_hash: str):
     cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
     conn.commit()
