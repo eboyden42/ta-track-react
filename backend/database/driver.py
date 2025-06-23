@@ -77,6 +77,17 @@ def add_user(username: str, password_hash: str):
     cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
     conn.commit()
 
+def add_course(username: str, course_id: int, course_name: str):
+    cursor.execute(
+        "INSERT INTO courses (gradescope_id, name) VALUES (%s, %s)",
+        (course_id, course_name)
+    )
+    cursor.execute(
+        "INSERT INTO user_courses (user_id, course_id) VALUES ((SELECT id FROM users WHERE username = %s), (SELECT id FROM courses WHERE gradescope_id = %s))",
+        (username, course_id)
+    )
+    conn.commit()
+
 def close():
     cursor.close()
     conn.close()
