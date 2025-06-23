@@ -125,6 +125,28 @@ def get_gs_info():
     else:
         return jsonify({'message': 'No Gradescope info found'}), 404
 
+@app.route('/api/get_courses', methods=['POST'])
+def get_courses():
+    data = request.get_json()
+    username = data.get('username')
+
+    courses = driver.get_courses(username=username)
+
+    if courses:
+        return jsonify({'courses': courses})
+    else:
+        return jsonify({'message': 'No courses found'}), 404
+
+@app.route('/api/add_course', methods=['POST'])
+def add_course():   
+    data = request.get_json()
+    username = data.get('username')
+    course_id = data.get('course_id')
+    course_name = data.get('course_name')
+
+    driver.add_course(username=username, course_id=course_id, course_name=course_name)
+
+    return jsonify({'message': 'Course added successfully'})
 
 @app.after_request
 def add_csp(response):

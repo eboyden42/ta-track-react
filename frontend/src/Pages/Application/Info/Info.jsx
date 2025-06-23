@@ -21,7 +21,7 @@ export default function Info() {
             return
         }
         // fetch gradescope user info if available, if not display form
-        fetch('/api/get_gs_info', {
+        fetch(`${import.meta.env.VITE_API_URL}/api/get_gs_info`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -59,7 +59,7 @@ export default function Info() {
 
     function handleSubmit(e) {
         e.preventDefault()
-        fetch('/api/update_gs_user', {
+        fetch(`${import.meta.env.VITE_API_URL}/api/update_gs_user`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -78,35 +78,33 @@ export default function Info() {
     }
 
     return showForm ? (
-        <div style={{ maxWidth: 400, margin: '0 auto', padding: 20 }}>
+        <div>
             <h2>We'll need your gradescope login information to get started, don't worry all information is securely encrypted.</h2>
             <h3>Please enter your gradescope login below. When you're ready, press submit.</h3>
             <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: 16 }}>
+                <div>
                     <label>
                         Username:
                         <input
                             type="text"
                             value={gradescopeUsername}
                             onChange={handleUsernameChange}
-                            style={{ width: '100%', padding: 8, marginTop: 4 }}
                             autoComplete="username"
                         />
                     </label>
                 </div>
-                <div style={{ marginBottom: 16 }}>
+                <div>
                     <label>
                         Password:
                         <input
                             type="password"
                             value={gradescopePassword}
                             onChange={handlePasswordChange}
-                            style={{ width: '100%', padding: 8, marginTop: 4 }}
                             autoComplete="current-password"
                         />
                     </label>
                 </div>
-                <button type="submit" style={{ padding: '8px 16px' }}>
+                <button type="submit">
                     Submit
                 </button>
             </form>
