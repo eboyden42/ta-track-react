@@ -88,6 +88,13 @@ def add_course(username: str, course_id: int, course_name: str):
     )
     conn.commit()
 
+def get_courses(username: str):
+    cursor.execute(
+        "SELECT courses.id, courses.gradescope_id, courses.name FROM courses JOIN user_courses ON courses.id = user_courses.course_id JOIN users ON user_courses.user_id = users.id WHERE users.username = %s",
+        (username,)
+    )
+    return cursor.fetchall()
+
 def close():
     cursor.close()
     conn.close()

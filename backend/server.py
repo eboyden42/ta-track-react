@@ -125,6 +125,7 @@ def get_gs_info():
     else:
         return jsonify({'message': 'No Gradescope info found'}), 404
 
+
 @app.after_request
 def add_csp(response):
     response.headers['Content-Security-Policy'] = (

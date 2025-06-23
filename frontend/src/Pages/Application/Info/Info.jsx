@@ -3,12 +3,23 @@ import { UserContext } from '../../../App'
 import './Info.scss'
 
 export default function Info() {
+    // Access user state from context
     const { user } = useContext(UserContext)
+
+    // State to control form visibility
     const [showForm, setShowForm] = useState(true)
+
+    // State for fetched Gradescope username
+    const [fetchedUsername, setFetchedUsername] = useState('')
+
+    // State for form fields of Gradescope username and password
     const [gradescopeUsername, setUsername] = useState('')
     const [gradescopePassword, setPassword] = useState('')
 
     useEffect(() => {
+        if (!user) {
+            return
+        }
         // fetch gradescope user info if available, if not display form
         fetch('/api/get_gs_info', {
             method: 'POST',
@@ -17,21 +28,22 @@ export default function Info() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ username: user.username}),
-        }).then((response) => {
-            if (response.ok) {
-                const data = response.json()
+        }).then((response) => response.json())
+        .then((data) => {
+            if (data.gradescope_username) {
+                setFetchedUsername(data.gradescope_username)
                 setUsername(data.gradescope_username)
                 setPassword(data.gradescope_password)
-                console.log('Fetched Gradescope user info:', data)
-                setShowForm(false)
+                setShowForm(false) // Hide form if user info is fetched
             } else {
-                throw new Error('Failed to fetch Gradescope user info')
+                console.log('No Gradescope user info found, displaying form')
             }
-        }).catch((error) => {
-            console.error('Error fetching Gradescope user info:', error)
+        })
+        .catch((error) => {
+            console.error(error)
         })
 
-    }, [])
+    }, [user, fetchedUsername])
 
     function handleUsernameChange(e) {
         setUsername(e.target.value)
@@ -39,6 +51,10 @@ export default function Info() {
 
     function handlePasswordChange(e) {
         setPassword(e.target.value)
+    }
+
+    function handleUpdateClick() {
+        setShowForm(true) // Show form when user clicks update button
     }
 
     function handleSubmit(e) {
@@ -53,6 +69,7 @@ export default function Info() {
         }).then((response) => {
             if (response.ok) {
                 console.log('Gradescope user info updated successfully')
+                setFetchedUsername(gradescopeUsername)
                 setShowForm(false)
             } else {
                 console.error('Failed to update Gradescope user info')
@@ -60,7 +77,7 @@ export default function Info() {
         })
     }
 
-    return (
+    return showForm ? (
         <div style={{ maxWidth: 400, margin: '0 auto', padding: 20 }}>
             <h2>We'll need your gradescope login information to get started, don't worry all information is securely encrypted.</h2>
             <h3>Please enter your gradescope login below. When you're ready, press submit.</h3>
@@ -94,5 +111,14 @@ export default function Info() {
                 </button>
             </form>
         </div>
-    )
+    ) : <>
+    <div>
+        <h2>Gradescope Information</h2>
+        <p>Your Gradescope username is: {fetchedUsername}</p>
+        <p>Your Gradescope password is securely stored and not displayed here.</p>
+        <button onClick={handleUpdateClick}>
+            Update Gradescope Information
+        </button>
+    </div>
+    </>
 }

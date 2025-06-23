@@ -16,11 +16,6 @@ export default function ApplicationLayout() {
     const navigate = useNavigate()
     
     useEffect(() => {
-        // If user is already logged in, redirect to user dashboard
-        if (user) {
-            navigate("/user")
-        }
-        
         // Attempt to restore session from cookies
         fetch(`${import.meta.env.VITE_API_URL}/api/session_check`, {
             method: 'GET',
@@ -35,7 +30,7 @@ export default function ApplicationLayout() {
             // Session found, update user context and redirect
             console.log("Session persisted...")
             setUser(data.user)
-            navigate("/user")
+            // navigate("/user")
         })
         .catch(() => console.log("User not logged in"))
     }, [])
