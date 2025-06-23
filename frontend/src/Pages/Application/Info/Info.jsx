@@ -3,26 +3,61 @@ import { UserContext } from '../../../App'
 import './Info.scss'
 
 export default function Info() {
-    const {user} = useContext(UserContext)
-    const [showForm, setShowForm] = useState(false)
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+    const { user } = useContext(UserContext)
+    const [showForm, setShowForm] = useState(true)
+    const [gradescopeUsername, setUsername] = useState('')
+    const [gradescopePassword, setPassword] = useState('')
 
     useEffect(() => {
         // fetch gradescope user info if available, if not display form
-    })
+        fetch('/api/get_gs_info', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: user.username}),
+        }).then((response) => {
+            if (response.ok) {
+                const data = response.json()
+                setUsername(data.gradescope_username)
+                setPassword(data.gradescope_password)
+                console.log('Fetched Gradescope user info:', data)
+                setShowForm(false)
+            } else {
+                throw new Error('Failed to fetch Gradescope user info')
+            }
+        }).catch((error) => {
+            console.error('Error fetching Gradescope user info:', error)
+        })
 
-    const handleUsernameChange = (e) => {
+    }, [])
+
+    function handleUsernameChange(e) {
         setUsername(e.target.value)
     }
 
-    const handlePasswordChange = (e) => {
+    function handlePasswordChange(e) {
         setPassword(e.target.value)
     }
 
-    const handleSubmit = (e) => {
+    function handleSubmit(e) {
         e.preventDefault()
-        // Implement submit handler
+        fetch('/api/update_gs_user', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: user.username, gradescope_username: gradescopeUsername, gradescope_password: gradescopePassword }),
+        }).then((response) => {
+            if (response.ok) {
+                console.log('Gradescope user info updated successfully')
+                setShowForm(false)
+            } else {
+                console.error('Failed to update Gradescope user info')
+            }
+        })
     }
 
     return (
@@ -35,7 +70,7 @@ export default function Info() {
                         Username:
                         <input
                             type="text"
-                            value={username}
+                            value={gradescopeUsername}
                             onChange={handleUsernameChange}
                             style={{ width: '100%', padding: 8, marginTop: 4 }}
                             autoComplete="username"
@@ -47,7 +82,7 @@ export default function Info() {
                         Password:
                         <input
                             type="password"
-                            value={password}
+                            value={gradescopePassword}
                             onChange={handlePasswordChange}
                             style={{ width: '100%', padding: 8, marginTop: 4 }}
                             autoComplete="current-password"

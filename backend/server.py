@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import sys
 import os
 from database.encryption.hashing import hash_password
+from database.encryption.encrypt import encrypt_data, decrypt_data
 from database import driver
 
 load_dotenv()
@@ -92,6 +93,57 @@ def session_check():
 def logout():
     session.clear()
     return jsonify({'message': 'Logged out'})
+
+
+@app.route('/api/update_gs_user', methods=['POST'])   
+def encrypt():
+    data = request.get_json()
+    username = data.get('username')
+    gradescope_username = encrypt_data(data.get('gradescope_username'))
+    gradescope_password_hash = encrypt_data(data.get('gradescope_password'))
+
+    driver.update_gradescope_info(
+        username=username,
+        gradescope_username=gradescope_username,
+        gradescope_password=gradescope_password_hash
+    )
+
+    return jsonify({'message': 'Gradescope info updated successfully'})
+
+@app.route('/api/get_gs_info', methods=['POST'])
+def get_gs_info():
+    data = request.get_json()
+    username = data.get('username')
+
+    gs_info = driver.get_gradescope_info(username=username)
+    
+    print(gs_info)
+    if gs_info:
+        return jsonify({
+            'gradescope_username': decrypt_data(gs_info['gradescope_username']),
+            'gradescope_password': decrypt_data(gs_info['gradescope_password_hash'])
+        })
+    else:
+        return jsonify({'message': 'No Gradescope info found'}), 404
+
+@app.after_request
+def add_csp(response):
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "script-src 'self'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data:; "
+        "connect-src 'self' https://your-backend.com; "
+        "object-src 'none'; "
+        "base-uri 'none';"
+    )
+
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['Referrer-Policy'] = 'no-referrer'
+    response.headers['Permissions-Policy'] = 'geolocation=(), microphone=()'
+
+    return response
 
 # @app.route('/api/talist', methods=['GET'])
 # def getTas():
