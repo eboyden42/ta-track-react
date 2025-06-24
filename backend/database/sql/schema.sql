@@ -15,6 +15,8 @@ CREATE TABLE courses (
 CREATE TABLE user_courses (
     user_id INTEGER REFERENCES users(id),
     course_id INTEGER REFERENCES courses(id),
+    status TEXT DEFAULT 'pending', -- 'pending', 'active', 'inactive'
+    last_scraped TIMESTAMP,
     PRIMARY KEY (user_id, course_id)
 );
 
@@ -46,3 +48,14 @@ CREATE TABLE ta_question_stats (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (ta_id, question_id)
 );
+
+CREATE TABLE ta_question_history (
+    id SERIAL PRIMARY KEY,
+    ta_id INTEGER NOT NULL REFERENCES tas(id),
+    question_id INTEGER NOT NULL REFERENCES questions(id),
+    graded_count INTEGER NOT NULL,
+    scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_ta_question_time ON ta_question_history (ta_id, question_id, scraped_at);
+
+

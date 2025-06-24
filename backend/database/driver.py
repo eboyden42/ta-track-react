@@ -18,8 +18,19 @@ def create_tables():
         cursor.execute(f.read())
     conn.commit()
 
-def delete_tables():
-    cursor.execute("DELETE * FROM users")
+def drop_all_tables():
+    cursor.execute("""
+        DROP TABLE IF EXISTS 
+            ta_question_history,
+            ta_question_stats,
+            tas,
+            questions,
+            assignments,
+            user_courses,
+            courses,
+            users
+        CASCADE;
+    """)
     conn.commit()
 
 def get_hashed_pass(username: str) -> str:
