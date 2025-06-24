@@ -50,7 +50,7 @@ def create_user():
     # Add the user to the database with the hashed password
     driver.add_user(username=username, password_hash=password_hash)
     # Close the database connection
-    return jsonify({'message': 'User created!'})
+    return jsonify({'message': 'user created'})
 
 @app.route('/api/user_login', methods=["POST"])
 def user_login():

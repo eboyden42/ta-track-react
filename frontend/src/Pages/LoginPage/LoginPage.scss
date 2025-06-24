@@ -5,6 +5,17 @@ $silver-lake: #5B85AA;
 body {
     background-color: floralwhite;
 
+    .header {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        h1 {
+            padding: 20px;
+        }
+    }
+
     .login-container {
         margin: auto;
         background-color: $silver-lake;
