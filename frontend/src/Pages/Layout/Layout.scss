@@ -8,7 +8,7 @@ body {
 
     .nav-container {
     background-color: $floral-white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-bottom: 5px;
 
         nav {
@@ -18,17 +18,23 @@ body {
             font-size: larger;
 
             .left-tabs {
-                padding: 30px 40px;
+                padding: 30px;
 
                 a {
                     all: unset;
                     cursor: pointer;
+
+                    .logo {
+                        height: 40px;
+                    }
                 }
             }
 
             .right-tabs {
                 padding: 30px 40px;
-
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
 
                 a {
                     all: unset;

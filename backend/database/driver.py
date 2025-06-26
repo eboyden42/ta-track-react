@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from .encryption import hashing, encrypt
 
-load_dotenv()  # Load environment variables from .env file
+load_dotenv()
 
 conn = psycopg2.connect(
     host=os.environ.get("HOST"), 

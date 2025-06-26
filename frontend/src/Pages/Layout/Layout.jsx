@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { UserContext } from "../../App"
 import "./Layout.scss"
+import TAGuideLogo from "../../assets/TAGuide.png"
 
 export default function Layout() {
 
@@ -41,7 +42,7 @@ export default function Layout() {
             <nav>
                 <div className="left-tabs">
                     <NavLink to="/">
-                        Home
+                        <img src={TAGuideLogo} alt="TAGuide Logo" className="logo" />
                     </NavLink>
                 </div>
                 <div className="right-tabs">
