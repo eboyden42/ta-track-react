@@ -4,7 +4,7 @@ body {
 
     nav {
         background-color: floral-white;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         margin-bottom: 5px;
         display: flex;
         justify-content: space-between;
@@ -21,6 +21,10 @@ body {
                 cursor: pointer;
                 padding: 10px 15px;
                 border-radius: 10px;
+
+                .logo {
+                    height: 50px;
+                }
             }
             a:hover {
                 background-color: #ccc;

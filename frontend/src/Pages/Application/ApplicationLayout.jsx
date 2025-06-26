@@ -4,6 +4,7 @@ import "./ApplicationLayout.scss"
 import { UserContext } from "../../App";
 import { useContext, useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import TAGuideLogo from "../../assets/TAGuide.png"
 
 export default function ApplicationLayout() {
 
@@ -72,6 +73,9 @@ export default function ApplicationLayout() {
         <nav>
             <div className="left-tabs">
                 {/* Main navigation links */}
+                <NavLink to="/user">
+                    <img src={TAGuideLogo} alt="TAGuide Logo" className="logo"/>
+                </NavLink>
                 <NavLink to="/user">Dashboard</NavLink>
                 <NavLink to="/user/courses">Courses</NavLink>
                 <NavLink to="/user/info">Info</NavLink>
