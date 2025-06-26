@@ -78,29 +78,28 @@ export default function LoginPage() {
     .catch((err) => console.error("Error creating user:", err));
   }    
     return (
-        <>
+        <main className="login-page">
         <div className="header">
           {isLogin ?
           <>
-          <h1>Enter your username and password below to login.</h1>
+          <h1>Welcome back.</h1>
           <h3>Don't have an account? <span className="switch-login" onClick={() => setIsLogin(false)}>Sign up</span></h3>
           </>
           :
           <>
-          <h1>Enter your username and password below to sign up.</h1>
+          <h1>Choose an username and password you'll remember.</h1>
           <h3>Already have an account? <span className="switch-login" onClick={() => setIsLogin(true)}>Login</span></h3>
           </>
         }
         </div>
+        <hr className="divider"/>
         <div className="login-container">
             <form onSubmit={isLogin ? handleLoginSubmit : handleSignupSubmit} className="login-form" >
-                <label htmlFor="username">Username</label>
-                    <input type="text" placeholder="username" name="username" id="username" />
-                <label htmlFor="passoword">Password</label>
-                    <input type="password" name="password" id="password" />
-                <button>{isLogin ? "Login" : "Sign Up"}</button>
+                  <input type="text" placeholder="username" name="username" />
+                  <input type="password" name="password" />
+                <button className="login">{isLogin ? "Login" : "Sign Up"}</button>
             </form>
         </div>
-        </>
+        </main>
     )
 }
