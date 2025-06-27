@@ -36,11 +36,11 @@ export default function Info() {
                 setPassword(data.gradescope_password)
                 setShowForm(false) // Hide form if user info is fetched
             } else {
-                console.log('No Gradescope user info found, displaying form')
+                console.log(data.message)
             }
         })
         .catch((error) => {
-            console.error(error)
+            console.log('Error fetching Gradescope user info:', error)
         })
 
     }, [user, fetchedUsername])
@@ -78,43 +78,33 @@ export default function Info() {
     }
 
     return showForm ? (
-        <div>
+        <div className="form-container">
             <h2>We'll need your gradescope login information to get started, don't worry all information is securely encrypted.</h2>
-            <h3>Please enter your gradescope login below. When you're ready, press submit.</h3>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
-                        Username:
-                        <input
-                            type="text"
-                            value={gradescopeUsername}
-                            onChange={handleUsernameChange}
-                            autoComplete="username"
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Password:
-                        <input
-                            type="password"
-                            value={gradescopePassword}
-                            onChange={handlePasswordChange}
-                            autoComplete="current-password"
-                        />
-                    </label>
-                </div>
-                <button type="submit">
+            <h3>Please enter your gradescope login below. If there are any issues, we'll let you know.</h3>
+            <form className="info-form" onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    value={gradescopeUsername}
+                    onChange={handleUsernameChange}
+                    placeholder="Gradescope email or username"
+                />
+                <input
+                    type="password"
+                    value={gradescopePassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Gradescope password"
+                />
+                <button className="submit" type="submit">
                     Submit
                 </button>
             </form>
         </div>
     ) : <>
-    <div>
+    <div className="info-container">
         <h2>Gradescope Information</h2>
         <p>Your Gradescope username is: {fetchedUsername}</p>
-        <p>Your Gradescope password is securely stored and not displayed here.</p>
-        <button onClick={handleUpdateClick}>
+        <p>Your Gradescope password is securely stored on our encrypted database and not displayed here.</p>
+        <button className="update-btn" onClick={handleUpdateClick}>
             Update Gradescope Information
         </button>
     </div>

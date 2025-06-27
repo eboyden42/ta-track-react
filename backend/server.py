@@ -128,7 +128,7 @@ def get_gs_info():
 
     gs_info = driver.get_gradescope_info(username=username)
 
-    if gs_info:
+    if gs_info['gradescope_username'] and gs_info['gradescope_password_hash']:
         return jsonify({
             'gradescope_username': decrypt_data(gs_info['gradescope_username']),
             'gradescope_password': decrypt_data(gs_info['gradescope_password_hash'])
