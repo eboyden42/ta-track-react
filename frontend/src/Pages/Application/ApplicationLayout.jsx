@@ -82,7 +82,7 @@ export default function ApplicationLayout() {
             </div>
             <div className="right-tabs">
                 {/* Profile section with dropdown */}
-                <div className="profile" onClick={openDropdown} >
+                <div className={"profile" + (showDropdown ? " clicked" : "")} onClick={openDropdown} >
                     <span>
                         {user ? user.username : "Login"}
                     </span>

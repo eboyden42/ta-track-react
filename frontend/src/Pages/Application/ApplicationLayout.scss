@@ -1,38 +1,45 @@
+$floral-white: #FFFCF2;
+$russian-violet: #0B0033;
+$silver-lake: #5B85AA;
+$aqua-blue: #0cc0df;
+
 body {
     padding: 0;
     margin: 0;
 
     nav {
-        background-color: floral-white;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        margin-bottom: 5px;
         display: flex;
         justify-content: space-between;
         font-family: Verdana, Geneva, Tahoma, sans-serif;
         font-size: larger;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
         .left-tabs {
             padding: 30px 40px;
             display: flex;
-            gap: 10px;
+            justify-content: flex-start;
+            gap: 20px;
+            align-items: center;
+            
 
             a {
                 all: unset;
                 cursor: pointer;
-                padding: 10px 15px;
-                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
 
                 .logo {
                     height: 50px;
                 }
             }
-            a:hover {
-                background-color: #ccc;
-            }
         }
 
         .right-tabs {
             padding: 30px 40px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
 
             a {
                 all: unset;
@@ -40,23 +47,31 @@ body {
             }
 
             .profile {
-                cursor: pointer;
-                margin-right: 20px;
-                display: flex;
-                justify-content: center;
-                padding: 10px 15px;
-                border-radius: 10px;
+                background-color: $aqua-blue;
 
-                
-                
-                svg {
-                    margin-left: 10px;
-                    margin-bottom: 0;
+                &.clicked {
+                    background-color: $floral-white;
+                    color: $aqua-blue;
+                    box-shadow: 0 4px 16px rgba(91, 133, 170, 0.2);
                 }
-                
+
+                color: $floral-white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+
+                &:hover {
+                    box-shadow: 0 4px 16px rgba(91, 133, 170, 0.2);
+                }
+
+                span {
+                    margin-right: 10px;
+                    margin-bottom: 2px;
+                }
             }
-            .profile:hover {
-                background-color: #ccc;
+
+            .about {
+                margin-right: 20px;
             }
         }
     }
@@ -65,15 +80,17 @@ body {
 .profile-dropdown {
     color: black;
     position: absolute;
-    top: 65px;
-    right: 20px;
+    top: 72px;
+    right: 11px;
     border-radius: 3px;
+    border: none;
     background: floralwhite;
-    border: 1px solid #ccc;
     min-width: 120px;
     z-index: 100;
     display: flex;
     flex-direction: column;
+
+    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.1);
 
     button {
         display: flex;

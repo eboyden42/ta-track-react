@@ -32,6 +32,9 @@ body {
 
                 .switch-login {
                     all: unset;
+                    text-decoration: underline;
+                    text-underline-offset: 2px;
+                    font-size: large;
                     cursor: pointer;
                     color: $russian-violet;
 
@@ -40,6 +43,11 @@ body {
                         color: $aqua-blue;
                     }
                 }
+            }
+
+            h3 {
+                font-weight: 400;
+                color: $silver-lake;
             }
         }
 
