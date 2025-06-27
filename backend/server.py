@@ -36,6 +36,17 @@ def get_data():
 #     except:
 #         return jsonify({'message' : "false"})
 
+# Route to check if an username exists in the database already
+@app.route('/api/check_username', methods=['POST'])
+def check_username():
+    data = request.get_json()
+    username = data.get('username')
+
+    if driver.check_user_exists(username):
+        return jsonify({'message': 'username taken'}), 409
+    else:
+        return jsonify({'message': 'username available'}), 200
+
 # Route for user registration
 @app.route('/api/create_user', methods=['POST'])
 def create_user():
