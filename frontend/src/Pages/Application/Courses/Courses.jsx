@@ -1,18 +1,22 @@
-import CourseService from "../CourseService/CourseService";
-import React, { useState, useContext, useEffect } from 'react';
-import { UserContext } from "../../../App";
+import CourseService from "../CourseService/CourseService"
+import React, { useState, useContext, useEffect } from 'react'
+import { IoAddCircle } from "react-icons/io5"
+import { AiFillMinusCircle } from "react-icons/ai";
+import { UserContext } from "../../../App"
+import './Courses.scss'
 
 export default function Courses() {
     // Access user state from context
-    const { user } = useContext(UserContext);
+    const { user } = useContext(UserContext)
 
     // State to manage course addition form
-    const [courseTitle, setCourseTitle] = useState("");
-    const [courseID, setCourseID] = useState("");
-    const [isValidID, setIsValidID] = useState(true);
+    const [showForm, setShowForm] = useState(false)
+    const [courseTitle, setCourseTitle] = useState("")
+    const [courseID, setCourseID] = useState("")
+    const [isValidID, setIsValidID] = useState(true)
 
     // State to manage course list
-    const [courses, setCourses] = useState([]);
+    const [courses, setCourses] = useState([])
 
     // Generate CourseService components from courses array
     const CourseServiceList = courses.map(course => 
@@ -29,6 +33,11 @@ export default function Courses() {
         
         fetchCourses()
     }, [user])
+
+    function handleAddCourse(e) {
+        e.preventDefault()
+        setShowForm(prev => !prev)
+    }
 
     // Function to fetch courses from the server, updates the courses state
     // and handles errors if any occur during the fetch operation.
@@ -59,11 +68,11 @@ export default function Courses() {
         e.preventDefault()
         if (!isValidID) {
             alert("Please enter a valid 6-digit course ID.")
-            return;
+            return
         }
         if (courseTitle.trim() === "" || courseID === null) {
             alert("Please fill in all fields.")
-            return;
+            return
         }
 
         fetch(`${import.meta.env.VITE_API_URL}/api/add_course`, {
@@ -85,7 +94,7 @@ export default function Courses() {
             setCourseTitle("")
             fetchCourses() // Refresh the course list after adding a new course
         })
-        .catch(error => console.error("Error adding course:", error));
+        .catch(error => console.error("Error adding course:", error))
     }
 
     // Handlers for input changes
@@ -100,11 +109,12 @@ export default function Courses() {
         
         if (id === "" || isNaN(id)) {
             setIsValidID(true)
+            return
         }
 
         if (id.length !== 6 || !/^\d+$/.test(id)) {
             setIsValidID(false)
-            return;
+            return
         } else {
             setIsValidID(true)
         }
@@ -112,21 +122,31 @@ export default function Courses() {
 
     return (
         <>
-        <h1>Courses</h1>
-        <p>Please enter information for a gradescope course you wish to begin tracking. An incorrect Course ID can cause problems so be sure to copy and paste it directly.</p>
-        <form onSubmit={handleSubmit}>
-                <div>
+            <main className="courses-page">
+                <h1>See all your tracked courses here.</h1>
+                <div className="header">
+                    <h3>Add a course</h3>
+                    <button className="add-course-button" onClick={handleAddCourse}>
+                        { showForm ? <AiFillMinusCircle /> : <IoAddCircle />}
+                    </button>
+                </div>
+                { showForm ?
+                <div className="course-form-container">
+                <p>
+                    Please enter information for a gradescope course you wish to begin tracking.
+                    An incorrect Course ID can cause problems so be sure to copy and paste it directly.
+                </p>
+                <form className="course-form" onSubmit={handleSubmit}>
                     <label>
                         Course Title:
                         <input
                             type="text"
                             value={courseTitle}
                             onChange={handleTitleChange}
+                            placeholder="APMA 3100, APMA 1110, etc."
                             autoComplete="APMA 3100, APMA 1110, etc."
                         />
                     </label>
-                </div>
-                <div>
                     <label>
                         Course ID:
                         <input
@@ -134,17 +154,19 @@ export default function Courses() {
                             value={courseID}
                             onChange={handleIDChange}
                             autoComplete="9240248, 9543247, etc."
-                        />
+                            />
                     </label>
-                    {!isValidID && <span>Please enter a valid 6-digit course ID.</span>}   
-                </div>
-                <button type="submit">
-                    Submit
-                </button>
-            </form>
-        <ul>
-            {CourseServiceList}
-        </ul>
+                    <button className="submit" type="submit">Submit</button>
+                </form>
+                <h3 className="error-message">
+                    { !isValidID ? "Please enter a valid 6-digit course ID." : ""}
+                </h3>
+                </div> : null }
+                <ul className="course-list">
+                    {CourseServiceList}
+                </ul>
+            </main>
         </>
+                    
     )
 }
