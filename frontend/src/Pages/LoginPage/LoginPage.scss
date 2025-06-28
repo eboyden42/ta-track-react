@@ -13,7 +13,6 @@ body {
         align-items: center;
         justify-content: center;
         height: 50vh;
-        width: 40%;
         margin: auto;
 
         .header {
@@ -52,7 +51,7 @@ body {
         }
 
         .divider {
-            width: 100%;
+            width: 500px;
             height: 0.5px;
             background-color: $silver-lake;
             margin: 20px 0 10px 0;
@@ -62,7 +61,8 @@ body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
+            width: 60%;
+            max-width: 500px;
 
             .login-form {
                 display: flex;
