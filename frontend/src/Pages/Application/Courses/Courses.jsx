@@ -123,7 +123,7 @@ export default function Courses() {
     return (
         <>
             <main className="courses-page">
-                <h1>See all your tracked courses here.</h1>
+                <h1>Manage Courses</h1>
                 <div className="header">
                     <h3>Add a course</h3>
                     <button className="add-course-button" onClick={handleAddCourse}>
