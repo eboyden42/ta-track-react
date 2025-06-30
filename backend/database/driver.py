@@ -115,6 +115,15 @@ def get_courses(username: str):
     )
     return cursor.fetchall()
 
+def get_course_by_id(course_pk: int):
+    cursor.execute("SELECT * FROM courses WHERE id = %s", (course_pk,))
+    return cursor.fetchone()
+
+# add emails later
+def add_ta(course_id: int, name: str):
+    cursor.execute("INSERT INTO tas (course_id, name) VALUES (%s, %s)", (course_id, name))
+    conn.commit()
+
 def close():
     cursor.close()
     conn.close()

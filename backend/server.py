@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, session
 from waitress import serve
+from threading import Thread
 from flask_cors import CORS
 from dotenv import load_dotenv
 # import scrape
@@ -8,6 +9,7 @@ import os
 from database.encryption.hashing import hash_password
 from database.encryption.encrypt import encrypt_data, decrypt_data
 from database import driver
+from scrape_refactor import get_tas
 
 load_dotenv()
 app = Flask(__name__)
@@ -170,6 +172,16 @@ def delete_course():
     except Exception as e:
         return jsonify({'message': f'Error deleting course: {str(e)}'}), 500
 
+@app.route('/api/scrape_tas', methods=['POST'])
+def scrape_tas():
+    data = request.get_json()
+    course_id = data.get("id")
+    user_id = session.get('user_id')
+
+    Thread(target=get_tas, args=(course_id, user_id)).start()
+
+    return jsonify({"message": "Scraping started"}), 202
+    
 
 
 @app.after_request
@@ -219,5 +231,5 @@ def add_csp(response):
 
 
 if __name__ == '__main__':
-    # app.run(debug=True)
-    serve(app, host='0.0.0.0', port=os.environ.get("PORT"))
+    app.run(debug=True)
+    # serve(app, host='0.0.0.0', port=os.environ.get("PORT"))
