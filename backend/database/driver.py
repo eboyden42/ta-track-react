@@ -94,8 +94,8 @@ def add_course(username: str, course_id: int, course_name: str):
         (course_id, course_name)
     )
     cursor.execute(
-        "INSERT INTO user_courses (user_id, course_id) VALUES ((SELECT id FROM users WHERE username = %s), (SELECT id FROM courses WHERE gradescope_id = %s))",
-        (username, course_id)
+        "INSERT INTO user_courses (user_id, course_id, status) VALUES ((SELECT id FROM users WHERE username = %s), (SELECT id FROM courses WHERE gradescope_id = %s), (%s))",
+        (username, course_id, "pending")
     )
     conn.commit()
 
@@ -110,7 +110,7 @@ def delete_course(id: int):
 
 def get_courses(username: str):
     cursor.execute(
-        "SELECT courses.id, courses.gradescope_id, courses.name FROM courses JOIN user_courses ON courses.id = user_courses.course_id JOIN users ON user_courses.user_id = users.id WHERE users.username = %s",
+        "SELECT courses.id, courses.gradescope_id, courses.name, user_courses.status FROM courses JOIN user_courses ON courses.id = user_courses.course_id JOIN users ON user_courses.user_id = users.id WHERE users.username = %s",
         (username,)
     )
     return cursor.fetchall()

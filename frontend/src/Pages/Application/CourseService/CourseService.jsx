@@ -1,7 +1,9 @@
 import "./CourseService.scss"
 import { MdDeleteForever } from "react-icons/md";
 
-export default function CourseService({id, title, gradescope_id, update}) {
+export default function CourseService({id, update, status, children}) {
+
+    console.log(status)
 
     function handleDelete(e) {
         e.preventDefault()
@@ -28,8 +30,7 @@ export default function CourseService({id, title, gradescope_id, update}) {
         <>
         <div className="service-box">
             <div className="left-items">
-                <h2>{title}</h2>
-                <h3>{gradescope_id}</h3>
+                {children}
             </div>
             <div className="right-items">
                 <button className="delete-btn" onClick={handleDelete}>
