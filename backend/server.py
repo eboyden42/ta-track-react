@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, session
+from waitress import serve
 from flask_cors import CORS
 from dotenv import load_dotenv
 # import scrape
@@ -218,4 +219,5 @@ def add_csp(response):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    serve(app, host='0.0.0.0', port=os.environ.get("PORT"))
