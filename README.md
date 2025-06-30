@@ -2,8 +2,6 @@
 
 TAGuide is a full-stack web application that allows users to initiate course information scraping tasks and manage sensitive data securely. Built as an upgrade to a pure Python script, TAGuide introduces a user-friendly, web-accessible interface that enables teachers to use the tool at their convenience.
 
----
-
 ## Tech Stack
 
 - Backend: Python, Flask
