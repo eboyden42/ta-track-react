@@ -159,6 +159,18 @@ def add_course():
 
     return jsonify({'message': 'Course added successfully'})
 
+@app.route('/api/delete_course', methods=['POST'])
+def delete_course():
+    data = request.get_json()
+    course_id = data.get('id')
+    try:
+        driver.delete_course(course_id)
+        return jsonify({'message': 'Course deleted successfully'})
+    except Exception as e:
+        return jsonify({'message': f'Error deleting course: {str(e)}'}), 500
+
+
+
 @app.after_request
 def add_csp(response):
     response.headers['Content-Security-Policy'] = (
@@ -166,7 +178,7 @@ def add_csp(response):
         "script-src 'self'; "
         "style-src 'self' 'unsafe-inline'; "
         "img-src 'self' data:; "
-        "connect-src 'self' https://your-backend.com; "
+        "connect-src 'self' ; " # add .env path to backend
         "object-src 'none'; "
         "base-uri 'none';"
     )

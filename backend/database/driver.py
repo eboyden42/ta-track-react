@@ -99,6 +99,15 @@ def add_course(username: str, course_id: int, course_name: str):
     )
     conn.commit()
 
+def delete_course(id: int):
+    try:
+        cursor.execute("DELETE FROM user_courses WHERE course_id = %s", (id,))
+        cursor.execute("DELETE FROM courses WHERE id = %s", (id,))
+    except Exception as e:
+        conn.rollback()
+        raise e
+    conn.commit()
+
 def get_courses(username: str):
     cursor.execute(
         "SELECT courses.id, courses.gradescope_id, courses.name FROM courses JOIN user_courses ON courses.id = user_courses.course_id JOIN users ON user_courses.user_id = users.id WHERE users.username = %s",
