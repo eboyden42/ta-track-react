@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, session
 from waitress import serve
 from threading import Thread
 from flask_cors import CORS
+from flask_socketio import SocketIO
 from dotenv import load_dotenv
 # import scrape
 import sys
@@ -15,7 +16,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("COOKIES_KEY")
 CORS(app, supports_credentials=True)
-
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 @app.route('/api/data')
 def get_data():
@@ -178,11 +179,17 @@ def scrape_tas():
     course_id = data.get("id")
     user_id = session.get('user_id')
 
-    Thread(target=get_tas, args=(course_id, user_id)).start()
+    Thread(target=get_tas, args=(course_id, user_id, socketio)).start()
 
     return jsonify({"message": "Scraping started"}), 202
     
-
+@app.route('/api/status/<course_id>', methods=['GET'])
+def get_scrape_status(course_id):
+    status = driver.get_status_by_id(course_id)
+    if status:
+        return jsonify({'status': status})
+    return jsonify({'error': 'Course not found'}), 404
+# I want to change this later
 
 @app.after_request
 def add_csp(response):
@@ -231,5 +238,6 @@ def add_csp(response):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000)
+    # app.run(debug=True)
     # serve(app, host='0.0.0.0', port=os.environ.get("PORT"))

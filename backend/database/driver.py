@@ -125,13 +125,12 @@ def add_ta(course_id: int, name: str):
     conn.commit()
 
 def get_status_by_id(course_id: int):
-    cursor.execute("SELECT status FROM courses WHERE id = %s", (course_id,))
+    cursor.execute("SELECT status FROM user_courses WHERE course_id = %s", (course_id,))
     return cursor.fetchone()
 
 def update_status_by_id(course_id: int, status: str):
-    cursor.execute("UPDATE courses SET status = %s WHERE id = %s", (status, course_id))
+    cursor.execute("UPDATE user_courses SET status = %s WHERE course_id = %s", (status, course_id))
     conn.commit()
-
 
 def close():
     cursor.close()

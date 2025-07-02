@@ -1,7 +1,35 @@
 import "./CourseService.scss"
 import { MdDeleteForever } from "react-icons/md";
+import { useEffect } from "react"
+import { io } from 'socket.io-client'
 
 export default function CourseService({id, update, status, children}) {
+
+    const socket = io(import.meta.env.VITE_API_URL)
+
+    
+
+    useEffect(() => {
+    
+        socket.on('started_ta_scrape', (data) => {
+            console.log('TA scraping started for course', data.course)
+        })
+
+        socket.on('scrape_done', (data) => {
+            console.log('Scraping complete for course:', data.course);
+        // You can update state, notify user, etc.
+        });
+
+        socket.on('scrape_failed', (data) => {
+            console.error('Scraping failed for:', data.course);
+        });
+
+    return () => {
+      socket.off('started_ta_scrape');
+      socket.off('scrape_done');
+      socket.off('scrape_failed');
+    };
+  }, []);
 
     function handleDelete(e) {
         e.preventDefault()
