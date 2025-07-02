@@ -21,7 +21,7 @@ export default function Courses() {
     // Generate CourseService components from courses array
     const CourseServiceList = courses.map(course => 
     <li key={course[0]}>
-        <CourseService id={course[0]} update={fetchCourses} status={course[3]} >
+        <CourseService id={course[0]} update={fetchCourses} >
             <h2>{course[2]}</h2>
             <h3>{course[1]}</h3>
         </CourseService>

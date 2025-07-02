@@ -183,8 +183,13 @@ def scrape_tas():
 
     return jsonify({"message": "Scraping started"}), 202
     
-@app.route('/api/status/<course_id>', methods=['GET'])
-def get_scrape_status(course_id):
+@app.route('/api/status', methods=['POST', 'OPTIONS'])
+def get_scrape_status():
+    if request.method == 'OPTIONS':
+        # Allow the preflight request
+        return '', 200
+    data = request.get_json()
+    course_id = data.get('course_id')
     status = driver.get_status_by_id(course_id)
     if status:
         return jsonify({'status': status})

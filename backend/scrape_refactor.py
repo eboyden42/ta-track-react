@@ -15,7 +15,7 @@ def get_tas(course_pk: int, user_id: int, socketio):
     gradescope_password = encrypt.decrypt_data(gs_user['gradescope_password_hash'])
 
     try:
-        driver.update_status_by_id(course_id=course_pk, status="fetching TA data")
+        driver.update_status_by_id(course_id=course_pk, status="started_ta_scrape")
         socketio.emit('started_ta_scrape', {'course': gradescope_id})
         
         options = Options()
@@ -51,10 +51,10 @@ def get_tas(course_pk: int, user_id: int, socketio):
                 name = name_element.text.strip()
                 driver.add_ta(course_id=course_pk, name=name)
 
-        driver.update_status_by_id(course_id=course_pk, status="finished")
+        driver.update_status_by_id(course_id=course_pk, status="scrape_done")
         socketio.emit('scrape_done', {'course': gradescope_id})
     except:
-        driver.update_status_by_id(course_id=course_pk, status="failed to fetch TAs")
+        driver.update_status_by_id(course_id=course_pk, status="scrape_failed")
         socketio.emit('scrape_failed', {'course': gradescope_id})
 
 

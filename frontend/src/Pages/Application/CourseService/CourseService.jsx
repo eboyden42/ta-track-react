@@ -1,27 +1,48 @@
 import "./CourseService.scss"
 import { MdDeleteForever } from "react-icons/md";
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { io } from 'socket.io-client'
 
-export default function CourseService({id, update, status, children}) {
+export default function CourseService({id, update, children}) {
 
     const socket = io(import.meta.env.VITE_API_URL)
+    const [status, setStatus] = useState("")
 
-    
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_API_URL}/api/status`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({course_id: id})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status) {
+                setStatus(data.status)
+            } else {
+                throw new Error("Failed fetching status");
+            }
+        })
+        .catch(err => console.log(err))
+    }, [])
 
     useEffect(() => {
     
         socket.on('started_ta_scrape', (data) => {
             console.log('TA scraping started for course', data.course)
+            setStatus("Scraping TA Data...")
         })
 
         socket.on('scrape_done', (data) => {
             console.log('Scraping complete for course:', data.course);
-        // You can update state, notify user, etc.
+            setStatus("Finished Scraping TA Data...")
         });
 
         socket.on('scrape_failed', (data) => {
             console.error('Scraping failed for:', data.course);
+            setStatus("Error Scraping TA Data: Ensure correct gradescope course ID")
         });
 
     return () => {
@@ -65,6 +86,17 @@ export default function CourseService({id, update, status, children}) {
         .then(data => data.json())
         .then(data => console.log(data.message))
         .catch(err => console.log(err))
+    }
+
+    function handleStatusUpdates(status) {
+        switch (status) {
+            case 'started_ta_scrape':
+                return 'Scraping TA Data...'
+            case 'scrape_done':
+                return 'Finished Scraping TA Data...'
+            case 'scrape_failed':
+                return "Error Scraping TA Data: Ensure correct gradescope course ID"
+        }
     }
 
     const statusComponent = <h3>Status: {status}</h3>
