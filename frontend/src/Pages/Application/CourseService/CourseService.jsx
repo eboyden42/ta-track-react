@@ -20,7 +20,7 @@ export default function CourseService({id, update, children}) {
         .then(res => res.json())
         .then(data => {
             if (data.status) {
-                setStatus(data.status)
+                setStatus(handleStatusUpdates(data.status))
             } else {
                 throw new Error("Failed fetching status");
             }
@@ -31,18 +31,16 @@ export default function CourseService({id, update, children}) {
     useEffect(() => {
     
         socket.on('started_ta_scrape', (data) => {
-            console.log('TA scraping started for course', data.course)
-            setStatus("Scraping TA Data...")
+            setStatus(handleStatusUpdates(data))
         })
 
         socket.on('scrape_done', (data) => {
-            console.log('Scraping complete for course:', data.course);
-            setStatus("Finished Scraping TA Data...")
+            setStatus(handleStatusUpdates(data))
         });
 
         socket.on('scrape_failed', (data) => {
             console.error('Scraping failed for:', data.course);
-            setStatus("Error Scraping TA Data: Ensure correct gradescope course ID")
+            setStatus(handleStatusUpdates(data))
         });
 
     return () => {
@@ -90,12 +88,15 @@ export default function CourseService({id, update, children}) {
 
     function handleStatusUpdates(status) {
         switch (status) {
+            case 'scrape_not_started':
+                return 'Pending start'
             case 'started_ta_scrape':
-                return 'Scraping TA Data...'
+                return 'Scraping TA data'
             case 'scrape_done':
-                return 'Finished Scraping TA Data...'
+                return 'Finished scraping TA data'
             case 'scrape_failed':
-                return "Error Scraping TA Data: Ensure correct gradescope course ID"
+                return "Error scraping TA data: Ensure correct gradescope course ID"
+
         }
     }
 

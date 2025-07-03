@@ -95,7 +95,7 @@ def add_course(username: str, course_id: int, course_name: str):
     )
     cursor.execute(
         "INSERT INTO user_courses (user_id, course_id, status) VALUES ((SELECT id FROM users WHERE username = %s), (SELECT id FROM courses WHERE gradescope_id = %s), (%s))",
-        (username, course_id, "pending")
+        (username, course_id, "scrape_not_started")
     )
     conn.commit()
 
