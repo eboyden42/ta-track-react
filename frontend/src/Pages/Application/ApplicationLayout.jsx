@@ -33,7 +33,10 @@ export default function ApplicationLayout() {
             setUser(data.user)
             // navigate("/user")
         })
-        .catch(() => console.log("User not logged in"))
+        .catch(() => {
+            console.log("User not logged in")
+            navigate("/")
+        })
     }, [])
     
     // Toggle profile dropdown menu
