@@ -1,10 +1,8 @@
 import { UserContext } from "../../../App"
-import { useContext, useState, useEffect, createContext } from "react"
+import { useContext, useState, useEffect, act } from "react"
 import { NavLink, Outlet } from "react-router-dom"
 import { IoClose } from "react-icons/io5";
 import "./Dashboard.scss"
-
-const OutletContex = createContext()
 
 export default function Dashboard() {
 
@@ -13,6 +11,7 @@ export default function Dashboard() {
 
     // State to manage course list
     const [courses, setCourses] = useState([])
+    const [activeCourse, setActiveCourse] = useState(0)
 
     // State to manage course addition form
     const [showForm, setShowForm] = useState(false)
@@ -117,7 +116,7 @@ export default function Dashboard() {
         }
     }
 
-    const courseItems = courses.map( course => {
+    const courseList = courses.map( (course, index) => {
 
         const course_pk = course[0]
         const gradescope_id = course[1]
@@ -126,7 +125,12 @@ export default function Dashboard() {
 
         return (
             <div className="course-link-container" key={course_pk}>
-                <NavLink to={`/user/dashboard/${course_pk}`} className={({isActive}) => isActive ? "active-tab" : null}>
+                <NavLink to={`/user/dashboard/${course_pk}`} className={({isActive}) => {
+                    if (isActive) {
+                        setActiveCourse(index)
+                    }
+                    return isActive ? "active-tab" : null
+                    }}>
                     {title}
                 </NavLink>
             </div>
@@ -137,7 +141,7 @@ export default function Dashboard() {
         <main className="dashboard-page">
             <div className="course-bar">
                 <button className="add-course-btn" onClick={handleAddCourse}>+ Add Course</button>
-                {courseItems}
+                {courseList}
             </div>
             {
                 showForm ? <>
@@ -177,9 +181,7 @@ export default function Dashboard() {
                 </div>
                 </> : null
             }
-        <OutletContex.Provider value={{}} >
-            <Outlet />
-        </OutletContex.Provider>
+            <Outlet context={{course: courses[activeCourse], update: fetchCourses}} />
         </main>
     )
 }

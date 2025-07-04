@@ -9,7 +9,7 @@ $aqua-blue: #0cc0df;
     .course-bar {
         display: flex;
         flex-direction: column;
-        width: auto;
+        width: 20vw;
         height: 100vh;
         box-shadow: 4px 0 12px -2px rgba(0, 0, 0, 0.15);
 
@@ -49,6 +49,7 @@ $aqua-blue: #0cc0df;
                 width: 100%;
                 height: 100%;
                 margin-bottom: 0;
+                text-align: center;
             }
 
             &:hover {
