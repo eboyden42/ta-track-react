@@ -31,6 +31,7 @@ export default function Dashboard() {
     // Function to fetch courses from the server, updates the courses state
     // and handles errors if any occur during the fetch operation.
     function fetchCourses() {
+        console.log("inside of the fetch function")
         fetch(`${import.meta.env.VITE_API_URL}/api/get_courses`, {
             method: 'POST',
             credentials: 'include',
@@ -44,6 +45,7 @@ export default function Dashboard() {
                 console.log("Courses fetched successfully:", data.courses)
                 setCourses(data.courses)
             } else {
+                setCourses([])
                 console.log("No courses found for this user.")
             }
         })

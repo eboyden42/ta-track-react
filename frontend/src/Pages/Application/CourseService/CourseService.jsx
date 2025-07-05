@@ -39,16 +39,16 @@ export default function CourseService({id, update, children}) {
         });
 
         socket.on('scrape_failed', (data) => {
-            console.error('Scraping failed for:', data.course);
+            console.error('Scraping failed for:', data.course)
             setStatus(handleStatusUpdates(data))
         });
 
     return () => {
-      socket.off('started_ta_scrape');
-      socket.off('scrape_done');
-      socket.off('scrape_failed');
-    };
-  }, []);
+      socket.off('started_ta_scrape')
+      socket.off('scrape_done')
+      socket.off('scrape_failed')
+    }
+  }, [])
 
     function handleDelete(e) {
         e.preventDefault()
