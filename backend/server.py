@@ -150,7 +150,7 @@ def get_courses():
     if courses:
         return jsonify({'courses': courses})
     else:
-        return jsonify({'message': 'No courses found'}), 404
+        return jsonify({'courses': []}), 200
 
 @app.route('/api/add_course', methods=['POST'])
 def add_course():   

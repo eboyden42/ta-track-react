@@ -31,7 +31,6 @@ export default function Dashboard() {
     // Function to fetch courses from the server, updates the courses state
     // and handles errors if any occur during the fetch operation.
     function fetchCourses() {
-        console.log("inside of the fetch function")
         fetch(`${import.meta.env.VITE_API_URL}/api/get_courses`, {
             method: 'POST',
             credentials: 'include',
@@ -86,7 +85,7 @@ export default function Dashboard() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            console.log(data.message)
             setCourseID("")
             setCourseTitle("")
             setShowForm(false)
@@ -127,12 +126,11 @@ export default function Dashboard() {
 
         return (
             <div className="course-link-container" key={course_pk}>
-                <NavLink to={`/user/dashboard/${course_pk}`} className={({isActive}) => {
-                    if (isActive) {
-                        setActiveCourse(index)
-                    }
-                    return isActive ? "active-tab" : null
-                    }}>
+                <NavLink 
+                to={`/user/dashboard/${course_pk}`} 
+                className={({isActive}) => isActive ? "active-tab" : null }
+                onClick={() => setActiveCourse(index)}
+                 >
                     {title}
                 </NavLink>
             </div>

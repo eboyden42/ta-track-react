@@ -109,7 +109,6 @@ def delete_course(id: int):
     conn.commit()
 
 def get_courses(username: str):
-    cursor.fetchall()
     cursor.execute(
         "SELECT courses.id, courses.gradescope_id, courses.name, user_courses.status FROM courses JOIN user_courses ON courses.id = user_courses.course_id JOIN users ON user_courses.user_id = users.id WHERE users.username = %s",
         (username,)

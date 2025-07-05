@@ -76,7 +76,6 @@ export default function CourseCard() {
             const message =  data.message
             console.log(message)
             if (message === "Course deleted successfully") {
-                console.log("updating")
                 // upadate course list
                 update()
                 navigate("/user/dashboard")
