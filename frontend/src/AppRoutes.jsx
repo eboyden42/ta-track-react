@@ -6,7 +6,6 @@ import About from "./Pages/About/About"
 import Home from "./Pages/Home/Home"
 import ApplicationLayout from "./Pages/Application/ApplicationLayout"
 import Dashboard from "./Pages/Application/Dashboard/Dashboard"
-import Courses from "./Pages/Application/Courses/Courses"
 import Info from "./Pages/Application/Info/Info"
 import CourseCard from "./Pages/Application/CourseCard/CourseCard"
 
@@ -25,7 +24,6 @@ export default function AppRoutes() {
                     <Route path="/user/dashboard" element={<Dashboard />}>
                         <Route path="/user/dashboard/:id" element={<CourseCard />}/>
                     </Route>
-                    <Route path="/user/courses" element={<Courses />} />
                     <Route path="/user/info" element={<Info />} />
                 </Route>
             </Routes>

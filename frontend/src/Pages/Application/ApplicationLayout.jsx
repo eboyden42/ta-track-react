@@ -80,8 +80,8 @@ export default function ApplicationLayout() {
                     <img src={TAGuideLogo} alt="TAGuide Logo" className="logo"/>
                 </NavLink>
                 <NavLink to="/user">Dashboard</NavLink>
-                <NavLink to="/user/courses">Courses</NavLink>
-                <NavLink to="/user/info">Info</NavLink>
+                <NavLink to="/user/info">Configuration</NavLink>
+                <NavLink to="/user/faqs">FAQs</NavLink>
             </div>
             <div className="right-tabs">
                 {/* Profile section with dropdown */}
