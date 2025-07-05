@@ -29,7 +29,7 @@ export default function Dashboard() {
     }, [user])
 
     // Function to fetch courses from the server, updates the courses state
-    // and handles errors if any occur during the fetch operation.
+    // and handles errors if any occur during the fetch operation
     function fetchCourses() {
         fetch(`${import.meta.env.VITE_API_URL}/api/get_courses`, {
             method: 'POST',
@@ -59,7 +59,7 @@ export default function Dashboard() {
         setShowForm(prev => !prev)
     }
 
-     // Function to handle form submission, validates input and sends a POST request to add a new course to postgres.
+     // Function to handle form submission, validates input and sends a POST request to add a new course to postgres
     function handleSubmit(e) {
         e.preventDefault()
         if (!isValidID) {
@@ -99,7 +99,7 @@ export default function Dashboard() {
         setCourseTitle(e.target.value)
     }
 
-    // Function to handle course ID input change, validates the input and updates the state.
+    // Function to handle course ID input change, validates the input and updates the state
     function handleIDChange(e) {
         const id = e.target.value
         setCourseID(id)
