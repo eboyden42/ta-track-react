@@ -35,7 +35,6 @@ export default function LoginPage() {
 
   // Handle user state change
   function handleUsernameChange(e) {
-    console.log("Username changed:", e.target.value, e.target.value.length)
     setUsername(e.target.value)
     if (!isLogin && e.target.value.length > 0) {
       // check if username already exists

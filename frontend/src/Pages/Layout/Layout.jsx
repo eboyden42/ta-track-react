@@ -14,27 +14,11 @@ export default function Layout() {
     
       useEffect(() => {
       // if user is logged in simply navigate to the user page
+      console.log(user)
       if (user) {
         navigate("/user")
       }
-    
-      // get user info with session cookies if possible
-      fetch(`${import.meta.env.VITE_API_URL}/api/session_check`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: "include",
-        })
-        .then(res => {
-          if (!res.ok) throw new Error("Not logged in")
-          return res.json()
-        })
-        .then(data => {
-          console.log("Session persisted...")
-          setUser(data.user)
-          navigate("/user")
-        })
-        .catch((err) => console.log("User not logged in: ", err))
-    }, [])
+    }, [user])
 
     return (
         <>
