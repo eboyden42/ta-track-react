@@ -196,6 +196,18 @@ def get_scrape_status():
     return jsonify({'error': 'Course not found'}), 404
 # I want to change this later
 
+@app.route('/api/udpate_title', methods=['POST'])
+def update_title():
+    data = request.get_json()
+    course_pk = data.get('course_pk')
+    new_title = data.get('new_title')
+    try:
+        driver.update_course_title_by_id(course_pk, new_title)
+        return jsonify({'message': 'Course updated successfully'})
+    except:
+        return jsonify({'message': 'Course not found'}), 404
+        
+
 @app.after_request
 def add_csp(response):
     response.headers['Content-Security-Policy'] = (
