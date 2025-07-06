@@ -203,7 +203,19 @@ def update_title():
     new_title = data.get('new_title')
     try:
         driver.update_course_title_by_id(course_pk, new_title)
-        return jsonify({'message': 'Course updated successfully'})
+        return jsonify({'message': 'Course title updated successfully'})
+    except:
+        return jsonify({'message': 'Course not found'}), 404
+    
+@app.route('/api/update_gs_id', methods=['POST'])
+def update_gs_id():
+    data = request.get_json()
+    course_pk = data.get('course_pk')
+    new_gs_id = data.get('new_gs_id')
+
+    try:
+        driver.update_gs_id_by_id(course_pk, new_gs_id)
+        return jsonify({'message': 'Gradescope id updated successfully'})
     except:
         return jsonify({'message': 'Course not found'}), 404
         
