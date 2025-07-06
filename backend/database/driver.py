@@ -132,6 +132,10 @@ def update_status_by_id(course_id: int, status: str):
     cursor.execute("UPDATE user_courses SET status = %s WHERE course_id = %s", (status, course_id))
     conn.commit()
 
+def update_course_title_by_id(id: int, title: str):
+    cursor.execute("UPDATE courses SET title = %s WHERE id = %s", (title, id))
+    conn.commit()
+
 def close():
     cursor.close()
     conn.close()
