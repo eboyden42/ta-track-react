@@ -136,6 +136,10 @@ def update_course_title_by_id(id: int, title: str):
     cursor.execute("UPDATE courses SET title = %s WHERE id = %s", (title, id))
     conn.commit()
 
+def update_gs_id_by_id(id: int, gs_id: int):
+    cursor.execute("UPDATE courses SET gradescope_id = %s WHERE id = %s", (gs_id, id))
+    conn.commit()
+
 def close():
     cursor.close()
     conn.close()
