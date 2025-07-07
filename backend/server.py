@@ -196,23 +196,28 @@ def get_scrape_status():
     return jsonify({'error': 'Course not found'}), 404
 # I want to change this later
 
-@app.route('/api/udpate_title', methods=['POST'])
+@app.route('/api/update_title', methods=['POST', 'OPTIONS'])
 def update_title():
+    if request.method == 'OPTIONS':
+        # Allow the preflight request
+        return '', 200
     data = request.get_json()
     course_pk = data.get('course_pk')
     new_title = data.get('new_title')
     try:
         driver.update_course_title_by_id(course_pk, new_title)
         return jsonify({'message': 'Course title updated successfully'})
-    except:
-        return jsonify({'message': 'Course not found'}), 404
+    except Exception as e:
+        return jsonify({'message': str(e)}), 404
     
-@app.route('/api/update_gs_id', methods=['POST'])
+@app.route('/api/update_gs_id', methods=['POST', 'OPTIONS'])
 def update_gs_id():
+    if request.method == 'OPTIONS':
+        # Allow the preflight request
+        return '', 200
     data = request.get_json()
     course_pk = data.get('course_pk')
     new_gs_id = data.get('new_gs_id')
-
     try:
         driver.update_gs_id_by_id(course_pk, new_gs_id)
         return jsonify({'message': 'Gradescope id updated successfully'})

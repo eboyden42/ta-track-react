@@ -129,16 +129,55 @@ export default function CourseCard() {
     }
 
     function handleTitleUpdates(e) {
+        e.preventDefault()
         console.log("Updating title")
+        fetch(`${import.meta.env.VITE_API_URL}/api/update_title`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({course_pk, new_title: newCourseTitle})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) {
+                console.log(data.message)
+                setShowPopup(false)
+                setShowUpdateForm(false)
+                update()
+            }
+        })
+        .catch(err => console.error(err))
     }
 
     function handleIdUpdates(e) {
+        e.preventDefault()
         console.log("Updating id")
+        fetch(`${import.meta.env.VITE_API_URL}/api/update_gs_id`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({course_pk, new_gs_id: newCourseId})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) {
+                console.log(data.message)
+                setShowPopup(false)
+                setShowUpdateForm(false)
+                update()
+            }
+        })
+        .catch(err => console.error(err))
     }
     
 
     return (
         <main className="course-card-page">
+        {/* Header component */}
         <div className="header">
             <div className="left-items">
                 <h3 className="title">{title}</h3>
@@ -147,10 +186,12 @@ export default function CourseCard() {
                 <button className="start-btn">Start Scraping Job</button>
             </div>
             <div className="right-items">
+                {/* Settings button */}
                 <button className="settings-btn" onClick={() => setShowPopup(prev => !prev)}>
                     <IoSettings />
                 </button>
             </div>
+            {/* Settings popup */}
             { showPopup ?
             <div className="settings-popup">
                 <button onClick={() => {
@@ -166,13 +207,19 @@ export default function CourseCard() {
                 <button className="delete" onClick={handleDelete}>Delete course</button>
             </div> : null}
         </div>
+
+        {/* Main content div */}
         <div className="content-container">
+
+            {/* Status showing status updates */}
             <div className="status-container">
                 <div className="status">
                     <h2>{statusMessage}</h2>
                     { isLoading ? <div className="loader"></div> : null}
                 </div>
             </div>
+
+            {/* Popup form for updating title and gradescope id */}
             {showUpdateForm ? 
             <div className="change-data-popup">
                 <div className="change-data-modal">
