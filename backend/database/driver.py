@@ -156,9 +156,6 @@ def delete_course(id: int):
     conn.commit()
 
 def get_courses(username: str):
-    # add a check for if the user has no courses
-    cursor.execute("SELECT id FROM user_courses WHERE username = %s", (username,))
-
     try:
         cursor.execute(
             "SELECT courses.id, courses.gradescope_id, user_courses.name, user_courses.status FROM courses JOIN user_courses ON courses.id = user_courses.course_id JOIN users ON user_courses.user_id = users.id WHERE users.username = %s",

@@ -55,12 +55,17 @@ export default function CourseCard() {
 
         socket.on('scrape_done', (data) => {
             setStatusMessage(handleStatusUpdates('scrape_done'))
-        });
+        })
 
         socket.on('scrape_failed', (data) => {
-            console.error('Scraping failed for:', data.course)
-            setStatusMessage(handleStatusUpdates('scrape_failed'))
-        });
+            console.error('Scraping failed for:', data.course, 'Error:', data.error)
+            setIsLoading(false)
+            setStatusMessage(data.error)
+        })
+
+        socket.on('display_message', (data) => {
+            console.log('Message from server:', data.message)
+        })
 
     return () => {
       socket.off('started_ta_scrape')
@@ -115,6 +120,7 @@ export default function CourseCard() {
     function handleStartScraping(e) {
         e.preventDefault()
         setIsLoading(true)
+        console.log(`Starting scraping for ${course_pk}`)
         fetch(`${import.meta.env.VITE_API_URL}/api/scrape_tas`, {
             method: 'POST',
             headers: {
