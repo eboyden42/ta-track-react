@@ -53,8 +53,8 @@ export default function CourseCard() {
             setStatusMessage(handleStatusUpdates('started_ta_scrape'))
         })
 
-        socket.on('scrape_done', (data) => {
-            setStatusMessage(handleStatusUpdates('scrape_done'))
+        socket.on('ta_scrape_done', (data) => {
+            setStatusMessage(handleStatusUpdates('ta_scrape_done'))
         })
 
         socket.on('scrape_failed', (data) => {
@@ -69,7 +69,7 @@ export default function CourseCard() {
 
     return () => {
       socket.off('started_ta_scrape')
-      socket.off('scrape_done')
+      socket.off('ta_scrape_done')
       socket.off('scrape_failed')
     }
   }, [])
@@ -105,8 +105,7 @@ export default function CourseCard() {
                 return 'Pending start'
             case 'started_ta_scrape':
                 return 'Scraping TA data'
-            case 'scrape_done':
-                setIsLoading(false) 
+            case 'ta_scrape_done':
                 return 'Finished scraping TA data'
             case 'scrape_failed':
                 setIsLoading(false) 
@@ -121,7 +120,7 @@ export default function CourseCard() {
         e.preventDefault()
         setIsLoading(true)
         console.log(`Starting scraping for ${course_pk}`)
-        fetch(`${import.meta.env.VITE_API_URL}/api/scrape_tas`, {
+        fetch(`${import.meta.env.VITE_API_URL}/api/initial_scrape_task`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

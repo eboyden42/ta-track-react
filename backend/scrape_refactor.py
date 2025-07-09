@@ -6,7 +6,7 @@ from database.encryption import encrypt
 from selenium.webdriver.chrome.options import Options
 import requests
 
-def get_tas(course_pk: int, user_id: int, socketio):
+def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
     config = get_config_info(course_pk, user_id, socketio)
 
@@ -42,8 +42,8 @@ def get_tas(course_pk: int, user_id: int, socketio):
     password_field.send_keys(Keys.RETURN)
 
     # check if login credentials are correct
-    
-    sendMessage(socketio, course_pk, str(web_driver.current_url))
+
+    sendMessage(socketio, str(web_driver.current_url))
 
     if str(web_driver.current_url) == 'https://www.gradescope.com/login':
         error_msg = "Login failed, please check your Gradescope credentials in Configuration"
@@ -57,7 +57,7 @@ def get_tas(course_pk: int, user_id: int, socketio):
     # navigate to the TA page for the course
     web_driver.get(f'https://www.gradescope.com/courses/{gradescope_id}/memberships?role=2')
 
-    sendMessage(socketio, course_pk, f'https://www.gradescope.com/courses/{gradescope_id}/memberships?role=2')
+    sendMessage(socketio, f'https://www.gradescope.com/courses/{gradescope_id}/memberships?role=2')
 
     page_status = web_driver.find_element(By.ID, "dataTable-status")
 
@@ -91,9 +91,9 @@ def get_tas(course_pk: int, user_id: int, socketio):
     # __________________________ End of TA Scraping __________________________
 
 
-
-    driver.update_status_by_id(course_id=course_pk, status="scrape_done")
-    socketio.emit('scrape_done', {'course': gradescope_id})
+    driver.update_status_by_id(course_id=course_pk, status="ta_scrape_done")
+    sendMessage(socketio, f"Finished scraping TAs for course {gradescope_id}")   
+    socketio.emit('ta_scrape_done', {'course': gradescope_id})
 
     # Close the WebDriver
     web_driver.quit()   
@@ -163,7 +163,7 @@ def displayErrorMessage(socketio, course_pk, error_msg):
     """
     socketio.emit('scrape_failed', {'course': course_pk, 'error': error_msg})
 
-def sendMessage(socketio, course_pk, message):
+def sendMessage(socketio, message):
     """
     Helper function to emit a message to the client.
     """

@@ -10,13 +10,17 @@ import os
 from database.encryption.hashing import hash_password
 from database.encryption.encrypt import encrypt_data, decrypt_data
 from database import driver
-from scrape_refactor import get_tas
+from scrape_refactor import initial_scrape_task
+from concurrent.futures import ThreadPoolExecutor
+
 
 load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("COOKIES_KEY")
 CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*")
+thread_pool = ThreadPoolExecutor(max_workers=10)
+
 
 @app.route('/api/data')
 def get_data():
@@ -174,13 +178,15 @@ def delete_course():
     except Exception as e:
         return jsonify({'message': f'Error deleting course: {str(e)}'}), 500
 
-@app.route('/api/scrape_tas', methods=['POST'])
-def scrape_tas():
+@app.route('/api/initial_scrape_task', methods=['POST'])
+def start_scrape_task():
     data = request.get_json()
     course_id = data.get("id")
     user_id = session.get('user_id')
 
-    Thread(target=get_tas, args=(course_id, user_id, socketio)).start()
+    # use thread pool to run the initial scrape task in a separate thread
+
+    thread_pool.submit(initial_scrape_task, course_id, user_id, socketio)
 
     return jsonify({"message": "Scraping started"}), 202
     
