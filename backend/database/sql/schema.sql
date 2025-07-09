@@ -17,6 +17,7 @@ CREATE TABLE user_courses (
     course_id INTEGER REFERENCES courses(id),
     status TEXT DEFAULT 'pending', -- 'pending', 'active', 'inactive'
     last_scraped TIMESTAMP,
+    name TEXT,
     PRIMARY KEY (user_id, course_id)
 );
 

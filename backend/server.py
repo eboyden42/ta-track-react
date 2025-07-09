@@ -155,13 +155,14 @@ def get_courses():
 @app.route('/api/add_course', methods=['POST'])
 def add_course():   
     data = request.get_json()
-    username = data.get('username')
-    course_id = data.get('course_id')
+    user_id = session.get('user_id')
+    gradescope_id = data.get('gradescope_id')
     course_name = data.get('course_name')
-
-    driver.add_course(username=username, course_id=course_id, course_name=course_name)
-
-    return jsonify({'message': 'Course added successfully'})
+    try:
+        driver.add_course(user_id=user_id, gradescope_id=gradescope_id, course_name=course_name)
+        return jsonify({'message': 'Course added successfully'})
+    except Exception as e:
+        return jsonify({'message': f'Error adding course: {str(e)}'}), 500
 
 @app.route('/api/delete_course', methods=['POST'])
 def delete_course():

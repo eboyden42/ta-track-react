@@ -42,6 +42,7 @@ export default function CourseCard() {
 
     // useEffect for updating status after inital load
     useEffect(() => {
+        console.log(status)
         setStatusMessage(handleStatusUpdates(status))
     }, [status])
 
@@ -49,16 +50,16 @@ export default function CourseCard() {
     useEffect(() => {
     
         socket.on('started_ta_scrape', (data) => {
-            setStatusMessage(handleStatusUpdates(data))
+            setStatusMessage(handleStatusUpdates('started_ta_scrape'))
         })
 
         socket.on('scrape_done', (data) => {
-            setStatusMessage(handleStatusUpdates(data))
+            setStatusMessage(handleStatusUpdates('scrape_done'))
         });
 
         socket.on('scrape_failed', (data) => {
             console.error('Scraping failed for:', data.course)
-            setStatusMessage(handleStatusUpdates(data))
+            setStatusMessage(handleStatusUpdates('scrape_failed'))
         });
 
     return () => {
@@ -68,7 +69,7 @@ export default function CourseCard() {
     }
   }, [])
 
-    // deletes course from databse, updates course list, navigates back to dashboard
+    // deletes course from database, updates course list, navigates back to dashboard
     function handleDelete(e) {
         e.preventDefault()
         fetch(`${import.meta.env.VITE_API_URL}/api/delete_course`, {
@@ -108,6 +109,25 @@ export default function CourseCard() {
             default:
                 return 'Loading course data'
         }
+    }
+
+    // Handles starting up inital ta scraping job
+    function handleStartScraping(e) {
+        e.preventDefault()
+        setIsLoading(true)
+        fetch(`${import.meta.env.VITE_API_URL}/api/scrape_tas`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({id: course_pk})
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data.message)
+        })
+        .catch(err => console.error(err))
     }
 
     // Function to handle course ID input change, validates the input and updates the state
@@ -183,7 +203,7 @@ export default function CourseCard() {
                 <h3 className="title">{title}</h3>
                 <GoDotFill />
                 <h3 className="id">{gradescope_id}</h3>
-                <button className="start-btn">Start Scraping Job</button>
+                <button className="start-btn" onClick={handleStartScraping}>Start Scraping Job</button>
             </div>
             <div className="right-items">
                 {/* Settings button */}
@@ -223,7 +243,12 @@ export default function CourseCard() {
             {showUpdateForm ? 
             <div className="change-data-popup">
                 <div className="change-data-modal">
-                     <button className="close-btn" onClick={() => setShowUpdateForm(false)}><IoClose /></button>
+                     <button 
+                        className="close-btn" 
+                        onClick={() => setShowUpdateForm(false)}
+                    >
+                        <IoClose />
+                    </button>
                     {formType === "title" ? "Enter your new course title:" : 
                     formType === "id" ? "Enter your new gradescope id:" : null }
                     

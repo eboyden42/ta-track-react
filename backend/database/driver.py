@@ -1,20 +1,45 @@
 import psycopg2
 import os
 from dotenv import load_dotenv
-from .encryption import hashing, encrypt
+from database.encryption import hashing, encrypt
 
 load_dotenv()
 
-conn = psycopg2.connect(
-    host=os.environ.get("HOST"), 
-    dbname=os.environ.get("NAME"), 
-    user=os.environ.get("DB_USER"), 
-    password=os.environ.get("PASSWORD")
-)
+def get_db_connection():
+    try:
+        return psycopg2.connect(
+            host=os.environ.get("HOST"), 
+            dbname=os.environ.get("NAME"), 
+            user=os.environ.get("DB_USER"), 
+            password=os.environ.get("PASSWORD")
+        )
+    except Exception as e:
+        print(f"Error connecting to database: {e}")
+        raise e
+
+def reset_connection():
+    global conn, cursor
+    try:
+        if cursor:
+            cursor.close()
+        if conn:
+            if conn.closed == 0:  # if connection is still open
+                conn.rollback()  # rollback any pending transaction
+                conn.close()
+        conn = get_db_connection()
+        cursor = conn.cursor()
+    except Exception as e:
+        print(f"Error resetting connection: {e}")
+        raise e
+
+# Initialize connection and cursor
+conn = get_db_connection()
 cursor = conn.cursor()
 
 def create_tables():
-    with open("./sql/schema.sql", "r") as f:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    schema_path = os.path.join(base_dir, "sql", "schema.sql")
+    with open(schema_path, "r") as f:
         cursor.execute(f.read())
     conn.commit()
 
@@ -88,19 +113,41 @@ def add_user(username: str, password_hash: str):
     cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
     conn.commit()
 
-def add_course(username: str, course_id: int, course_name: str):
-    cursor.execute(
-        "INSERT INTO courses (gradescope_id, name) VALUES (%s, %s)",
-        (course_id, course_name)
-    )
-    cursor.execute(
-        "INSERT INTO user_courses (user_id, course_id, status) VALUES ((SELECT id FROM users WHERE username = %s), (SELECT id FROM courses WHERE gradescope_id = %s), (%s))",
-        (username, course_id, "scrape_not_started")
-    )
-    conn.commit()
+def add_course(user_id: int, gradescope_id: int, course_name: str):
+    try:
+        course_pk = get_id_from_gs_id_or_create(gradescope_id)
+
+        cursor.execute(
+            "INSERT INTO user_courses (user_id, course_id, status, name) VALUES (%s, %s, %s, %s)",
+            (user_id, course_pk, "scrape_not_started", course_name)
+        )
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
+
+# given a gradescope id, either returns the existing course with that id, or creates a new course, and returns that id
+def get_id_from_gs_id_or_create(gradescope_id: int):
+    cursor.execute("SELECT id FROM courses WHERE gradescope_id = %s", (gradescope_id,))
+    existing_course = cursor.fetchone()
+
+    if existing_course:
+        # course already exists, return id
+        return existing_course[0]
+    else:
+        # create new course, and return it's id
+        cursor.execute(
+            "INSERT INTO courses (gradescope_id) VALUES (%s)",
+            (gradescope_id,)
+        )
+        conn.commit()
+        cursor.execute("SELECT id FROM courses WHERE gradescope_id = %s", (gradescope_id,))
+        return cursor.fetchone()[0]
 
 def delete_course(id: int):
     try:
+        cursor.execute("DELETE FROM tas WHERE course_id = %s", (id,))
         cursor.execute("DELETE FROM user_courses WHERE course_id = %s", (id,))
         cursor.execute("DELETE FROM courses WHERE id = %s", (id,))
     except Exception as e:
@@ -109,11 +156,18 @@ def delete_course(id: int):
     conn.commit()
 
 def get_courses(username: str):
-    cursor.execute(
-        "SELECT courses.id, courses.gradescope_id, courses.name, user_courses.status FROM courses JOIN user_courses ON courses.id = user_courses.course_id JOIN users ON user_courses.user_id = users.id WHERE users.username = %s",
-        (username,)
-    )
-    return cursor.fetchall()
+    # add a check for if the user has no courses
+    cursor.execute("SELECT id FROM user_courses WHERE username = %s", (username,))
+
+    try:
+        cursor.execute(
+            "SELECT courses.id, courses.gradescope_id, user_courses.name, user_courses.status FROM courses JOIN user_courses ON courses.id = user_courses.course_id JOIN users ON user_courses.user_id = users.id WHERE users.username = %s",
+            (username,)
+        )
+        return cursor.fetchall()
+    except Exception as e:
+        conn.rollback()  
+        return None
 
 def get_course_by_id(course_pk: int):
     cursor.execute("SELECT * FROM courses WHERE id = %s", (course_pk,))

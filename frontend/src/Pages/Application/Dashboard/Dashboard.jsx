@@ -78,8 +78,7 @@ export default function Dashboard() {
             },
             credentials: 'include',
             body: JSON.stringify({
-                username: user.username,
-                course_id: courseID,
+                gradescope_id: courseID,
                 course_name: courseTitle,
             }),
         })
@@ -91,7 +90,7 @@ export default function Dashboard() {
             setShowForm(false)
             fetchCourses() // Refresh the course list after adding a new course
         })
-        .catch(error => console.error("Error adding course:", error))
+        .catch(error => console.error("Error adding course:", error.message))
     }
 
     // Handlers for input changes
@@ -164,7 +163,7 @@ export default function Dashboard() {
                         />
                     </label>
                     <label>
-                        Course ID:
+                        Gradescope ID:
                         <input
                             type="number"
                             value={courseID}
