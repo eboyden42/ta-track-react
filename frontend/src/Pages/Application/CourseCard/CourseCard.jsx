@@ -57,6 +57,11 @@ export default function CourseCard() {
             setStatusMessage(handleStatusUpdates('ta_scrape_done'))
         })
 
+        socket.on('worksheet_links_scraped', (data) => {
+            console.log('Worksheet links scraped for:', data.course, 'Links:', data.links)
+            setIsLoading(false)
+            setStatusMessage(handleStatusUpdates('worksheet_links_scraped'))
+        })
         socket.on('scrape_failed', (data) => {
             console.error('Scraping failed for:', data.course, 'Error:', data.error)
             setIsLoading(false)
@@ -105,6 +110,9 @@ export default function CourseCard() {
                 return 'Pending start'
             case 'started_ta_scrape':
                 return 'Scraping TA data'
+            case 'worksheet_links_scraped':
+                setIsLoading(false)
+                return 'Finished scraping worksheet links'
             case 'ta_scrape_done':
                 return 'Finished scraping TA data'
             case 'scrape_failed':

@@ -19,6 +19,10 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
     # --------------------- BEGIN SCRAPING TASK HERE ----------------------
 
+    # udpate driver to reflect that scraping is underway
+    driver.update_status_by_id(course_id=course_pk, status="started_ta_scrape")
+    socketio.emit('started_ta_scrape', {'course': gradescope_id})
+
     # _____________________ Initialize WebDriver ________________________
 
     web_driver = None
@@ -95,10 +99,40 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
     sendMessage(socketio, f"Finished scraping TAs for course {gradescope_id}")   
     socketio.emit('ta_scrape_done', {'course': gradescope_id})
 
+    # ________________________ Get Worksheet Submission Links ________________________
+
+    ws_submission_links = []
+    assignments_link = 'https://www.gradescope.com/courses/' + str(gradescope_id) + '/assignments'
+    
+    web_driver.get(assignments_link)
+
+    rows = web_driver.find_elements(By.CSS_SELECTOR, '.table.table-assignments.with-points tbody tr')
+
+    for row in rows:
+        try:
+            sendMessage(socketio, f"Processing row: {row.text}")
+            # Find the <a> tag inside the row
+            link_element = row.find_element(By.CSS_SELECTOR, ".table--primaryLink a")
+
+            # Extract the href attribute
+            href = link_element.get_attribute("href") + '/grade'
+
+            # Extract the text
+            link_text = link_element.text
+
+            ws_submission_links.append((link_text, href))
+            sendMessage(socketio, f"Found link: {link_text} - {href}")
+        except:
+            sendMessage(socketio, "No link found in this row")
+
+    driver.update_status_by_id(course_id=course_pk, status="worksheet_links_scraped")
+    socketio.emit('worksheet_links_scraped', {'course': gradescope_id, 'links': ws_submission_links})
+
+    # ________________________ End of Worksheet Submission Links ________________________
+
+
     # Close the WebDriver
     web_driver.quit()   
-
-# get_tas(1, 2, None)
 
 def get_config_info(course_pk: int, user_id: int, socketio):
     # get course by the primary key
@@ -143,10 +177,6 @@ def get_config_info(course_pk: int, user_id: int, socketio):
     gradescope_id = course[1]
     gradescope_username = encrypt.decrypt_data(gs_user['gradescope_username'])
     gradescope_password = encrypt.decrypt_data(gs_user['gradescope_password_hash'])
-
-    # udpate driver to reflect that scraping is underway
-    driver.update_status_by_id(course_id=course_pk, status="started_ta_scrape")
-    socketio.emit('started_ta_scrape', {'course': gradescope_id})
 
     return {
         'gradescope_id': gradescope_id,
