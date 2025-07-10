@@ -117,14 +117,15 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
             href = link_element.get_attribute("href") + '/grade'
 
             # Extract the text (name of the assignment)
-            link_text = link_element.text
+            assignment_name = link_element.text
 
             # Extract the percent graded
             percent_graded = row.find_element(By.CLASS_NAME, "progressBar--captionPercent").text
 
-            sendMessage(socketio, f"Found link: {link_text} - {href} with percent graded: {percent_graded}")
+            sendMessage(socketio, f"Found link: {assignment_name} - {href} with percent graded: {percent_graded}")
 
-            ws_submission_links.append((link_text, href, percent_graded))
+            ws_submission_links.append((assignment_name, href, percent_graded))
+            driver.add_assignment(course_pk=course_pk, name=assignment_name, gradescope_id=gradescope_id, percent_graded=percent_graded, ws_link=href)
         except:
             sendMessage(socketio, "No link found in this row")
 

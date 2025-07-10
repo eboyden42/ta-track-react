@@ -149,6 +149,7 @@ def delete_course(id: int):
     try:
         cursor.execute("DELETE FROM tas WHERE course_id = %s", (id,))
         cursor.execute("DELETE FROM user_courses WHERE course_id = %s", (id,))
+        cursor.execute("DELETE FROM assignments WHERE course_id = %s", (id,))
         cursor.execute("DELETE FROM courses WHERE id = %s", (id,))
     except Exception as e:
         conn.rollback()
@@ -189,6 +190,13 @@ def update_course_title_by_id(id: int, title: str):
 
 def update_gs_id_by_id(id: int, gs_id: int):
     cursor.execute("UPDATE courses SET gradescope_id = %s WHERE id = %s", (gs_id, id))
+    conn.commit()
+
+def add_assignment(course_pk: int, name: str, gradescope_id: int, percent_graded: str, ws_link: str):
+    cursor.execute(
+        "INSERT INTO assignments (course_id, gradescope_id,  name, percent_graded, ws_link) VALUES (%s, %s, %s, %s, %s)",
+        (course_pk, gradescope_id, name, percent_graded, ws_link)
+    )
     conn.commit()
 
 def close():
