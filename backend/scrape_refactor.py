@@ -110,18 +110,21 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
     for row in rows:
         try:
-            sendMessage(socketio, f"Processing row: {row.text}")
             # Find the <a> tag inside the row
             link_element = row.find_element(By.CSS_SELECTOR, ".table--primaryLink a")
 
             # Extract the href attribute
             href = link_element.get_attribute("href") + '/grade'
 
-            # Extract the text
+            # Extract the text (name of the assignment)
             link_text = link_element.text
 
-            ws_submission_links.append((link_text, href))
-            sendMessage(socketio, f"Found link: {link_text} - {href}")
+            # Extract the percent graded
+            percent_graded = row.find_element(By.CLASS_NAME, "progressBar--captionPercent").text
+
+            sendMessage(socketio, f"Found link: {link_text} - {href} with percent graded: {percent_graded}")
+
+            ws_submission_links.append((link_text, href, percent_graded))
         except:
             sendMessage(socketio, "No link found in this row")
 

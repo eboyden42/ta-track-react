@@ -25,7 +25,8 @@ CREATE TABLE assignments (
     id SERIAL PRIMARY KEY,
     course_id INTEGER REFERENCES courses(id),
     gradescope_id TEXT NOT NULL,
-    name TEXT
+    name TEXT,
+    percent_graded TEXT
 );
 
 CREATE TABLE questions (
