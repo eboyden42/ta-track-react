@@ -132,9 +132,29 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
     driver.update_status_by_id(course_id=course_pk, status="worksheet_links_scraped")
     socketio.emit('worksheet_links_scraped', {'course': gradescope_id, 'links': ws_submission_links})
 
-    # ________________________ End of Worksheet Submission Links ________________________
+    # ________________________ End of Worksheet Submission Links _____________________________
 
+    # ________________________ Scraping Questions For Each Assignment ________________________
 
+    question_links = []
+
+    for (assignment_name, href, percent_graded) in ws_submission_links:
+        web_driver.get(href)
+
+        rows = web_driver.find_elements(By.CSS_SELECTOR, 'table.gradingDashboard tbody tr')
+
+        for row in rows:
+            try:
+                # Find the <a> tag inside the row
+                link_element = row.find_element(By.CSS_SELECTOR, 'a.gradingDashboard--listAllLink')
+
+                # Extract the href attribute
+                href = link_element.get_attribute("href")
+
+                question_links.append(href)
+                sendMessage(socketio, f"Found question link: {href} for assignment {assignment_name}")
+            except:
+                sendMessage(socketio, f"No link found in this row")
     # Close the WebDriver
     web_driver.quit()   
 
