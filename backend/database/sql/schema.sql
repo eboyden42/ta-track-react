@@ -33,7 +33,8 @@ CREATE TABLE questions (
     id SERIAL PRIMARY KEY,
     assignment_id INTEGER REFERENCES assignments(id),
     name TEXT,
-    number INTEGER
+    number INTEGER,
+    qs_link TEXT
 );
 
 CREATE TABLE tas (

@@ -138,7 +138,14 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
     question_links = []
 
-    for (assignment_name, href, percent_graded) in ws_submission_links:
+    db_ws_links = driver.get_assignments_by_course_id(course_pk)
+
+    sendMessage(socketio, f"These are the assignments found in the database: {db_ws_links}")
+
+    for i in range(len(db_ws_links)):
+        assignment_pk = db_ws_links[i][0]
+        href = db_ws_links[i][5]
+
         web_driver.get(href)
 
         rows = web_driver.find_elements(By.CSS_SELECTOR, 'table.gradingDashboard tbody tr')
@@ -152,9 +159,17 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
                 href = link_element.get_attribute("href")
 
                 question_links.append(href)
+
+                driver.add_question(assignment_id=assignment_pk, question_link=href)
                 sendMessage(socketio, f"Found question link: {href} for assignment {assignment_name}")
             except:
                 sendMessage(socketio, f"No link found in this row")
+    
+    # ________________________ End of Scraping Questions For Each Assignment ________________________
+
+    
+
+
     # Close the WebDriver
     web_driver.quit()   
 

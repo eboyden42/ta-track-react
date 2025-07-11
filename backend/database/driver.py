@@ -149,6 +149,7 @@ def delete_course(id: int):
     try:
         cursor.execute("DELETE FROM tas WHERE course_id = %s", (id,))
         cursor.execute("DELETE FROM user_courses WHERE course_id = %s", (id,))
+        cursor.execute("DELETE FROM questions WHERE assignment_id IN (SELECT id FROM assignments WHERE course_id = %s)", (id,))
         cursor.execute("DELETE FROM assignments WHERE course_id = %s", (id,))
         cursor.execute("DELETE FROM courses WHERE id = %s", (id,))
     except Exception as e:
@@ -196,6 +197,17 @@ def add_assignment(course_pk: int, name: str, gradescope_id: int, percent_graded
     cursor.execute(
         "INSERT INTO assignments (course_id, gradescope_id,  name, percent_graded, ws_link) VALUES (%s, %s, %s, %s, %s)",
         (course_pk, gradescope_id, name, percent_graded, ws_link)
+    )
+    conn.commit()
+
+def get_assignments_by_course_id(course_id: int):
+    cursor.execute("SELECT * FROM assignments WHERE course_id = %s", (course_id,))
+    return cursor.fetchall()
+
+def add_question(assignment_id: int, question_link: str):
+    cursor.execute(
+        "INSERT INTO questions (assignment_id, qs_link) VALUES (%s, %s)",
+        (assignment_id, question_link)
     )
     conn.commit()
 
