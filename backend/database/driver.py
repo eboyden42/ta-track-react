@@ -147,6 +147,7 @@ def get_id_from_gs_id_or_create(gradescope_id: int):
 
 def delete_course(id: int):
     try:
+        cursor.execute("DELETE FROM ta_question_stats WHERE question_id IN (SELECT id FROM questions WHERE assignment_id IN (SELECT id FROM assignments WHERE course_id = %s))", (id,))
         cursor.execute("DELETE FROM tas WHERE course_id = %s", (id,))
         cursor.execute("DELETE FROM user_courses WHERE course_id = %s", (id,))
         cursor.execute("DELETE FROM questions WHERE assignment_id IN (SELECT id FROM assignments WHERE course_id = %s)", (id,))

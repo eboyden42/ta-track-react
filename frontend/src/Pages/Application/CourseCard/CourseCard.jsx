@@ -57,15 +57,35 @@ export default function CourseCard() {
             setStatusMessage(handleStatusUpdates('ta_scrape_done'))
         })
 
+        socket.on('scraping_worksheet_links', (data) => {
+            setStatusMessage(handleStatusUpdates('scraping_worksheet_links'))
+        })
+
         socket.on('worksheet_links_scraped', (data) => {
             console.log('Worksheet links scraped for:', data.course, 'Links:', data.links)
-            setIsLoading(false)
             setStatusMessage(handleStatusUpdates('worksheet_links_scraped'))
         })
+
+        socket.on('scraping_questions', (data) => {
+            setStatusMessage(handleStatusUpdates('scraping_questions'))
+        })
+
+        socket.on('scraping_questions_for_assignment', (data) => {
+            setStatusMessage(handleStatusUpdates('scraping_questions_for_assignment') + `: ${data.assignment_name}`)
+        })
+
         socket.on('scrape_failed', (data) => {
             console.error('Scraping failed for:', data.course, 'Error:', data.error)
             setIsLoading(false)
             setStatusMessage(data.error)
+        })
+
+        socket.on('counting_questions_graded', (data) => {
+            setStatusMessage(handleStatusUpdates('counting_questions_graded') + `: ${data.assignment_name}`)
+        })
+
+        socket.on('scrape_complete', (data) => {
+            setStatusMessage(handleStatusUpdates('scrape_complete'))
         })
 
         socket.on('display_message', (data) => {
@@ -75,6 +95,9 @@ export default function CourseCard() {
     return () => {
       socket.off('started_ta_scrape')
       socket.off('ta_scrape_done')
+      socket.off('scraping_worksheet_links')
+      socket.off('worksheet_links_scraped')
+      socket.off('scrape_complete')
       socket.off('scrape_failed')
     }
   }, [])
@@ -110,11 +133,21 @@ export default function CourseCard() {
                 return 'Pending start'
             case 'started_ta_scrape':
                 return 'Scraping TA data'
-            case 'worksheet_links_scraped':
-                setIsLoading(false)
-                return 'Finished scraping worksheet links'
             case 'ta_scrape_done':
                 return 'Finished scraping TA data'
+            case 'scraping_worksheet_links':
+                return 'Scraping worksheet links'
+            case 'worksheet_links_scraped':
+                return 'Finished scraping worksheet links'
+            case 'scraping_questions':
+                return 'Starting scraping questions'
+            case 'scraping_questions_for_assignment':
+                return 'Scraping questions for assignment'
+            case 'counting_questions_graded':
+                return 'Counting questions graded by TAs'
+            case 'scrape_complete':
+                setIsLoading(false)
+                return 'Scraping complete'
             case 'scrape_failed':
                 setIsLoading(false) 
                 return "Error scraping TA data: Ensure correct gradescope course ID"
