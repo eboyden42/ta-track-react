@@ -219,6 +219,13 @@ def get_questions_by_assignment_id(assignment_id: int):
     cursor.execute("SELECT * FROM questions WHERE assignment_id = %s", (assignment_id,))
     return cursor.fetchall()
 
+def add_ta_question_stats(ta_id: int, question_id: int, count: int):
+    cursor.execute(
+        "INSERT INTO ta_question_stats (ta_id, question_id, graded_count) VALUES (%s, %s, %s)",
+        (ta_id, question_id, count)
+    )
+    conn.commit()
+
 def close():
     cursor.close()
     conn.close()

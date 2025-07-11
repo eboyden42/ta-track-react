@@ -142,6 +142,8 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
     sendMessage(socketio, f"These are the assignments found in the database: {db_ws_links}")
 
+    course_tas = driver.get_tas_by_course_id(course_pk)
+
     for i in range(len(db_ws_links)):
         assignment_pk = db_ws_links[i][0]
         href = db_ws_links[i][5]
@@ -162,13 +164,49 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
                 driver.add_question(assignment_id=assignment_pk, question_link=href)
                 sendMessage(socketio, f"Found question link: {href} for assignment {assignment_name}")
-            except:
-                sendMessage(socketio, f"No link found in this row")
-    
-    # ________________________ End of Scraping Questions For Each Assignment ________________________
+            except Exception as e:
+                sendMessage(socketio, f"No link found in this row: {str(e)}")
 
-    
+        # Get the questions for the assignment, need to query the database to get the question_pk
+        questions = driver.get_questions_by_assignment_id(assignment_id=assignment_pk)
 
+        sendMessage(socketio, "Starting final counting of questions graded by TAs")
+
+        for j in range(len(questions)):
+
+            # get question data
+            question_pk = questions[j][0]
+            question_link = questions[j][4]
+
+            # set up TA question counters
+            ta_questions = []
+            for ta in course_tas:
+                ta_questions.append({'name':ta[2], 'count': 0, 'ta_id': ta[0]}) # (ta name, # graded for this question, ta id)
+
+            web_driver.get(question_link)
+
+            sendMessage(socketio, f"Counting questions graded for question {question_pk} at {question_link}")
+
+            try:
+                rows = web_driver.find_elements(By.CSS_SELECTOR, '#question_submissions tbody tr')
+                if len(rows) == 0:
+                    raise Exception("No submissions found for this question")
+                for row in rows:
+                    name_cell = row.find_elements(By.TAG_NAME, 'td')[2]
+                    ta_name = name_cell.text
+                    sendMessage(socketio, f"Found TA name: {ta_name} for question {question_pk}")
+                    for ta in ta_questions:
+                        if ta['name'] in ta_name: # if the ta names match, increment the questions graded
+                            ta['count'] += 1
+            except Exception as e:
+                sendMessage(socketio, f"Error counting questions: {str(e)}")
+            
+            for ta in ta_questions:
+                sendMessage(socketio, f"TA {ta['name']} graded {ta['count']} questions for question {question_pk}")
+                try:
+                    driver.add_ta_question_stats(ta_id=ta['ta_id'], question_id=question_pk, count=ta['count'])
+                except Exception as e:
+                    sendMessage(socketio, f"Error adding TA question stats: {str(e)}")
 
     # Close the WebDriver
     web_driver.quit()   
