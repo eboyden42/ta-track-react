@@ -211,6 +211,14 @@ def add_question(assignment_id: int, question_link: str):
     )
     conn.commit()
 
+def get_tas_by_course_id(course_id: int):
+    cursor.execute("SELECT * FROM tas WHERE course_id = %s", (course_id,))
+    return cursor.fetchall()
+
+def get_questions_by_assignment_id(assignment_id: int):
+    cursor.execute("SELECT * FROM questions WHERE assignment_id = %s", (assignment_id,))
+    return cursor.fetchall()
+
 def close():
     cursor.close()
     conn.close()
