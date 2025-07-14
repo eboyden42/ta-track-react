@@ -34,7 +34,6 @@ export default function CourseCard() {
     const [newCourseId, setNewCourseId] = useState("")
     const [isValidID, setIsValidID] = useState(true)
     
-
     // state for status and live updates
     const [isLoading, setIsLoading] = useState(true)
     const [statusMessage, setStatusMessage] = useState("Loading course data")
@@ -241,6 +240,13 @@ export default function CourseCard() {
 
     function handleIdUpdates(e) {
         e.preventDefault()
+
+        if (status !== 'scrape_not_started') {
+            alert("You cannot update the course ID after scraping has started")
+            setShowUpdateForm(false)
+            return
+        }
+
         console.log("Updating id")
         fetch(`${import.meta.env.VITE_API_URL}/api/update_gs_id`, {
             method: 'POST',
@@ -300,12 +306,13 @@ export default function CourseCard() {
         <div className="content-container">
 
             {/* Status showing status updates */}
+            {showStatus ? 
             <div className="status-container">
                 <div className="status">
                     <h2>{statusMessage}</h2>
                     { isLoading ? <div className="loader"></div> : null}
                 </div>
-            </div>
+            </div> : null }
 
             {/* Popup form for updating title and gradescope id */}
             {showUpdateForm ? 
