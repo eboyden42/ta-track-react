@@ -20,6 +20,7 @@ thread_pool = ThreadPoolExecutor(max_workers=10)
 scheduler = BackgroundScheduler() # default scheduler has a thread pool executor with a max worker count of 10, I think 10 is fine for now, but maybe it will need to be changed later
 scheduler.start()
 
+# Initialize the database connection, this route is just for testing the connection
 @app.route('/api/data')
 def get_data():
     return jsonify({'message': 'Connection successful...'})
@@ -51,6 +52,7 @@ def create_user():
     # Close the database connection
     return jsonify({'message': 'user created'})
 
+# Route for user login
 @app.route('/api/user_login', methods=["POST"])
 def user_login():
     # Get login data
@@ -71,6 +73,7 @@ def user_login():
         }   
     })
 
+# Route to check if the user is logged in for persistent sessions
 @app.route('/api/session_check', methods=["GET"])
 def session_check():
     user_id = session.get('user_id')
@@ -88,14 +91,15 @@ def session_check():
         }
     })
 
+# Route to log out the user
 @app.route("/api/logout", methods=["POST"])
 def logout():
     session.clear()
     return jsonify({'message': 'Logged out'})
 
-
+# Route to update Gradescope user info
 @app.route('/api/update_gs_user', methods=['POST'])   
-def encrypt():
+def update_gs_user():
     data = request.get_json()
     username = data.get('username')
     gradescope_username = encrypt_data(data.get('gradescope_username'))
@@ -109,6 +113,7 @@ def encrypt():
 
     return jsonify({'message': 'Gradescope info updated successfully'})
 
+# Route to get Gradescope user info
 @app.route('/api/get_gs_info', methods=['POST'])
 def get_gs_info():
     data = request.get_json()
@@ -124,6 +129,7 @@ def get_gs_info():
     else:
         return jsonify({'message': 'No Gradescope info found'}), 404
 
+# Route to get the courses for a user
 @app.route('/api/get_courses', methods=['POST'])
 def get_courses():
     data = request.get_json()
@@ -136,6 +142,7 @@ def get_courses():
     else:
         return jsonify({'courses': []}), 200
 
+# Route to add a course for a user
 @app.route('/api/add_course', methods=['POST'])
 def add_course():   
     data = request.get_json()
@@ -148,6 +155,7 @@ def add_course():
     except Exception as e:
         return jsonify({'message': f'Error adding course: {str(e)}'}), 500
 
+# Route to delete a course for a user
 @app.route('/api/delete_course', methods=['POST'])
 def delete_course():
     data = request.get_json()
@@ -164,6 +172,7 @@ def delete_course():
     except Exception as e:
         return jsonify({'message': f'Error deleting course: {str(e)}'}), 500
 
+# Route to start the initial scrape task for a course   
 @app.route('/api/initial_scrape_task', methods=['POST'])
 def start_scrape_task():
     data = request.get_json()
@@ -176,6 +185,7 @@ def start_scrape_task():
 
     return jsonify({"message": "Scraping started"}), 202
 
+# Route to schedule a periodic update check for a course
 @app.route('/api/schedule_update', methods=['POST'])
 def schedule_update():
     data = request.get_json()
@@ -198,6 +208,7 @@ def schedule_update():
 
     return jsonify({"message": "Schedule update started"}), 202
 
+# Route to get the scrape status of a course
 @app.route('/api/status', methods=['POST', 'OPTIONS'])
 def get_scrape_status():
     if request.method == 'OPTIONS':
@@ -209,8 +220,9 @@ def get_scrape_status():
     if status:
         return jsonify({'status': status})
     return jsonify({'error': 'Course not found'}), 404
-# I want to change this later
+    # I want to change this later
 
+# Route to update the title of a course
 @app.route('/api/update_title', methods=['POST', 'OPTIONS'])
 def update_title():
     if request.method == 'OPTIONS':
@@ -224,7 +236,8 @@ def update_title():
         return jsonify({'message': 'Course title updated successfully'})
     except Exception as e:
         return jsonify({'message': str(e)}), 404
-    
+
+# Route to update the Gradescope ID of a course
 @app.route('/api/update_gs_id', methods=['POST', 'OPTIONS'])
 def update_gs_id():
     if request.method == 'OPTIONS':
@@ -247,7 +260,7 @@ def add_csp(response):
         "script-src 'self'; "
         "style-src 'self' 'unsafe-inline'; "
         "img-src 'self' data:; "
-        "connect-src 'self' ; " # add .env path to backend
+        "connect-src 'self' ; "
         "object-src 'none'; "
         "base-uri 'none';"
     )

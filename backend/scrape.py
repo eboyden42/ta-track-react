@@ -8,6 +8,22 @@ import requests
 
 def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
+    """ 
+
+    Function to perform the initial scraping task for a course.
+
+    How it works:
+    1. Get the configuration information for the course and user.
+    2. Log in to Gradescope using the stored credentials.
+    3. Navigate to the TA page for the course.
+    4. Scrape the TAs from the course and add them to the database.
+    5. Scrape the worksheet submission links for the course and add them to the database
+    6. Scrape the questions for each assignment and add them to the database.
+    7. Count the questions graded by each TA for each question and add the stats to the database.
+    8. Update the status of the course in the database and emit events to the client.
+
+    """
+
     config = get_config_info(course_pk, user_id, socketio)
 
     gradescope_id = config['gradescope_id']
@@ -195,7 +211,21 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
     # Add ASP Scheduler task to check for updates
     
 def get_config_info(course_pk: int, user_id: int, socketio):
-    # get course by the primary key
+    
+    """
+    Helper function to get the configuration information for the course and user.
+
+    How it works:
+    1. Get the course by ID from the database.
+    2. If the course is not found, emit an error message to the client.
+    3. Get the user by ID from the database.
+    4. If the user is not found, emit an error message to the client.
+    5. Get the Gradescope info for the user.
+    6. If the Gradescope info is not found, emit an error message to the client.
+    7. Decrypt the Gradescope username and password.
+    8. Return a dictionary with the Gradescope ID, username, password, user, and course information.
+
+    """
     course = None
     try:
         course = driver.get_course_by_id(course_pk)
@@ -264,6 +294,15 @@ def check_for_updates(course_pk: int, user_id: int, socketio):
     """
     Function to check for updates in the course.
     This function is scheduled to run periodically with apscheduler.
+
+    How it works:
+    1. Get the course and user information from the database.
+    2. Log in to Gradescope using the stored credentials.
+    3. Navigate to the assignments page for the course.
+    4. For each assignment, compare the stored percent graded with the current percent graded.
+    5. If the percent graded has changed, update the database and scrape the assignment again.
+    6. If the percent graded has not changed, log that the assignment has not changed.
+
     """
 
     sendMessage(socketio, f"Checking for updates in course {course_pk}")
@@ -334,8 +373,15 @@ def check_for_updates(course_pk: int, user_id: int, socketio):
 
 def scrape_assignment(assignment_pk: int, assignment_name: str, course_pk: int, socketio, web_driver):
     """
-    Function to scrape a specific assignment.
-    This function is called when the percent graded for an assignment has changed.
+    Scrape a specific assignment.
+
+    How it works:
+    1. Get the questions for the assignment and the course TAs from the database.
+    2. For each question, navigate to the question link.
+    3. Count the number of questions graded by each TA for that question.
+    4. Update the database with the count of questions graded by each TA for that question.
+    5. Emit messages to the client to indicate progress and results.
+
     """
 
     # Get the questions for the assignment and the course tas, need to query the database to get the question_pk
