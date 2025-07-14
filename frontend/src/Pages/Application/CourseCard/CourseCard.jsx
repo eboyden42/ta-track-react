@@ -8,15 +8,14 @@ import "./CourseCard.scss"
 export default function CourseCard() {
 
     const navigate = useNavigate()
-    const socket = io(import.meta.env.VITE_API_URL)
-
+    
     // use params to get course_pk 
     const params = useParams()
     const course_pk = params.id;
-
+    
     // State for settings popup
     const [showPopup, setShowPopup] = useState(false)
-
+    
     // Get course info from outlet contex
     const { course, update } = useOutletContext()
     let gradescope_id 
@@ -27,32 +26,36 @@ export default function CourseCard() {
         title = course[2]
         status = course[3]
     }
-
+    
     // State to handle changing course title and id
     const [formType, setFormType] = useState("")
     const [showUpdateForm, setShowUpdateForm] = useState(false)
     const [newCourseTitle, setNewCourseTitle] = useState("")
     const [newCourseId, setNewCourseId] = useState("")
     const [isValidID, setIsValidID] = useState(true)
-
+    
 
     // state for status and live updates
     const [isLoading, setIsLoading] = useState(true)
     const [statusMessage, setStatusMessage] = useState("Loading course data")
-
+    const [showStatus, setShowStatus] = useState(true)
+    
     // useEffect for updating status after inital load
     useEffect(() => {
-        console.log(status)
         setStatusMessage(handleStatusUpdates(status))
+        if (status === 'scrape_complete') {
+            schedulePeriodicUpdates()
+        }
     }, [status])
-
+    
     // useEffect for live socket updates
     useEffect(() => {
-    
+        const socket = io(import.meta.env.VITE_API_URL)
+        
         socket.on('started_ta_scrape', (data) => {
             setStatusMessage(handleStatusUpdates('started_ta_scrape'))
         })
-
+        
         socket.on('ta_scrape_done', (data) => {
             setStatusMessage(handleStatusUpdates('ta_scrape_done'))
         })
@@ -62,7 +65,6 @@ export default function CourseCard() {
         })
 
         socket.on('worksheet_links_scraped', (data) => {
-            console.log('Worksheet links scraped for:', data.course, 'Links:', data.links)
             setStatusMessage(handleStatusUpdates('worksheet_links_scraped'))
         })
 
@@ -86,6 +88,7 @@ export default function CourseCard() {
 
         socket.on('scrape_complete', (data) => {
             setStatusMessage(handleStatusUpdates('scrape_complete'))
+            schedulePeriodicUpdates()
         })
 
         socket.on('display_message', (data) => {
@@ -147,6 +150,7 @@ export default function CourseCard() {
                 return 'Counting questions graded by TAs'
             case 'scrape_complete':
                 setIsLoading(false)
+                setShowStatus(false)
                 return 'Scraping complete'
             case 'scrape_failed':
                 setIsLoading(false) 
@@ -167,6 +171,24 @@ export default function CourseCard() {
                 'Content-Type': 'application/json'
             },
             credentials: 'include',
+            body: JSON.stringify({id: course_pk})
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data.message)
+        })
+        .catch(err => console.error(err))
+    }
+
+    // Function to schedule periodic updates for the course
+    function schedulePeriodicUpdates() {
+        console.log("Scheduling periodic updates for course:", course_pk)
+        fetch(`${import.meta.env.VITE_API_URL}/api/schedule_update`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({id: course_pk})
         })
         .then(res => res.json())

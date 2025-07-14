@@ -1,17 +1,14 @@
 from flask import Flask, jsonify, request, session
-from waitress import serve
-from threading import Thread
 from flask_cors import CORS
 from flask_socketio import SocketIO
 from dotenv import load_dotenv
-# import scrape
-import sys
 import os
 from database.encryption.hashing import hash_password
 from database.encryption.encrypt import encrypt_data, decrypt_data
 from database import driver
-from scrape_refactor import initial_scrape_task
+from scrape import initial_scrape_task, check_for_updates
 from concurrent.futures import ThreadPoolExecutor
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 load_dotenv()
@@ -20,29 +17,12 @@ app.secret_key = os.environ.get("COOKIES_KEY")
 CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*")
 thread_pool = ThreadPoolExecutor(max_workers=10)
-
+scheduler = BackgroundScheduler() # default scheduler has a thread pool executor with a max worker count of 10, I think 10 is fine for now, but maybe it will need to be changed later
+scheduler.start()
 
 @app.route('/api/data')
 def get_data():
     return jsonify({'message': 'Connection successful...'})
-
-# @app.route('/api/gradescope/login', methods=['POST'])
-# def gradescope_login():
-#     print("Running login function...")
-#     global username, password, courseID, driver
-#     data = request.get_json()
-#     username = data.get('username')
-#     password = data.get('password')
-#     courseID = data.get('courseid')
-
-#     try:
-#         driver = scrape.login(username, password)
-#         if "account" in driver.current_url:
-#             return jsonify({'message' : "true"})
-#         else:
-#             return jsonify({'message' : "false"})
-#     except:
-#         return jsonify({'message' : "false"})
 
 # Route to check if an username exists in the database already
 @app.route('/api/check_username', methods=['POST'])
@@ -189,7 +169,18 @@ def start_scrape_task():
     thread_pool.submit(initial_scrape_task, course_id, user_id, socketio)
 
     return jsonify({"message": "Scraping started"}), 202
-    
+
+@app.route('/api/schedule_update', methods=['POST'])
+def schedule_update():
+    data = request.get_json()
+    course_pk = data.get("id")
+    user_id = session.get('user_id')
+
+    # schedule the update check task to run every 30 seconds (for development), change to every hour in production
+    scheduler.add_job(check_for_updates, 'interval', seconds=30, args=[course_pk, user_id, socketio])
+
+    return jsonify({"message": "Schedule update started"}), 202
+
 @app.route('/api/status', methods=['POST', 'OPTIONS'])
 def get_scrape_status():
     if request.method == 'OPTIONS':
@@ -250,33 +241,6 @@ def add_csp(response):
     response.headers['Permissions-Policy'] = 'geolocation=(), microphone=()'
 
     return response
-
-# @app.route('/api/talist', methods=['GET'])
-# def getTas():
-#     global driver, courseID, ta_list
-#     print("Getting TAs for "+str(courseID))
-#     ta_list = scrape.get_tas(courseID, driver)
-#     return jsonify({'message' : ta_list})
-
-
-# @app.route('/api/worksheets', methods=['GET'])
-# def getWorksheets():
-#     global driver, courseID
-#     print("Getting worksheets for "+str(courseID))
-#     ws_list = scrape.getWorksheetLinks(driver, courseID)
-#     return jsonify({'message': ws_list})
-
-# @app.route('/api/questions', methods=['POST'])
-# def getTAQuestions():
-#     global ta_list, driver
-#     data = request.get_json()
-#     ws_item = data.get('ws_item')
-#     print("Getting data from " + ws_item[0] + "...")
-#     questions = scrape.get_questions(ws_item, driver)
-#     for question in questions:
-#         scrape.count_questions_graded(ta_list, question, driver)
-#     return jsonify({'message': ta_list})
-
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000)

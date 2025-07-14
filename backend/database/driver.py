@@ -227,6 +227,14 @@ def add_ta_question_stats(ta_id: int, question_id: int, count: int):
     )
     conn.commit()
 
+def update_assignment_percent_graded(assignment_id: int, percent_graded: str):
+    cursor.execute("UPDATE assignments SET percent_graded = %s WHERE id = %s", (percent_graded, assignment_id))
+    conn.commit()
+
+def clear_assignment_data(assignment_id: int):
+    cursor.execute("DELETE FROM ta_question_stats WHERE question_id IN (SELECT id FROM questions WHERE assignment_id = %s)", (assignment_id,))
+    conn.commit()
+
 def close():
     cursor.close()
     conn.close()
