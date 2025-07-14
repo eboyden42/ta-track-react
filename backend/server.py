@@ -185,7 +185,7 @@ def schedule_update():
     # check if a job already exists for this course
     existing_job = scheduler.get_job(str(course_pk))
     if existing_job:
-        return jsonify({"message": "Job already exists for this course"}), 409
+        return jsonify({"message": "Job already exists for this course"}), 202
 
     # schedule the update check task to run every 30 seconds (for development), change to every hour in production
     scheduler.add_job(
