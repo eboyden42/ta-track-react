@@ -151,9 +151,15 @@ def add_course():
 @app.route('/api/delete_course', methods=['POST'])
 def delete_course():
     data = request.get_json()
-    course_id = data.get('id')
+    course_pk = data.get('id')
+
+    # Remove the scheduled job for this course if it exists
+    job = scheduler.get_job(str(course_pk))
+    if job:
+        scheduler.remove_job(str(course_pk))
+
     try:
-        driver.delete_course(course_id)
+        driver.delete_course(course_pk)
         return jsonify({'message': 'Course deleted successfully'})
     except Exception as e:
         return jsonify({'message': f'Error deleting course: {str(e)}'}), 500
@@ -177,7 +183,13 @@ def schedule_update():
     user_id = session.get('user_id')
 
     # schedule the update check task to run every 30 seconds (for development), change to every hour in production
-    scheduler.add_job(check_for_updates, 'interval', seconds=30, args=[course_pk, user_id, socketio])
+    scheduler.add_job(
+        check_for_updates, 
+        'interval', 
+        seconds=30, 
+        args=[course_pk, user_id, socketio],
+        id=str(course_pk)  # Use course_pk as the job ID
+    )
 
     return jsonify({"message": "Schedule update started"}), 202
 
