@@ -110,12 +110,16 @@ def update_gradescope_info(username: str, gradescope_username: str, gradescope_p
     conn.commit()   
 
 def add_user(username: str, password_hash: str):
-    cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
-    conn.commit()
+    try:
+        cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 def add_course(user_id: int, gradescope_id: int, course_name: str):
     try:
-        course_pk = get_id_from_gs_id_or_create(gradescope_id)
+        course_pk = get_id_from_gs_id(gradescope_id)
 
         cursor.execute(
             "INSERT INTO user_courses (user_id, course_id, status, name) VALUES (%s, %s, %s, %s)",
@@ -127,23 +131,16 @@ def add_course(user_id: int, gradescope_id: int, course_name: str):
         conn.rollback()
         raise e
 
-# given a gradescope id, either returns the existing course with that id, or creates a new course, and returns that id
-def get_id_from_gs_id_or_create(gradescope_id: int):
-    cursor.execute("SELECT id FROM courses WHERE gradescope_id = %s", (gradescope_id,))
-    existing_course = cursor.fetchone()
-
-    if existing_course:
-        # course already exists, return id
-        return existing_course[0]
-    else:
-        # create new course, and return it's id
-        cursor.execute(
-            "INSERT INTO courses (gradescope_id) VALUES (%s)",
-            (gradescope_id,)
-        )
-        conn.commit()
-        cursor.execute("SELECT id FROM courses WHERE gradescope_id = %s", (gradescope_id,))
-        return cursor.fetchone()[0]
+# given a gradescope id, creates a new course for that id, and returns the new primary key
+def get_id_from_gs_id(gradescope_id: int):
+    # create new course, and return it's id
+    cursor.execute(
+        "INSERT INTO courses (gradescope_id) VALUES (%s) RETURNING id",
+        (gradescope_id,)
+    )
+    course_pk = cursor.fetchone()[0]  # Fetch the returned id
+    conn.commit()
+    return course_pk
 
 def delete_course(id: int):
     try:
@@ -183,34 +180,54 @@ def get_status_by_id(course_id: int):
     return cursor.fetchone()
 
 def update_status_by_id(course_id: int, status: str):
-    cursor.execute("UPDATE user_courses SET status = %s WHERE course_id = %s", (status, course_id))
-    conn.commit()
+    try:
+        cursor.execute("UPDATE user_courses SET status = %s WHERE course_id = %s", (status, course_id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 def update_course_title_by_id(id: int, title: str):
-    cursor.execute("UPDATE user_courses SET name = %s WHERE course_id = %s", (title, id))
-    conn.commit()
+    try:
+        cursor.execute("UPDATE user_courses SET name = %s WHERE course_id = %s", (title, id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 def update_gs_id_by_id(id: int, gs_id: int):
-    cursor.execute("UPDATE courses SET gradescope_id = %s WHERE id = %s", (gs_id, id))
-    conn.commit()
+    try:
+        cursor.execute("UPDATE courses SET gradescope_id = %s WHERE id = %s", (gs_id, id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 def add_assignment(course_pk: int, name: str, gradescope_id: int, percent_graded: str, ws_link: str):
-    cursor.execute(
-        "INSERT INTO assignments (course_id, gradescope_id,  name, percent_graded, ws_link) VALUES (%s, %s, %s, %s, %s)",
-        (course_pk, gradescope_id, name, percent_graded, ws_link)
-    )
-    conn.commit()
+    try:
+        cursor.execute(
+            "INSERT INTO assignments (course_id, gradescope_id, name, percent_graded, ws_link) VALUES (%s, %s, %s, %s, %s)",
+            (course_pk, gradescope_id, name, percent_graded, ws_link)
+        )
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 def get_assignments_by_course_id(course_id: int):
     cursor.execute("SELECT * FROM assignments WHERE course_id = %s", (course_id,))
     return cursor.fetchall()
 
 def add_question(assignment_id: int, question_link: str):
-    cursor.execute(
-        "INSERT INTO questions (assignment_id, qs_link) VALUES (%s, %s)",
-        (assignment_id, question_link)
-    )
-    conn.commit()
+    try:
+        cursor.execute(
+            "INSERT INTO questions (assignment_id, qs_link) VALUES (%s, %s)",
+            (assignment_id, question_link)
+        )
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 def get_tas_by_course_id(course_id: int):
     cursor.execute("SELECT * FROM tas WHERE course_id = %s", (course_id,))
@@ -228,12 +245,20 @@ def add_ta_question_stats(ta_id: int, question_id: int, count: int):
     conn.commit()
 
 def update_assignment_percent_graded(assignment_id: int, percent_graded: str):
-    cursor.execute("UPDATE assignments SET percent_graded = %s WHERE id = %s", (percent_graded, assignment_id))
-    conn.commit()
+    try:
+        cursor.execute("UPDATE assignments SET percent_graded = %s WHERE id = %s", (percent_graded, assignment_id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 def clear_assignment_data(assignment_id: int):
-    cursor.execute("DELETE FROM ta_question_stats WHERE question_id IN (SELECT id FROM questions WHERE assignment_id = %s)", (assignment_id,))
-    conn.commit()
+    try:
+        cursor.execute("DELETE FROM ta_question_stats WHERE question_id IN (SELECT id FROM questions WHERE assignment_id = %s)", (assignment_id,))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 def close():
     cursor.close()
