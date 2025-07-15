@@ -4,13 +4,15 @@ $silver-lake: #5B85AA;
 $aqua-blue: #0cc0df;
 
 .dashboard-page {
-    display: flex;
+    display: inline;
 
     .course-bar {
         display: flex;
         flex-direction: column;
-        width: 20vw;
+        width: 250px;
         height: 100vh;
+        position: fixed;
+        background-color: $russian-violet;
         box-shadow: 4px 0 12px -2px rgba(0, 0, 0, 0.15);
 
         .add-course-btn {
@@ -40,6 +42,7 @@ $aqua-blue: #0cc0df;
             align-items: center;
             border: none;
             border-radius: 10px;
+            color: $floral-white;
 
 
             a {

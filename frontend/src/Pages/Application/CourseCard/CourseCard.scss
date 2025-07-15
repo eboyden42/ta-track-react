@@ -4,7 +4,8 @@ $silver-lake: #5B85AA;
 $aqua-blue: #0cc0df;
 
 .course-card-page {
-    width: 100%;
+    margin-left: 250px; // Adjusted to match the width of the course bar
+
     .header {
         display: flex;
         flex-direction: row;
