@@ -160,6 +160,7 @@ export default function Dashboard() {
                             onChange={handleTitleChange}
                             placeholder="APMA 3100, APMA 1110, etc."
                             autoComplete="APMA 3100, APMA 1110, etc."
+                            required
                         />
                     </label>
                     <label>
@@ -169,7 +170,8 @@ export default function Dashboard() {
                             value={courseID}
                             onChange={handleIDChange}
                             autoComplete="9240248, 9543247, etc."
-                            />
+                            required
+                        />
                     </label>
                     <button className="submit" type="submit">Submit</button>
                 </form>
