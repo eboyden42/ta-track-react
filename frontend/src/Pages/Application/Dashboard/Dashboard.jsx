@@ -173,7 +173,7 @@ export default function Dashboard() {
                     </label>
                     <button className="submit" type="submit">Submit</button>
                 </form>
-                <h3 className="error-message">
+                <h3 className={"error-message" + (isValidID ? " hidden" : "")}>
                     { !isValidID ? "Please enter a valid 6-digit course ID." : ""}
                 </h3>
                 </div>
