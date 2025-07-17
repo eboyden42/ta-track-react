@@ -76,10 +76,10 @@ export default function ApplicationLayout() {
         <nav>
             <div className="left-tabs">
                 {/* Main navigation links */}
-                <NavLink to="/user">
+                <NavLink to="/user/dashboard">
                     <img src={TAGuideLogo} alt="TAGuide Logo" className="logo"/>
                 </NavLink>
-                <NavLink to="/user">Dashboard</NavLink>
+                <NavLink to="/user/dashboard">Dashboard</NavLink>
                 <NavLink to="/user/info">Configuration</NavLink>
                 <NavLink to="/user/faqs">FAQs</NavLink>
             </div>

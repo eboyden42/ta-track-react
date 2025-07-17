@@ -1,0 +1,29 @@
+$floral-white: #FFFCF2;
+$russian-violet: #0B0033;
+$silver-lake: #5B85AA;
+$aqua-blue: #0cc0df;
+
+.default-card {
+    margin-top: 0;
+    margin-left: 250px;
+
+    .welcome-intro {
+        padding: 20px 40px;
+
+        h2 {
+            font-weight: 500;
+            margin-top: 0;
+            padding-top: 20px;
+            color: $russian-violet;
+        }
+
+        strong {
+            color: $floral-white;
+            font-weight: 100;
+            background-color: $aqua-blue;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+    }
+}

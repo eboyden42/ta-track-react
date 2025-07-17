@@ -8,6 +8,7 @@ import ApplicationLayout from "./Pages/Application/ApplicationLayout"
 import Dashboard from "./Pages/Application/Dashboard/Dashboard"
 import Info from "./Pages/Application/Info/Info"
 import CourseCard from "./Pages/Application/CourseCard/CourseCard"
+import DefaultCard from "./Pages/Application/DefaultCard/DefaultCard"
 
 export default function AppRoutes() {
     return (
@@ -22,6 +23,7 @@ export default function AppRoutes() {
                 <Route path="/user" element={<ApplicationLayout />} >
                     <Route index element={<Dashboard />} />
                     <Route path="/user/dashboard" element={<Dashboard />}>
+                        <Route index element={<DefaultCard />} />
                         <Route path="/user/dashboard/:id" element={<CourseCard />}/>
                     </Route>
                     <Route path="/user/info" element={<Info />} />
