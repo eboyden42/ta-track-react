@@ -157,6 +157,10 @@ def delete_course(id: int):
 
 def get_courses(username: str):
     try:
+        clear = cursor.fetchall()  # Clear any previous results
+    except:
+        pass
+    try:
         cursor.execute(
             "SELECT courses.id, courses.gradescope_id, user_courses.name, user_courses.status FROM courses JOIN user_courses ON courses.id = user_courses.course_id JOIN users ON user_courses.user_id = users.id WHERE users.username = %s",
             (username,)
@@ -255,6 +259,32 @@ def update_assignment_percent_graded(assignment_id: int, percent_graded: str):
 def clear_assignment_data(assignment_id: int):
     try:
         cursor.execute("DELETE FROM ta_question_stats WHERE question_id IN (SELECT id FROM questions WHERE assignment_id = %s)", (assignment_id,))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
+
+def set_error_message(course_pk: int, error_message: str):
+    try:
+        cursor.execute("UPDATE user_courses SET error_message = %s WHERE course_id = %s", (error_message, course_pk))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
+    
+def get_error_message(course_pk: int):
+    cursor.execute("SELECT error_message FROM user_courses WHERE course_id = %s", (course_pk,))
+    result = cursor.fetchone()
+    if result:
+        return result[0]
+    return None
+
+def reset_course(course_pk: int):
+    try:
+        cursor.execute("DELETE FROM ta_question_stats WHERE question_id IN (SELECT id FROM questions WHERE assignment_id IN (SELECT id FROM assignments WHERE course_id = %s))", (course_pk,))
+        cursor.execute("DELETE FROM tas WHERE course_id = %s", (course_pk,))
+        cursor.execute("DELETE FROM questions WHERE assignment_id IN (SELECT id FROM assignments WHERE course_id = %s)", (course_pk,))
+        cursor.execute("DELETE FROM assignments WHERE course_id = %s", (course_pk,))
         conn.commit()
     except Exception as e:
         conn.rollback()

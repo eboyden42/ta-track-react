@@ -26,7 +26,22 @@ export default function Dashboard() {
         }
 
         fetchCourses()
+        
     }, [user])
+
+    // Retrieve active course from localStorage on mount
+    useEffect(() => {
+        const savedActiveCourse = localStorage.getItem('activeCourse')
+        if (savedActiveCourse) {
+            const { index, course_pk } = JSON.parse(savedActiveCourse)
+            setActiveCourse(index)
+
+            // validate the course_pk to ensure it exists in the current course list
+            if (!courses.some(course => course[0] === course_pk)) {
+                localStorage.removeItem('activeCourse')
+            }
+        }
+    }, [courses])
 
     // Function to fetch courses from the server, updates the courses state
     // and handles errors if any occur during the fetch operation
@@ -116,20 +131,23 @@ export default function Dashboard() {
         }
     }
 
-    const courseList = courses.map( (course, index) => {
+    // Function to handle setting the active course and saving it to localStorage
+    function handleSetActiveCourse(index, course_pk) {
+        setActiveCourse(index)
+        localStorage.setItem('activeCourse', JSON.stringify({ index, course_pk }))
+    }
 
-        const course_pk = course[0]
-        const gradescope_id = course[1]
-        const title = course[2]
-        const status = course[3]
+    const courseList = courses.map((course, index) => {
+        const course_pk = course[0];
+        const title = course[2];
 
         return (
             <div className="course-link-container" key={course_pk}>
-                <NavLink 
-                to={`/user/dashboard/${course_pk}`} 
-                className={({isActive}) => isActive ? "active-tab" : null }
-                onClick={() => setActiveCourse(index)}
-                 >
+                <NavLink
+                    to={`/user/dashboard/${course_pk}`}
+                    className={({ isActive }) => (isActive ? "active-tab" : null)}
+                    onClick={() => handleSetActiveCourse(index, course_pk)}
+                >
                     {title}
                 </NavLink>
             </div>

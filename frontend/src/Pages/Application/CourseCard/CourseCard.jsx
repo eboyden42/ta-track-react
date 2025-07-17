@@ -41,57 +41,81 @@ export default function CourseCard() {
     
     // useEffect for updating status after inital load
     useEffect(() => {
+        console.log(status)
         setStatusMessage(handleStatusUpdates(status))
         if (status === 'scrape_complete') {
             schedulePeriodicUpdates()
         }
-    }, [status])
+        if (status === 'scrape_failed') {
+            getErrorMessage()
+        }
+    }, [status, course_pk])
     
     // useEffect for live socket updates
     useEffect(() => {
         const socket = io(import.meta.env.VITE_API_URL)
         
         socket.on('started_ta_scrape', (data) => {
-            setStatusMessage(handleStatusUpdates('started_ta_scrape'))
+            if (data.course == course_pk) {
+                setStatusMessage(handleStatusUpdates('started_ta_scrape'))
+            }
         })
         
         socket.on('ta_scrape_done', (data) => {
-            setStatusMessage(handleStatusUpdates('ta_scrape_done'))
+            if (data.course == course_pk) {
+                setStatusMessage(handleStatusUpdates('ta_scrape_done'))
+            }
         })
 
         socket.on('scraping_worksheet_links', (data) => {
-            setStatusMessage(handleStatusUpdates('scraping_worksheet_links'))
+            if (data.course == course_pk) {
+                setStatusMessage(handleStatusUpdates('scraping_worksheet_links'))
+            }
         })
 
         socket.on('worksheet_links_scraped', (data) => {
-            setStatusMessage(handleStatusUpdates('worksheet_links_scraped'))
+            if (data.course == course_pk) {
+                setStatusMessage(handleStatusUpdates('worksheet_links_scraped'))
+            }
         })
 
         socket.on('scraping_questions', (data) => {
-            setStatusMessage(handleStatusUpdates('scraping_questions'))
+            if (data.course == course_pk) {
+                setStatusMessage(handleStatusUpdates('scraping_questions'))
+            }
         })
 
         socket.on('scraping_questions_for_assignment', (data) => {
-            setStatusMessage(handleStatusUpdates('scraping_questions_for_assignment') + `: ${data.assignment_name}`)
+            if (data.course == course_pk) {
+                setStatusMessage(handleStatusUpdates('scraping_questions_for_assignment') + `: ${data.assignment_name}`)
+            }
         })
 
         socket.on('scrape_failed', (data) => {
-            console.error('Scraping failed for:', data.course, 'Error:', data.error)
-            setIsLoading(false)
-            setStatusMessage(data.error)
+            if (data.course == course_pk) {
+                console.error('Scraping failed for:', data.course, 'Error:', data.error)
+                setIsLoading(false)
+                setStatusMessage(data.error)
+            }
         })
 
         socket.on('counting_questions_graded', (data) => {
-            setStatusMessage(handleStatusUpdates('counting_questions_graded') + `: ${data.assignment_name}`)
+            if (data.course == course_pk) {
+                setStatusMessage(handleStatusUpdates('counting_questions_graded') + `: ${data.assignment_name}`)
+            }
         })
 
         socket.on('scrape_complete', (data) => {
-            setStatusMessage(handleStatusUpdates('scrape_complete'))
-            schedulePeriodicUpdates()
+            if (data.course == course_pk) {
+                setStatusMessage(handleStatusUpdates('scrape_complete'))
+                schedulePeriodicUpdates()
+            }
         })
 
         socket.on('display_message', (data) => {
-            console.log('Message from server:', data.message)
+            if (data.course === course_pk) {
+                console.log('Message from server:', data.message)
+            }   
         })
 
     return () => {
@@ -134,25 +158,32 @@ export default function CourseCard() {
                 setIsLoading(false)   
                 return 'Pending start'
             case 'started_ta_scrape':
+                setIsLoading(true)
                 return 'Scraping TA data'
             case 'ta_scrape_done':
+                setIsLoading(false)
                 return 'Finished scraping TA data'
             case 'scraping_worksheet_links':
+                setIsLoading(true)
                 return 'Scraping worksheet links'
             case 'worksheet_links_scraped':
+                setIsLoading(true)
                 return 'Finished scraping worksheet links'
             case 'scraping_questions':
+                setIsLoading(true)
                 return 'Starting scraping questions'
             case 'scraping_questions_for_assignment':
+                setIsLoading(true)
                 return 'Scraping questions for assignment'
             case 'counting_questions_graded':
+                setIsLoading(true)
                 return 'Counting questions graded by TAs'
             case 'scrape_complete':
                 setIsLoading(false)
                 setShowStatus(false)
                 return 'Scraping complete'
             case 'scrape_failed':
-                setIsLoading(false) 
+                setIsLoading(false)
                 return "Error scraping TA data: Ensure correct gradescope course ID"
             default:
                 return 'Loading course data'
@@ -193,6 +224,26 @@ export default function CourseCard() {
         .then(res => res.json())
         .then(data => {
             console.log(data.message)
+        })
+        .catch(err => console.error(err))
+    }
+
+    function getErrorMessage() {
+        fetch(`${import.meta.env.VITE_API_URL}/api/get_error_message`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({id: course_pk})
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Error message:", data)
+            if (data.error_message) {
+                console.log("Error message:", data.error_message)
+                setStatusMessage(data.error_message)
+            }
         })
         .catch(err => console.error(err))
     }

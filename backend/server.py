@@ -215,10 +215,12 @@ def get_scrape_status():
         # Allow the preflight request
         return '', 200
     data = request.get_json()
-    course_id = data.get('course_id')
+    course_id = data.get('id')
     status = driver.get_status_by_id(course_id)
+    error_message = driver.get_error_message(course_id)
+
     if status:
-        return jsonify({'status': status})
+        return jsonify({'status': status, 'error_message': error_message})
     return jsonify({'error': 'Course not found'}), 404
     # I want to change this later
 
@@ -251,7 +253,20 @@ def update_gs_id():
         return jsonify({'message': 'Gradescope id updated successfully'})
     except:
         return jsonify({'message': 'Course not found'}), 404
-        
+
+# Route to get the error message of a course
+@app.route('/api/get_error_message', methods=['POST', 'OPTIONS'])
+def get_error_message():
+    if request.method == 'OPTIONS':
+        # Allow the preflight request
+        return '', 200
+    data = request.get_json()
+    course_id = data.get('id')
+    error_message = driver.get_error_message(course_id)
+
+    if error_message:
+        return jsonify({'error_message': error_message})
+    return jsonify({'error': 'Course not found'}), 404
 
 @app.after_request
 def add_csp(response):
