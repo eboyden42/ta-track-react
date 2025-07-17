@@ -7,6 +7,27 @@ body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     background-color: floralwhite;
 
+    .loader {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #3498db;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        animation: spin 1s linear infinite;
+        margin: auto;
+        margin-top: 40px;
+        
+    }
+
+    .loading-message {
+        color: $silver-lake;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-weight: 100;
+        font-size: 25px;
+        padding: 12px 30px;
+        text-align: center;
+    }
+
     .form-container {
         padding: 20px 40px;
 

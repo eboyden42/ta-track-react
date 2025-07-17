@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, use } from 'react'
 import { UserContext } from '../../../App'
 import './Info.scss'
 
@@ -15,6 +15,22 @@ export default function Info() {
     // State for form fields of Gradescope username and password
     const [gradescopeUsername, setUsername] = useState('')
     const [gradescopePassword, setPassword] = useState('')
+
+    // State to handle loading
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        if (!user) {
+            return
+        }
+        
+        if (fetchedUsername !== '' || gradescopeUsername !== '' || gradescopePassword !== '') {
+            setIsLoading(false)
+        }
+
+    }, [fetchedUsername, gradescopePassword, gradescopePassword]
+
+    )
 
     useEffect(() => {
         if (!user) {
@@ -77,36 +93,48 @@ export default function Info() {
         })
     }
 
-    return showForm ? (
-        <div className="form-container">
-            <h2>We'll need your gradescope login information to get started, don't worry all information is securely encrypted.</h2>
-            <h3>Please enter your gradescope login below. If there are any issues, we'll let you know.</h3>
-            <form className="info-form" onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={gradescopeUsername}
-                    onChange={handleUsernameChange}
-                    placeholder="Gradescope email or username"
-                />
-                <input
-                    type="password"
-                    value={gradescopePassword}
-                    onChange={handlePasswordChange}
-                    placeholder="Gradescope password"
-                />
-                <button className="submit" type="submit">
-                    Submit
-                </button>
-            </form>
-        </div>
-    ) : <>
-    <div className="info-container">
-        <h2>Gradescope Information</h2>
-        <p>Your Gradescope username is: {fetchedUsername}</p>
-        <p>Your Gradescope password is securely stored on our encrypted database and not displayed here.</p>
-        <button className="update-btn" onClick={handleUpdateClick}>
-            Update Gradescope Information
-        </button>
-    </div>
+    return <>
+    
+    {
+        isLoading ? (
+        <>
+            <h2 className="loading-message">Loading configuration info...</h2>
+            <div className="loader"></div>
+        </>
+        ) : (
+            showForm ? (
+                <div className="form-container">
+                    <h2>We'll need your gradescope login information to get started, don't worry all information is securely encrypted.</h2>
+                    <h3>Please enter your gradescope login below. If there are any issues, we'll let you know.</h3>
+                    <form className="info-form" onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            value={gradescopeUsername}
+                            onChange={handleUsernameChange}
+                            placeholder="Gradescope email or username"
+                        />
+                        <input
+                            type="password"
+                            value={gradescopePassword}
+                            onChange={handlePasswordChange}
+                            placeholder="Gradescope password"
+                        />
+                        <button className="submit" type="submit">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            ) : (
+                <div className="info-container">
+                    <h2>Gradescope Information</h2>
+                    <p>Your Gradescope username is: {fetchedUsername}</p>
+                    <p>Your Gradescope password is securely stored on our encrypted database and not displayed here.</p>
+                    <button className="update-btn" onClick={handleUpdateClick}>
+                        Update Gradescope Information
+                    </button>
+                </div>
+            )
+        )
+    }
     </>
 }

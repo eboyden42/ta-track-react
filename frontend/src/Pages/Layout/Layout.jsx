@@ -7,13 +7,12 @@ import TAGuideLogo from "../../assets/TAGuide.png"
 export default function Layout() {
 
     const { user, setUser } = useContext(UserContext)
-
     
-      // Navigation
-      const navigate = useNavigate()
+    // Navigation
+    const navigate = useNavigate()
     
-      useEffect(() => {
-      // if user is logged in simply navigate to the user page
+    useEffect(() => {
+      // if user is logged in navigate to the user page
       console.log(user)
       if (user) {
         navigate("/user")
