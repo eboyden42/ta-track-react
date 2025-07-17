@@ -137,7 +137,8 @@ export default function Dashboard() {
         localStorage.setItem('activeCourse', JSON.stringify({ index, course_pk }))
     }
 
-    const courseList = courses.map((course, index) => {
+    const sortedCourses = [...courses].sort((a, b) => a[0] - b[0])
+    const courseList = sortedCourses.map((course, index) => {
         const course_pk = course[0];
         const title = course[2];
 
