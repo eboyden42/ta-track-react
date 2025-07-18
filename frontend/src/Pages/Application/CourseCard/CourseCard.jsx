@@ -51,7 +51,6 @@ export default function CourseCard() {
         if (status === 'scrape_failed') {
             getErrorMessage()
         }
-        setButtonMessage(handleButtonMessage(status))
     }, [status, course_pk])
     
     // useEffect for live socket updates
@@ -97,7 +96,7 @@ export default function CourseCard() {
         socket.on('scrape_failed', (data) => {
             if (data.course == course_pk) {
                 console.error('Scraping failed for:', data.course, 'Error:', data.error)
-                setIsLoading(false)
+                setStatusMessage(handleStatusUpdates('scrape_failed'))
                 setStatusMessage(data.error)
             }
         })
@@ -129,7 +128,7 @@ export default function CourseCard() {
       socket.off('scrape_complete')
       socket.off('scrape_failed')
     }
-  }, [])
+  }, [course_pk])
 
     // deletes course from database, updates course list, navigates back to dashboard
     function handleDelete(e) {
@@ -156,6 +155,7 @@ export default function CourseCard() {
 
     // takes in backend statuses and chages them to messages for display
     function handleStatusUpdates(status) {
+        setButtonMessage(handleButtonMessage(status))
         switch (status) {
             case 'scrape_not_started':
                 setIsLoading(false)   
@@ -197,6 +197,7 @@ export default function CourseCard() {
     function handleStartScraping(e) {
         e.preventDefault()
         setIsLoading(true)
+        setButtonMessage(handleButtonMessage('started_ta_scrape'))
         console.log(`Starting scraping for ${course_pk}`)
         fetch(`${import.meta.env.VITE_API_URL}/api/initial_scrape_task`, {
             method: 'POST',
@@ -323,6 +324,7 @@ export default function CourseCard() {
     }
     
     function handleButtonMessage(status) {
+        console.log("Got status:", status)
         switch (status) {
             case 'scrape_not_started':
                 return "Start Scraping Job"

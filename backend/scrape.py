@@ -84,7 +84,6 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
     # Check if the course page exists by inspecting the page content
     # if page_status.text starts with "Showing", then the page was loaded successfully
     if not page_status.text.startswith("Showing"):
-        sendMessage(socketio, "HELLOOOO", course_pk)
         error_msg = f"Gradescope course with ID {gradescope_id} does not exist or is inaccessible."
         displayErrorMessage(socketio, course_pk, error_msg)
         web_driver.quit()
