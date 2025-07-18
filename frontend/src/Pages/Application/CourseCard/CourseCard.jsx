@@ -1,7 +1,8 @@
 import { useParams, useOutletContext, useNavigate } from "react-router-dom"
-import { IoSettings, IoClose } from "react-icons/io5";
-import { GoDotFill } from "react-icons/go";
-import { useState, useEffect } from "react";
+import { IoSettings, IoClose } from "react-icons/io5"
+import { GoDotFill } from "react-icons/go"
+import { VscDebugRestart } from "react-icons/vsc";
+import { useState, useEffect } from "react"
 import { io } from 'socket.io-client'
 import "./CourseCard.scss"
 
@@ -38,17 +39,19 @@ export default function CourseCard() {
     const [isLoading, setIsLoading] = useState(true)
     const [statusMessage, setStatusMessage] = useState("Loading course data")
     const [showStatus, setShowStatus] = useState(true)
+    const [buttonMessage, setButtonMessage] = useState("Loading")
     
     // useEffect for updating status after inital load
     useEffect(() => {
         console.log(status)
         setStatusMessage(handleStatusUpdates(status))
         if (status === 'scrape_complete') {
-            schedulePeriodicUpdates()
+            // schedulePeriodicUpdates()
         }
         if (status === 'scrape_failed') {
             getErrorMessage()
         }
+        setButtonMessage(handleButtonMessage(status))
     }, [status, course_pk])
     
     // useEffect for live socket updates
@@ -319,6 +322,16 @@ export default function CourseCard() {
         .catch(err => console.error(err))
     }
     
+    function handleButtonMessage(status) {
+        switch (status) {
+            case 'scrape_not_started':
+                return "Start Scraping Job"
+            case 'scrape_failed':
+                return "Restart Job"
+            default:
+                return "Loading"
+        }
+    }
 
     return (
         <main className="course-card-page">
@@ -328,7 +341,18 @@ export default function CourseCard() {
                 <h3 className="title">{title}</h3>
                 <GoDotFill />
                 <h3 className="id">{gradescope_id}</h3>
-                <button className="start-btn" onClick={handleStartScraping}>Start Scraping Job</button>
+
+                <button className="start-btn" onClick={handleStartScraping}>
+                    {isLoading ?
+                    <div className="btn-loader"></div>
+                    : 
+                    buttonMessage === "Restart Job" ?
+                    <VscDebugRestart />
+                    :
+                    null
+                    }
+                    {buttonMessage}
+                </button>
             </div>
             <div className="right-items">
                 {/* Settings button */}

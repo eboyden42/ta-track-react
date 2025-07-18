@@ -31,12 +31,15 @@ $aqua-blue: #0cc0df;
             }
 
             .start-btn {
+                display: flex;
+                flex-direction: row;
+                gap: 5px;
                 cursor: pointer;
                 border: none;
                 background-color: $silver-lake;
                 color: $floral-white;
                 padding: 5px 10px;
-                width: 140px;
+                width: auto;
                 box-sizing: border-box;
                 border-radius: 5px;
                     
@@ -46,6 +49,19 @@ $aqua-blue: #0cc0df;
                 &:hover {
                     transform: scale(1.025);
                     box-shadow: 0 4px 16px rgba(12, 192, 223, 0.2);
+                }
+
+                .btn-loader {
+                    border: 2px solid #f3f3f3;
+                    border-top: 2px solid $russian-violet;
+                    border-radius: 50%;
+                    width: 10px;
+                    height: 10px;
+                    animation: spin 1s linear infinite;
+                }
+
+                svg {
+                    color: $floral-white;
                 }
             }
         }

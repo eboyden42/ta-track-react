@@ -83,6 +83,9 @@ def session_check():
 
     user = driver.get_user_by_id(user_id)
     
+    if user is None:
+        return jsonify({'loggedIn': False}), 401
+
     return jsonify({
         'loggedIn': True,
         'user': {

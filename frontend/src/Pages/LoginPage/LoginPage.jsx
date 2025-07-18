@@ -114,8 +114,7 @@ export default function LoginPage() {
       const message = data.message
       switch (message) {
         case "verified":
-          setUser(data.user)
-          navigate("/user")
+          setUser(data.user) // setting the user will trigger the useEffect in Layout, navigating to the dashboard
           break
         case "failed":
           console.log("Incorrect username or password")

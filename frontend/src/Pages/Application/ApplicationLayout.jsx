@@ -17,26 +17,32 @@ export default function ApplicationLayout() {
     const navigate = useNavigate()
     
     useEffect(() => {
-        // Attempt to restore session from cookies
-        fetch(`${import.meta.env.VITE_API_URL}/api/session_check`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: "include",
-        })
-        .then(res => {
-            if (!res.ok) throw new Error("Not logged in")
-                return res.json()
-        })
-        .then(data => {
-            // Session found, update user context and redirect
-            console.log("Session persisted...")
-            setUser(data.user)
-            // navigate("/user")
-        })
-        .catch(() => {
-            console.log("User not logged in")
-            navigate("/")
-        })
+        const isReload = sessionStorage.getItem('isReload');
+
+        if (!isReload) {
+            // Set the flag in sessionStorage to indicate the component has been loaded
+            sessionStorage.setItem('isReload', 'true');
+        } else {
+            // Attempt to restore session from cookies
+            fetch(`${import.meta.env.VITE_API_URL}/api/session_check`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: "include",
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Not logged in");
+                return res.json();
+            })
+            .then(data => {
+                // Session found, update user context and redirect
+                console.log("Session persisted...");
+                setUser(data.user);
+            })
+            .catch(() => {
+                console.log("User not logged in");
+                navigate("/");
+            });
+        }
     }, [])
     
     // Toggle profile dropdown menu
@@ -53,6 +59,7 @@ export default function ApplicationLayout() {
 
     // Log out user, clear context, close dropdown, and redirect to login
     function handleLogout() {
+        sessionStorage.setItem('isReload', 'false')
         fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
             method: "POST",
             credentials: "include",

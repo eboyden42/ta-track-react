@@ -58,6 +58,7 @@ export default function Dashboard() {
             if (data.courses && data.courses.length > 0) {
                 console.log("Courses fetched successfully:", data.courses)
                 setCourses(data.courses)
+                return
             } else {
                 setCourses([])
                 console.log("No courses found for this user.")

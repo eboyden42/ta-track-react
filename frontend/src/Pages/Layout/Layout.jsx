@@ -15,7 +15,7 @@ export default function Layout() {
       // if user is logged in navigate to the user page
       console.log(user)
       if (user) {
-        navigate("/user")
+        navigate("/user/dashboard")
       }
     }, [user])
 
