@@ -2,6 +2,7 @@ import { useParams, useOutletContext, useNavigate } from "react-router-dom"
 import { IoSettings, IoClose } from "react-icons/io5"
 import { GoDotFill } from "react-icons/go"
 import { VscDebugRestart } from "react-icons/vsc";
+import { FourSquare } from "react-loading-indicators"
 import { useState, useEffect } from "react"
 import { io } from 'socket.io-client'
 import "./CourseCard.scss"
@@ -387,7 +388,7 @@ export default function CourseCard() {
             <div className="status-container">
                 <div className="status">
                     <h2>{statusMessage}</h2>
-                    { isLoading ? <div className="loader"></div> : null}
+                    { isLoading ? <FourSquare color="#5B85AA" size="small" /> : null}
                 </div>
             </div> : null }
 

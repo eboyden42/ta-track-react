@@ -7,16 +7,12 @@ body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     background-color: floralwhite;
 
-    .loader {
-        border: 6px solid #f3f3f3;
-        border-top: 6px solid #3498db;
-        border-radius: 50%;
-        width: 36px;
-        height: 36px;
-        animation: spin 1s linear infinite;
+    .foursquare-rli-bounding-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;    
         margin: auto;
         margin-top: 40px;
-        
     }
 
     .loading-message {

@@ -151,6 +151,12 @@ $aqua-blue: #0cc0df;
                 animation: spin 1s linear infinite;
                 margin: auto;
             }
+
+            .foursquare-rli-bounding-box {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         }
 
         @keyframes spin {

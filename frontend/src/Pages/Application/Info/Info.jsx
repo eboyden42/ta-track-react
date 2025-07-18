@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, use } from 'react'
+import { FourSquare } from "react-loading-indicators"
 import { UserContext } from '../../../App'
 import './Info.scss'
 
@@ -99,7 +100,7 @@ export default function Info() {
         isLoading ? (
         <>
             <h2 className="loading-message">Loading configuration info...</h2>
-            <div className="loader"></div>
+            <FourSquare color="#5B85AA" size="small" />
         </>
         ) : (
             showForm ? (
