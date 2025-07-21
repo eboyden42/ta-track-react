@@ -1,48 +1,85 @@
-import { useState } from "react";
+import { useEffect, useState } from "react"
+import Select from "react-select"
 import "./GraphDisplay.scss"
 
 export default function GraphDisplay() {
-    const [activeDropdown, setActiveDropdown] = useState(null);
+    const [assignments, setAssignments] = useState([])
+    const [tas, setTAs] = useState([])
+    const [graph, setGraph] = useState()
 
-    const handleFocus = (dropdown) => {
-        setActiveDropdown(dropdown);
-    };
+    useEffect(() => {
+        // fetch assignments and TAs from the server
 
-    const handleBlur = () => {
-        setActiveDropdown(null);
-    };
+    }, [])
+    
+    const testAssignmentOptions = [
+        { value: "all", label: "All Assignments"},
+        { value: "graded", label: "Graded Assignments"},
+        { value: "703", label: "Assignment 1" },
+        { value: "704", label: "Assignment 2" },
+        { value: "705", label: "Assignment 3" },
+        { value: "715", label: "Assignment 4" },
+    ]
+
+    const testTAOptions = [
+        { value: "34", label: "Eli Boyden" },
+        { value: "35", label: "John Johnson" },
+        { value: "36", label: "Joe Schmoe" },
+    ]
+    
+    const graphTypes = [
+        {value: "pie", label: "Pie"},
+        {value: "bar", label: "Bar"},
+        {value: "line", label: "Line"}
+    ]
+
+    function handleAssignmentsChange(selected) {
+        setAssignments(selected)
+    }
+
+    function handleTAChange(selected) {
+        setTAs(selected)
+    }
+
+    function handleGraphTypeChange(selected) {
+        setGraph(selected)
+    }
+
+    function handleCreateGraph() {
+        console.log(assignments, tas, graph)
+        // fetch data from the server to create the graph
+    }
 
     return (
         <div className="graph-display">
             {/* Assignments Dropdown */}
-            <select
-                className={`dropdown ${activeDropdown === "assignments" ? "active" : ""}`}
-                onFocus={() => handleFocus("assignments")}
-                onBlur={handleBlur}
-            >
-                <option value="assignments">Assignments</option>
-                <option>All Assignments</option>
-            </select>
+            <Select 
+                options={testAssignmentOptions}
+                isMulti
+                onChange={handleAssignmentsChange}
+                placeholder="Select Assignments"
+            />
 
             {/* TAs Dropdown */}
-            <select
-                className={`dropdown ${activeDropdown === "tas" ? "active" : ""}`}
-                onFocus={() => handleFocus("tas")}
-                onBlur={handleBlur}
-            >
-                <option value="tas">TAs</option>
-            </select>
+           <Select 
+                options={testTAOptions}
+                isMulti
+                onChange={handleTAChange}
+                placeholder="Select TAs"
+            />
 
             {/* Chart Types Dropdown */}
-            <select
-                className={`dropdown ${activeDropdown === "chart-types" ? "active" : ""}`}
-                onFocus={() => handleFocus("chart-types")}
-                onBlur={handleBlur}
+            <Select 
+                options={graphTypes}
+                onChange={handleGraphTypeChange}
+                placeholder="Select Graph"
+                isSearchable="false"
+            />
+            
+            <button 
+                className="create-graph-btn"
+                onClick={handleCreateGraph}
             >
-                <option value="chart-types">Chart Types</option>
-            </select>
-
-            <button className="create-graph-btn">
                 Create Graph
             </button>
         </div>
