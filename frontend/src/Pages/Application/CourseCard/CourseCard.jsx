@@ -6,6 +6,7 @@ import { FourSquare } from "react-loading-indicators"
 import { useState, useEffect } from "react"
 import { io } from 'socket.io-client'
 import "./CourseCard.scss"
+import GraphDisplay from "../GraphDisplay/GraphDisplay";
 
 export default function CourseCard() {
 
@@ -41,6 +42,9 @@ export default function CourseCard() {
     const [statusMessage, setStatusMessage] = useState("Loading course data")
     const [showStatus, setShowStatus] = useState(true)
     const [buttonMessage, setButtonMessage] = useState("Loading")
+
+    // state to handle graphical interface display
+    const [showGraphDisplay, setShowGraphDisplay] = useState(false)
     
     // useEffect for updating status after inital load
     useEffect(() => {
@@ -380,17 +384,26 @@ export default function CourseCard() {
             </div> : null}
         </div>
 
+        <hr className="line-break" ></hr>
+
         {/* Main content div */}
         <div className="content-container">
 
             {/* Status showing status updates */}
-            {showStatus ? 
+            {!showStatus ? 
             <div className="status-container">
                 <div className="status">
                     <h2>{statusMessage}</h2>
                     { isLoading ? <FourSquare color="#5B85AA" size="small" /> : null}
                 </div>
             </div> : null }
+
+            {/* Graphical display of course data */}
+            {!showGraphDisplay ? (
+                <div className="graph-display-container">
+                    <GraphDisplay course_pk={course_pk} />
+                </div>
+            ) : null}
 
             {/* Popup form for updating title and gradescope id */}
             {showUpdateForm ? 
