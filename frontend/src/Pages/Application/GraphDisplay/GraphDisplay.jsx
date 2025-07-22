@@ -1,17 +1,28 @@
 import { useEffect, useState } from "react"
 import Select from "react-select"
+import PieChart from "../../../components/PieChart/PieChart"
 import "./GraphDisplay.scss"
+import { Pie } from "react-chartjs-2"
 
 export default function GraphDisplay() {
-    const [assignments, setAssignments] = useState([])
-    const [tas, setTAs] = useState([])
-    const [graph, setGraph] = useState()
+    // state to manage raw selection data from user input
+    const [assignments, setAssignments] = useState([]) // value -> assignment primary key, label -> assignment name
+    const [tas, setTAs] = useState([]) // value -> TA primary key, label -> TA name
+    const [chart, setChart] = useState() // chart type (value is lowercase string, label is display ready)
+
+    // state to manage fetched chart values for pie chart
+    const [chartData, setChartData] = useState({})
+
+    const testChartData = {
+        labels: ["Eli Boyden", "John Johnson", "Joe Schmoe"],
+        values: [10, 20, 30]
+    }
 
     useEffect(() => {
         // fetch assignments and TAs from the server
 
     }, [])
-    
+
     const testAssignmentOptions = [
         { value: "all", label: "All Assignments"},
         { value: "graded", label: "Graded Assignments"},
@@ -26,8 +37,8 @@ export default function GraphDisplay() {
         { value: "35", label: "John Johnson" },
         { value: "36", label: "Joe Schmoe" },
     ]
-    
-    const graphTypes = [
+
+    const chartTypes = [
         {value: "pie", label: "Pie"},
         {value: "bar", label: "Bar"},
         {value: "line", label: "Line"}
@@ -41,47 +52,56 @@ export default function GraphDisplay() {
         setTAs(selected)
     }
 
-    function handleGraphTypeChange(selected) {
-        setGraph(selected)
+    function handleChartTypeChange(selected) {
+        setChart(selected)
     }
 
-    function handleCreateGraph() {
-        console.log(assignments, tas, graph)
-        // fetch data from the server to create the graph
+    function handleCreateChart() {
+        console.log(assignments, tas, chart)
+        // fetch data from the server to create the chart   
     }
 
     return (
         <div className="graph-display">
-            {/* Assignments Dropdown */}
-            <Select 
-                options={testAssignmentOptions}
-                isMulti
-                onChange={handleAssignmentsChange}
-                placeholder="Select Assignments"
-            />
+            <div className="graph-controls">
+                {/* Assignments Dropdown */}
+                <Select 
+                    options={testAssignmentOptions}
+                    isMulti
+                    onChange={handleAssignmentsChange}
+                    placeholder="Select Assignments"
+                />
 
-            {/* TAs Dropdown */}
-           <Select 
-                options={testTAOptions}
-                isMulti
-                onChange={handleTAChange}
-                placeholder="Select TAs"
-            />
+                {/* TAs Dropdown */}
+                <Select 
+                    options={testTAOptions}
+                    isMulti
+                    onChange={handleTAChange}
+                    placeholder="Select TAs"
+                />
 
-            {/* Chart Types Dropdown */}
-            <Select 
-                options={graphTypes}
-                onChange={handleGraphTypeChange}
-                placeholder="Select Graph"
-                isSearchable="false"
+                {/* Chart Types Dropdown */}
+                <Select 
+                    options={chartTypes}
+                    onChange={handleChartTypeChange}
+                    placeholder="Select Chart Type"
+                    isSearchable={false}
+                />
+                
+                <button 
+                    className="create-chart-btn"
+                    onClick={handleCreateChart}
+                >
+                    Create Chart
+                </button>
+            </div>
+            <PieChart 
+                data={{
+                    labels: testChartData.labels,
+                    values: testChartData.values
+                }}
+                className="chart-container"
             />
-            
-            <button 
-                className="create-graph-btn"
-                onClick={handleCreateGraph}
-            >
-                Create Graph
-            </button>
         </div>
     );
 }
