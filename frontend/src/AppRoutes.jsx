@@ -9,12 +9,14 @@ import Dashboard from "./Pages/Application/Dashboard/Dashboard"
 import Info from "./Pages/Application/Info/Info"
 import CourseCard from "./Pages/Application/CourseCard/CourseCard"
 import DefaultCard from "./Pages/Application/DefaultCard/DefaultCard"
+import ErrorPage from "./Pages/ErrorPage/ErrorPage"
 
 export default function AppRoutes() {
     return (
         <>
         <BrowserRouter>
             <Routes>
+                <Route path="*" element={<ErrorPage />} />
                 <Route path="/" element={<Layout />} >
                     <Route index element={<Home/>} />
                     <Route path="/about" element={<About/>} />

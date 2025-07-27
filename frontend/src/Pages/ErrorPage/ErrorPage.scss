@@ -1,0 +1,41 @@
+$floral-white: #FFFCF2;
+$russian-violet: #0B0033;
+$silver-lake: #5B85AA;
+$aqua-blue: #0cc0df;
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30vh;
+    margin-bottom: 30vh;
+
+    h1 {
+        font-weight: 300;
+
+        span {
+            color: rgb(169, 75, 75);
+        }
+    }
+
+    .return-btn {
+        border: none;
+        background-color: $russian-violet;
+        color: $floral-white;
+        padding: 10px 20px;
+        padding-left: 15px;
+        width: auto;
+        box-sizing: border-box;
+        border-radius: 5px;
+        cursor: pointer;         
+                        
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+                        
+        &:hover {
+            transform: scale(1.025);
+            box-shadow: 0 4px 16px rgba(12, 192, 223, 0.2);
+            background-color: lighten($color: $russian-violet, $amount: 10);
+        }
+    }
+}
