@@ -117,6 +117,7 @@ export default function LoginPage() {
           setUser(data.user) // setting the user will trigger the useEffect in Layout, navigating to the dashboard
           break
         case "failed":
+          setPasswordErrorMessage("Incorrect password")
           console.log("Incorrect username or password")
           break
         case "username not found":
