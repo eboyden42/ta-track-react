@@ -95,6 +95,13 @@ def get_user_by_id(id: int):
     response = cursor.fetchone()
     return response
 
+def get_username_by_id(id: int) -> str:
+    cursor.execute("SELECT username FROM users WHERE id = %s", (id,))
+    response = cursor.fetchone()
+    if response:
+        return response[0]
+    return None
+
 def get_gradescope_info(username: str):
     cursor.execute("SELECT gradescope_username, gradescope_password_hash FROM users WHERE username = %s", (username,))
     response = cursor.fetchone()

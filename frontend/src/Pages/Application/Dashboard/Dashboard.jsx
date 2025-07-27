@@ -52,7 +52,6 @@ export default function Dashboard() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username: user.username }),
         }).then((response) => response.json())
         .then((data) => {
             if (data.courses && data.courses.length > 0) {

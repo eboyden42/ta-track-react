@@ -44,7 +44,6 @@ export default function Info() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username: user.username}),
         }).then((response) => response.json())
         .then((data) => {
             if (data.gradescope_username) {
@@ -82,7 +81,7 @@ export default function Info() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username: user.username, gradescope_username: gradescopeUsername, gradescope_password: gradescopePassword }),
+            body: JSON.stringify({ gradescope_username: gradescopeUsername, gradescope_password: gradescopePassword }),
         }).then((response) => {
             if (response.ok) {
                 console.log('Gradescope user info updated successfully')

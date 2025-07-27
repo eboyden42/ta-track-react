@@ -65,6 +65,7 @@ def user_login():
 
     if response == "verified":
         session['user_id'] = user_id
+        session['username'] = username
     return jsonify({
         'message': response,
         'user': {
@@ -104,23 +105,24 @@ def logout():
 @app.route('/api/update_gs_user', methods=['POST'])   
 def update_gs_user():
     data = request.get_json()
-    username = data.get('username')
+    username = session.get('username')
     gradescope_username = encrypt_data(data.get('gradescope_username'))
     gradescope_password_hash = encrypt_data(data.get('gradescope_password'))
-
-    driver.update_gradescope_info(
-        username=username,
-        gradescope_username=gradescope_username,
-        gradescope_password=gradescope_password_hash
-    )
-
+    try:
+        driver.update_gradescope_info(
+            username=username,
+            gradescope_username=gradescope_username,
+            gradescope_password=gradescope_password_hash
+        )
+    except Exception as e:
+        return jsonify({'message': f'Error updating Gradescope info: {str(e)}'}), 500
+    
     return jsonify({'message': 'Gradescope info updated successfully'})
 
 # Route to get Gradescope user info
 @app.route('/api/get_gs_info', methods=['POST'])
 def get_gs_info():
-    data = request.get_json()
-    username = data.get('username')
+    username = session.get('username')
 
     gs_info = driver.get_gradescope_info(username=username)
 
@@ -135,8 +137,7 @@ def get_gs_info():
 # Route to get the courses for a user
 @app.route('/api/get_courses', methods=['POST'])
 def get_courses():
-    data = request.get_json()
-    username = data.get('username')
+    username = session.get('username')
 
     courses = driver.get_courses(username=username)
 
