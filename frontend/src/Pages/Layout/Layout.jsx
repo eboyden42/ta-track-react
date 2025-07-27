@@ -1,23 +1,20 @@
 import { useContext, useEffect } from "react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom"
-import { UserContext } from "../../App"
 import "./Layout.scss"
 import TAGuideLogo from "../../assets/TAGuide.png"
 
 export default function Layout() {
-
-    const { user, setUser } = useContext(UserContext)
     
-    // Navigation
-    const navigate = useNavigate()
+    // // Navigation
+    // const navigate = useNavigate()
     
-    useEffect(() => {
-      // if user is logged in navigate to the user page
-      console.log(user)
-      if (user) {
-        navigate("/user/dashboard")
-      }
-    }, [user])
+    // useEffect(() => {
+    //   // if user is logged in navigate to the user page
+    //   console.log(user)
+    //   if (user) {
+    //     navigate("/user/dashboard")
+    //   }
+    // }, [user])
 
     return (
         <>
@@ -33,7 +30,7 @@ export default function Layout() {
                         About
                     </NavLink>
                     <NavLink className="login" to="/login">
-                        {user ? user.username : "Login"}
+                        Login
                     </NavLink>
                 </div>
             </nav>

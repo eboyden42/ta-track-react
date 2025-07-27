@@ -10,6 +10,7 @@ import Info from "./Pages/Application/Info/Info"
 import CourseCard from "./Pages/Application/CourseCard/CourseCard"
 import DefaultCard from "./Pages/Application/DefaultCard/DefaultCard"
 import ErrorPage from "./Pages/ErrorPage/ErrorPage"
+import AuthRequired from "./Pages/AuthRequired"
 
 export default function AppRoutes() {
     return (
@@ -22,13 +23,15 @@ export default function AppRoutes() {
                     <Route path="/about" element={<About/>} />
                     <Route path="/login" element={<LoginPage/>} />
                 </Route>
-                <Route path="/user" element={<ApplicationLayout />} >
-                    <Route index element={<Dashboard />} />
-                    <Route path="/user/dashboard" element={<Dashboard />}>
-                        <Route index element={<DefaultCard />} />
-                        <Route path="/user/dashboard/:id" element={<CourseCard />}/>
+                <Route element={<AuthRequired />} >
+                    <Route path="/user" element={<ApplicationLayout />} >
+                        <Route index element={<Dashboard />} />
+                        <Route path="/user/dashboard" element={<Dashboard />}>
+                            <Route index element={<DefaultCard />} />
+                            <Route path="/user/dashboard/:id" element={<CourseCard />}/>
+                        </Route>
+                        <Route path="/user/info" element={<Info />} />
                     </Route>
-                    <Route path="/user/info" element={<Info />} />
                 </Route>
             </Routes>
         </BrowserRouter>

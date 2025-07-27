@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react"
 import "./LoginPage.scss"
 import Application from "../Application/ApplicationLayout"
 import { UserContext } from "../../App"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 
 export default function LoginPage() {
 
   // User context
-  const {user, setUser} = useContext(UserContext)
+  const {setUser} = useContext(UserContext)
 
   // State for if user is loggin in or signing up
   const [isLogin, setIsLogin] = useState(true)
@@ -22,6 +22,7 @@ export default function LoginPage() {
 
   // Navigation
   const navigate = useNavigate()
+  const location = useLocation()
 
   // handle switch between login and signup
   function handleSwitchLogin() {
@@ -114,7 +115,9 @@ export default function LoginPage() {
       const message = data.message
       switch (message) {
         case "verified":
-          setUser(data.user) // setting the user will trigger the useEffect in Layout, navigating to the dashboard
+          setUser(data.user)
+          let from = location.state?.from?.pathname || "/user/dashboard"
+          navigate(from)
           break
         case "failed":
           setPasswordErrorMessage("Incorrect password")

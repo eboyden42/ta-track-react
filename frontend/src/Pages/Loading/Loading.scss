@@ -1,0 +1,24 @@
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--floral-white);
+    margin-top: 30vh;
+    margin-bottom: 30vh;
+
+    h1 {
+        color: var(--silver-lake);
+        font-weight: 300;
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .foursquare-rli-bounding-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;    
+        margin: auto;
+        margin-top: 40px;
+    }
+}
