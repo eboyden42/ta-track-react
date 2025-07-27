@@ -272,6 +272,47 @@ def get_error_message():
         return jsonify({'error_message': error_message})
     return jsonify({'error': 'Course not found'}), 404
 
+@app.route('/api/get_assignments', methods=['POST', 'OPTIONS'])
+def get_assignments():
+    if request.method == 'OPTIONS':
+        # Allow the preflight request
+        return '', 200
+    data = request.get_json()
+    course_id = data.get('course_id')
+    assignments = driver.get_assignments_by_course_id(course_id)
+    if not assignments:
+        return jsonify({'error': 'No assignments found for this course'}), 404
+
+    # Convert assignments to a list of dictionaries
+    assignments = [
+        {
+            'value': assignment[0],
+            'label': assignment[3]
+        } for assignment in assignments
+    ]
+
+    return jsonify({'assignments': assignments})
+
+@app.route('/api/get_tas', methods=['POST', 'OPTIONS'])
+def get_tas():
+    if request.method == 'OPTIONS':
+        # Allow the preflight request
+        return '', 200
+    data = request.get_json()
+    course_id = data.get('course_id')
+    tas = driver.get_tas_by_course_id(course_id)
+    if not tas:
+        return jsonify({'error': 'No TAs found for this course'}), 404
+
+    tas = [
+        {
+            'value': ta[0],
+            'label': ta[2]
+        } for ta in tas
+    ]
+
+    return jsonify({'tas': tas})
+
 @app.after_request
 def add_csp(response):
     response.headers['Content-Security-Policy'] = (
