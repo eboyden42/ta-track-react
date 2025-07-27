@@ -1,8 +1,3 @@
-$floral-white: #FFFCF2;
-$russian-violet: #0B0033;
-$silver-lake: #5B85AA;
-$aqua-blue: #0cc0df;
-
 body {
     padding: 0;
     margin: 0;
@@ -47,15 +42,15 @@ body {
             }
 
             .profile {
-                background-color: $aqua-blue;
+                background-color: var(--aqua-blue);
 
                 &.clicked {
-                    background-color: $floral-white;
-                    color: $aqua-blue;
+                    background-color: var(--floral-white);
+                    color: var(--aqua-blue);
                     box-shadow: 0 4px 16px rgba(91, 133, 170, 0.2);
                 }
 
-                color: $floral-white;
+                color: var(--floral-white);
                 padding: 10px 20px;
                 border-radius: 5px;
                 cursor: pointer;

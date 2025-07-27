@@ -1,8 +1,3 @@
-$floral-white: #FFFCF2;
-$russian-violet: #0B0033;
-$silver-lake: #5B85AA;
-$aqua-blue: #0cc0df;
-
 .dashboard-page {
     display: inline;
     margin-top: 0;
@@ -13,14 +8,14 @@ $aqua-blue: #0cc0df;
         width: 250px;
         height: 100vh;
         position: fixed;
-        background-color: $russian-violet;
+        background-color: var(--russian-violet);
         box-shadow: 4px 0 12px -2px rgba(0, 0, 0, 0.15);
 
         .add-course-btn {
             cursor: pointer;
             border: none;
-            background-color: $aqua-blue;
-            color: $floral-white;
+            background-color: var(--aqua-blue);
+            color: var(--floral-white);
             padding: 10px;
             margin: 5px;
             // width: 70px;
@@ -57,7 +52,7 @@ $aqua-blue: #0cc0df;
             }
             
             .active-tab {
-                color: $floral-white;
+                color: var(--floral-white);
             }
 
             &:hover {
@@ -81,7 +76,7 @@ $aqua-blue: #0cc0df;
         z-index: 1000;
 
         .course-form-modal {
-            background: $floral-white;
+            background: var(--floral-white);
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(91, 133, 170, 0.18);
             padding: 32px 28px;
@@ -99,7 +94,7 @@ $aqua-blue: #0cc0df;
                 background: none;
                 border: none;
                 font-size: 1.5rem;
-                color: $russian-violet;
+                color: var(--russian-violet);
                 cursor: pointer;
                 transition: color 0.2s;
 
@@ -126,7 +121,7 @@ $aqua-blue: #0cc0df;
                         margin-top: 10px;
                         margin-bottom: 20px;
                         border-radius: 5px;
-                        border: 1px solid $silver-lake;
+                        border: 1px solid var(--silver-lake);
                         font-size: 12px;
                     }
                 }
@@ -134,8 +129,8 @@ $aqua-blue: #0cc0df;
                 .submit {
                     cursor: pointer;
                     border: none;
-                    background-color: $aqua-blue;
-                    color: $floral-white;
+                    background-color: var(--aqua-blue);
+                    color: var(--floral-white);
                     margin-top: 8px;
                     padding: 10px;
                     width: 70px;

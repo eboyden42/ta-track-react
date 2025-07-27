@@ -1,8 +1,3 @@
-$floral-white: #FFFCF2;
-$russian-violet: #0B0033;
-$silver-lake: #5B85AA;
-$aqua-blue: #0cc0df;
-
 main.error-page {
     display: flex;
     flex-direction: column;
@@ -21,8 +16,8 @@ main.error-page {
 
     .return-btn {
         border: none;
-        background-color: $russian-violet;
-        color: $floral-white;
+        background-color: var(--russian-violet);
+        color: var(--floral-white);
         padding: 10px 20px;
         padding-left: 15px;
         width: auto;
@@ -35,7 +30,7 @@ main.error-page {
         &:hover {
             transform: scale(1.025);
             box-shadow: 0 4px 16px rgba(12, 192, 223, 0.2);
-            background-color: lighten($color: $russian-violet, $amount: 10);
+            background-color: var(--russian-violet-light);
         }
     }
 }

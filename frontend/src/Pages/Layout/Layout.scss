@@ -1,14 +1,9 @@
-$floral-white: #FFFCF2;
-$russian-violet: #0B0033;
-$silver-lake: #5B85AA;
-$aqua-blue: #0cc0df;
-
 body {
     padding: 0;
     margin: 0;
 
     .nav-container {
-    background-color: $floral-white;
+    background-color: var(--floral-white);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-bottom: 5px;
 
@@ -45,8 +40,8 @@ body {
                     cursor: pointer;
                 }
                 .login {
-                    background-color: $aqua-blue;
-                    color: $floral-white;
+                    background-color: var(--aqua-blue);
+                    color: var(--floral-white);
                     padding: 10px 20px;
                     border-radius: 5px;
 

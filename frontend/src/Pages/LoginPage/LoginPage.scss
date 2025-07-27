@@ -1,13 +1,8 @@
-$floral-white: #FFFCF2;
-$russian-violet: #0B0033;
-$silver-lake: #5B85AA;
-$aqua-blue: #0cc0df;
-
 body {
-    background-color: floralwhite;
+    background-color: var(--aqua-blue);
 
     .login-page {
-        // border: 1px solid $silver-lake;
+        // border: 1px solid var(--silver-lake);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -35,25 +30,25 @@ body {
                     text-underline-offset: 2px;
                     font-size: large;
                     cursor: pointer;
-                    color: $russian-violet;
+                    color: var(--russian-violet);
 
                     transition: color 0.3s;
                     &:hover {
-                        color: $aqua-blue;
+                        color: var(--aqua-blue);
                     }
                 }
             }
 
             h3 {
                 font-weight: 400;
-                color: $silver-lake;
+                color: var(--silver-lake);
             }
         }
 
         .divider {
             width: 500px;
             height: 0.5px;
-            background-color: $silver-lake;
+            background-color: var(--silver-lake);
             margin: 20px 0 10px 0;
         }
 
@@ -77,7 +72,7 @@ body {
                     padding: 10px;
                     margin-bottom: 10px;
                     border-radius: 5px;
-                    border: 1px solid $silver-lake;
+                    border: 1px solid var(--silver-lake);
                     font-size: 16px;
                 }
 
@@ -90,8 +85,8 @@ body {
                 .login {
                     cursor: pointer;
                     border: none;
-                    background-color: $aqua-blue;
-                    color: $floral-white;
+                    background-color: var(--aqua-blue);
+                    color: var(--floral-white);
                     padding: 10px;
                     width: 105%;
                     box-sizing: border-box;
