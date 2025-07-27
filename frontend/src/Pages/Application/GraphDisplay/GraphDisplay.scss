@@ -55,5 +55,9 @@ $aqua-blue: #0cc0df;
         justify-content: center;
         align-items: center;
         margin-top: 40px;
+
+        canvas {
+            max-width: fit-content;
+        }
     }
 }

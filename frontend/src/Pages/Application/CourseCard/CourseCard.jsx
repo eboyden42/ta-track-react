@@ -169,7 +169,7 @@ export default function CourseCard() {
                 setIsLoading(true)
                 return 'Scraping TA data'
             case 'ta_scrape_done':
-                setIsLoading(false)
+                setIsLoading(true)
                 return 'Finished scraping TA data'
             case 'scraping_worksheet_links':
                 setIsLoading(true)
@@ -189,6 +189,8 @@ export default function CourseCard() {
             case 'scrape_complete':
                 setIsLoading(false)
                 setShowStatus(false)
+                setShowGraphDisplay(true)
+                setButtonMessage("Restart Job")
                 return 'Scraping complete'
             case 'scrape_failed':
                 setIsLoading(false)
@@ -390,7 +392,7 @@ export default function CourseCard() {
         <div className="content-container">
 
             {/* Status showing status updates */}
-            {!showStatus ? 
+            {showStatus ? 
             <div className="status-container">
                 <div className="status">
                     <h2>{statusMessage}</h2>
@@ -399,7 +401,7 @@ export default function CourseCard() {
             </div> : null }
 
             {/* Graphical display of course data */}
-            {!showGraphDisplay ? (
+            {showGraphDisplay ? (
                 <div className="graph-display-container">
                     <GraphDisplay course_pk={course_pk} />
                 </div>
