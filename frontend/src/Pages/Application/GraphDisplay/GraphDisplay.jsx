@@ -11,7 +11,8 @@ export default function GraphDisplay({ course_pk }) {
     const [chart, setChart] = useState() // chart type (value is lowercase string, label is display ready)
 
     // state to manage fetched chart values for pie chart
-    const [chartData, setChartData] = useState({})
+    const [pieChartData, setPieChartData] = useState({})
+    const [showPieChart, setShowPieChart] = useState(false)
 
     // state to manage fetched assignments and TAs
     const [fetchedAssignments, setFetchedAssignments] = useState([])
@@ -61,21 +62,6 @@ export default function GraphDisplay({ course_pk }) {
 
     }, [])
 
-    const testAssignmentOptions = [
-        { value: "all", label: "All Assignments"},
-        { value: "graded", label: "Graded Assignments"},
-        { value: "703", label: "Assignment 1" },
-        { value: "704", label: "Assignment 2" },
-        { value: "705", label: "Assignment 3" },
-        { value: "715", label: "Assignment 4" },
-    ]
-
-    const testTAOptions = [
-        { value: "34", label: "Eli Boyden" },
-        { value: "35", label: "John Johnson" },
-        { value: "36", label: "Joe Schmoe" },
-    ]
-
     const chartTypes = [
         {value: "pie", label: "Pie"},
         {value: "bar", label: "Bar"},
@@ -94,9 +80,69 @@ export default function GraphDisplay({ course_pk }) {
         setChart(selected)
     }
 
-    function handleCreateChart() {
-        console.log(assignments, tas, chart)
-        // fetch data from the server to create the chart   
+    function handleCreateChart() {        
+        switch (chart.value) {
+            case "pie":
+                createPieChart()
+                break;
+            case "bar":
+                createBarChart()
+                break;
+            case "line":
+                createLineChart()
+                break;
+            default:
+                console.error("Invalid chart type selected")
+        }
+    }
+
+    function createPieChart() {
+        console.log("Creating pie chart!")
+        
+        let includedAssignments = assignments
+        let includedTAs = tas
+
+        if (assignments.filter(a => a.value === "all").length === 1) {
+            includedAssignments = fetchedAssignments.filter(a => a.value !== "all")
+        }
+
+        if (tas.filter(t => t.value === "all").length === 1) {
+            includedTAs = fetchedTAs.filter(t => t.value !== "all")
+        }
+
+        console.log("Included Assignments:", includedAssignments)
+        console.log("Included TAs:", includedTAs)
+
+        fetch(`${import.meta.env.VITE_API_URL}/api/get_pie_chart_data`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                course_id: course_pk,
+                assignments: includedAssignments.map(a => a.value),
+                tas: includedTAs.map(t => t.value)
+            })
+        }).then((res) => res.json()).then((data) => {
+            if (data.data) {
+                setPieChartData(data.data)
+                setShowPieChart(true)
+            }
+
+            if (data.error) {
+                console.error("Error fetching pie chart data:", data.error)
+            }
+        }).catch(err => console.error(err.error))
+
+    }
+
+    function createBarChart() {
+        console.log("Creating bar chart!")
+    }
+
+    function createLineChart() {
+        console.log("Creating line chart!")
     }
 
     return (
@@ -139,13 +185,12 @@ export default function GraphDisplay({ course_pk }) {
                     Create Chart
                 </button>
             </div>
+            {showPieChart ? 
             <PieChart 
-                data={{
-                    labels: testChartData.labels,
-                    values: testChartData.values
-                }}
+                data={pieChartData}
                 className="chart-container"
             />
+            : null}
         </div>
     );
 }

@@ -313,6 +313,31 @@ def get_tas():
 
     return jsonify({'tas': tas})
 
+@app.route('/api/get_pie_chart_data', methods=['POST', 'OPTIONS'])
+def get_pie_chart_data():
+    if request.method == 'OPTIONS':
+        # Allow the preflight request
+        return '', 200
+    
+    data = request.get_json()
+    course_id = data.get('course_id')
+    assignment_ids = data.get('assignments')
+    ta_ids = data.get('tas')
+
+    try:
+        pie_chart_data = driver.get_pie_chart_data(course_id, assignment_ids, ta_ids)
+        if not pie_chart_data:
+            return jsonify({'error': 'No data found for this course'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 200
+
+    pie_chart_data = {
+        'labels': [item[0] for item in pie_chart_data],
+        'values': [item[1] for item in pie_chart_data],
+    }
+
+    return jsonify({'data': pie_chart_data})
+
 @app.after_request
 def add_csp(response):
     response.headers['Content-Security-Policy'] = (
