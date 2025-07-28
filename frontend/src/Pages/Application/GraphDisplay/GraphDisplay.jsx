@@ -80,7 +80,17 @@ export default function GraphDisplay({ course_pk }) {
         setChart(selected)
     }
 
-    function handleCreateChart() {        
+    function handleCreateChart() {       
+        if (!chart) {
+            alert("Please select a chart type.")
+            return
+        }
+
+        if (assignments.length === 0 || tas.length === 0) {
+            alert("Please select at least one assignment and one TA.")
+            return
+        }
+
         switch (chart.value) {
             case "pie":
                 createPieChart()
