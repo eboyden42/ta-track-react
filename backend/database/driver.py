@@ -308,6 +308,31 @@ def get_pie_chart_data(course_pk: int, assignment_pks: list, ta_pks: list):
         raise e
     return cursor.fetchall()
 
+def get_bar_chart_data(course_pk: int, assignment_pks: list, ta_pks: list):
+    assignment_ids = ', '.join(map(str, assignment_pks))
+    ta_ids = ', '.join(map(str, ta_pks))
+    
+    query = f"""
+        SELECT 
+            tas.name AS ta_name,
+            assignments.name AS assignment_name,
+            SUM(ta_question_stats.graded_count) AS total_graded
+        FROM ta_question_stats
+        JOIN tas ON ta_question_stats.ta_id = tas.id
+        JOIN questions ON ta_question_stats.question_id = questions.id
+        JOIN assignments ON questions.assignment_id = assignments.id
+        WHERE assignments.course_id = %s
+          AND assignments.id IN ({assignment_ids})
+          AND tas.id IN ({ta_ids})
+        GROUP BY tas.name, assignments.name;
+    """
+    
+    try:
+        cursor.execute(query, (course_pk,))
+        return cursor.fetchall()
+    except Exception as e:
+        raise e
+
 def reset_course(course_pk: int):
     try:
         cursor.execute("DELETE FROM ta_question_stats WHERE question_id IN (SELECT id FROM questions WHERE assignment_id IN (SELECT id FROM assignments WHERE course_id = %s))", (course_pk,))

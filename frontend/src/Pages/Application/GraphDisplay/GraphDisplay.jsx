@@ -107,8 +107,6 @@ export default function GraphDisplay({ course_pk }) {
     }
 
     function createPieChart() {
-        console.log("Creating pie chart!")
-        
         let includedAssignments = assignments
         let includedTAs = tas
 
@@ -119,9 +117,6 @@ export default function GraphDisplay({ course_pk }) {
         if (tas.filter(t => t.value === "all").length === 1) {
             includedTAs = fetchedTAs.filter(t => t.value !== "all")
         }
-
-        console.log("Included Assignments:", includedAssignments)
-        console.log("Included TAs:", includedTAs)
 
         fetch(`${import.meta.env.VITE_API_URL}/api/get_pie_chart_data`, {
             method: 'POST',
@@ -148,8 +143,39 @@ export default function GraphDisplay({ course_pk }) {
     }
 
     function createBarChart() {
-        console.log("Creating bar chart!")
-        
+        let includedAssignments = assignments
+        let includedTAs = tas
+
+        if (assignments.filter(a => a.value === "all").length === 1) {
+            includedAssignments = fetchedAssignments.filter(a => a.value !== "all")
+        }
+
+        if (tas.filter(t => t.value === "all").length === 1) {
+            includedTAs = fetchedTAs.filter(t => t.value !== "all")
+        }
+
+        fetch(`${import.meta.env.VITE_API_URL}/api/get_bar_chart_data`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                course_id: course_pk,
+                assignments: includedAssignments.map(a => a.value),
+                tas: includedTAs.map(t => t.value)
+            })
+        }).then((res) => res.json()).then((data) => {
+            if (data.data) {
+                console.log("Bar chart data:", data.data)
+                // setBarChartData(data.data)
+                // setShowBarChart(true)
+            }
+
+            if (data.error) {
+                console.error("Error fetching bar chart data:", data.error)
+            }
+        })
     }
 
     function createLineChart() {
