@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import Select from "react-select"
-import PieChart from "../../../components/PieChart/PieChart"
+import PieChart from "../../../components/PieChart"
+import BarChart from "../../../components/BarChart"
 import "./GraphDisplay.scss"
 import { Pie } from "react-chartjs-2"
 
@@ -14,14 +15,13 @@ export default function GraphDisplay({ course_pk }) {
     const [pieChartData, setPieChartData] = useState({})
     const [showPieChart, setShowPieChart] = useState(false)
 
+    // state to manage fetched bar chart data
+    const [barChartData, setBarChartData] = useState({})
+    const [showBarChart, setShowBarChart] = useState(true)
+
     // state to manage fetched assignments and TAs
     const [fetchedAssignments, setFetchedAssignments] = useState([])
     const [fetchedTAs, setFetchedTAs] = useState([])
-
-    const testChartData = {
-        labels: ["Eli Boyden", "John Johnson", "Joe Schmoe"],
-        values: [10, 20, 30]
-    }
 
     useEffect(() => {
         // fetch assignments and TAs from the server
@@ -149,11 +149,27 @@ export default function GraphDisplay({ course_pk }) {
 
     function createBarChart() {
         console.log("Creating bar chart!")
+        
     }
 
     function createLineChart() {
         console.log("Creating line chart!")
     }
+
+    const testBarChartData = [
+        {
+            assignment: 'HW1',
+            data: { Alice: 85, Bob: 90, Charlie: 0 },
+        },
+        {
+            assignment: 'HW2',
+            data: { Alice: 88, Bob: 85, Charlie: 82 },
+        },
+        {
+            assignment: 'HW3',
+            data: { Alice: 92, Bob: 89, Charlie: 84 },
+        },
+    ]
 
     return (
         <div className="graph-display">
@@ -195,9 +211,17 @@ export default function GraphDisplay({ course_pk }) {
                     Create Chart
                 </button>
             </div>
+
             {showPieChart ? 
             <PieChart 
                 data={pieChartData}
+                className="chart-container"
+            />
+            : null}
+
+            {showBarChart ?
+            <BarChart
+                data={testBarChartData}
                 className="chart-container"
             />
             : null}

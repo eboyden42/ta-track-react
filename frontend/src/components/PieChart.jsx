@@ -7,7 +7,7 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 export default function PieChart({ data, ...rest }) {
 
     // state to manage generated colors for the pie chart
-    const [generatedColors, setGeneratedColors] = React.useState()
+    const [generatedColors, setGeneratedColors] = React.useState([])
 
     // function to generate random colors for the pie chart
     function generateColors(numColors) {
