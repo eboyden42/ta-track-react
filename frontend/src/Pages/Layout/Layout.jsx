@@ -4,18 +4,6 @@ import "./Layout.scss"
 import TAGuideLogo from "../../assets/TAGuide.png"
 
 export default function Layout() {
-    
-    // // Navigation
-    // const navigate = useNavigate()
-    
-    // useEffect(() => {
-    //   // if user is logged in navigate to the user page
-    //   console.log(user)
-    //   if (user) {
-    //     navigate("/user/dashboard")
-    //   }
-    // }, [user])
-
     return (
         <>
         <div className="nav-container">
