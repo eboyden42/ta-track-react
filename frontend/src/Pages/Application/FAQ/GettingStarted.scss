@@ -34,6 +34,9 @@
         gap: 30px;
 
         .table-of-contents {
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
 
             min-width: 300px;
             margin-top: 30px;
@@ -78,6 +81,20 @@
 
         .main-body {
             min-width: 600px;
+
+            strong.add-course {
+                color: var(--floral-white);
+                font-weight: 100;
+                background-color: var(--aqua-blue);
+                padding: 5px 10px;
+                font-size: 12px;
+                border-radius: 4px;
+            }
+
+            code {
+                color: var(--russian-violet-light);
+                font-family: 'Courier New', Courier, monospace;
+            }
         }
     }
 

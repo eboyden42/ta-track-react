@@ -12,6 +12,7 @@
 
 .banner-warning {
     background-color: #FFFBEB;
+    border: 1px solid #FBBF24;
 }
 
 .banner-error {
@@ -20,6 +21,7 @@
 
 .banner-neutral {
     background-color: #EFF6FF;
+    border: 1px solid #60A5FA;
 }
 
 .icon {
