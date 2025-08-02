@@ -50,9 +50,10 @@ export default function Info() {
                 setFetchedUsername(data.gradescope_username)
                 setUsername(data.gradescope_username)
                 setPassword(data.gradescope_password)
-                setShowForm(false) // Hide form if user info is fetched
-            } else {
-                console.log(data.message)
+                setShowForm(false)
+            } else if (data.message === 'No Gradescope info found') {
+                setShowForm(true)
+                setIsLoading(false)
             }
         })
         .catch((error) => {

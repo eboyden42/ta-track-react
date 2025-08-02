@@ -132,7 +132,7 @@ def get_gs_info():
             'gradescope_password': decrypt_data(gs_info['gradescope_password_hash'])
         })
     else:
-        return jsonify({'message': 'No Gradescope info found'}), 404
+        return jsonify({'message': 'No Gradescope info found'}), 200
 
 # Route to get the courses for a user
 @app.route('/api/get_courses', methods=['POST'])
