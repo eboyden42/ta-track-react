@@ -11,6 +11,7 @@ import CourseCard from "./Pages/Application/CourseCard/CourseCard"
 import DefaultCard from "./Pages/Application/DefaultCard/DefaultCard"
 import ErrorPage from "./Pages/ErrorPage/ErrorPage"
 import AuthRequired from "./Pages/AuthRequired"
+import GettingStarted from "./Pages/Application/FAQ/GettingStarted"
 
 export default function AppRoutes() {
     return (
@@ -31,6 +32,7 @@ export default function AppRoutes() {
                             <Route path="/user/dashboard/:id" element={<CourseCard />}/>
                         </Route>
                         <Route path="/user/info" element={<Info />} />
+                        <Route path="/user/getting-started" element={<GettingStarted />} />
                     </Route>
                 </Route>
             </Routes>

@@ -55,7 +55,7 @@ export default function ApplicationLayout() {
                 </NavLink>
                 <NavLink to="/user/dashboard">Dashboard</NavLink>
                 <NavLink to="/user/info">Configuration</NavLink>
-                <NavLink to="/user/faqs">FAQs</NavLink>
+                <NavLink to="/user/getting-started">Getting Started</NavLink>
             </div>
             <div className="right-tabs">
                 {/* Profile section with dropdown */}
