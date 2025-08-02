@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 import Select from "react-select"
 import PieChart from "../../../components/PieChart"
 import BarChart from "../../../components/BarChart"
+import LineChart from "../../../components/LineChart"
 import "./GraphDisplay.scss"
-import { Pie } from "react-chartjs-2"
+
 
 export default function GraphDisplay({ course_pk }) {
     // state to manage raw selection data from user input
@@ -18,6 +19,10 @@ export default function GraphDisplay({ course_pk }) {
     // state to manage fetched bar chart data
     const [barChartData, setBarChartData] = useState([])
     const [showBarChart, setShowBarChart] = useState(false)
+
+    // state to manage fetched line chart data
+    const [lineChartData, setLineChartData] = useState([])
+    const [showLineChart, setShowLineChart] = useState(false)
 
     // state to manage fetched assignments and TAs
     const [fetchedAssignments, setFetchedAssignments] = useState([])
@@ -108,6 +113,7 @@ export default function GraphDisplay({ course_pk }) {
 
     function createPieChart() {
         setShowBarChart(false)
+        setShowLineChart(false)
 
         let includedAssignments = assignments
         let includedTAs = tas
@@ -146,6 +152,7 @@ export default function GraphDisplay({ course_pk }) {
 
     function createBarChart() {
         setShowPieChart(false)
+        setShowLineChart(false)
 
         let includedAssignments = assignments
         let includedTAs = tas
@@ -184,22 +191,44 @@ export default function GraphDisplay({ course_pk }) {
 
     function createLineChart() {
         console.log("Creating line chart!")
-    }
+        setShowPieChart(false)
+        setShowBarChart(false)
 
-    const testBarChartData = [
-        {
-            assignment: 'HW1',
-            data: { Alice: 85, Bob: 90, Charlie: 0 },
-        },
-        {
-            assignment: 'HW2',
-            data: { Alice: 88, Bob: 85, Charlie: 82 },
-        },
-        {
-            assignment: 'HW3',
-            data: { Alice: 92, Bob: 89, Charlie: 84 },
-        },
-    ]
+        let includedAssignments = assignments
+        let includedTAs = tas
+
+        if (assignments.filter(a => a.value === "all").length === 1) {
+            includedAssignments = fetchedAssignments.filter(a => a.value !== "all")
+        }
+
+        if (tas.filter(t => t.value === "all").length === 1) {
+            includedTAs = fetchedTAs.filter(t => t.value !== "all")
+        }
+
+        fetch(`${import.meta.env.VITE_API_URL}/api/get_bar_chart_data`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                course_id: course_pk,
+                assignments: includedAssignments.map(a => a.value),
+                tas: includedTAs.map(t => t.value)
+            })
+        }).then((res) => res.json()).then((data) => {
+            if (data.data) {
+                console.log("Line chart data:", data.data)
+                setLineChartData(data.data)
+                setShowLineChart(true)
+            }
+
+            if (data.error) {
+                console.error("Error fetching line chart data:", data.error)
+            }
+        })
+
+    }
 
     return (
         <div className="graph-display">
@@ -252,6 +281,13 @@ export default function GraphDisplay({ course_pk }) {
             {showBarChart ?
             <BarChart
                 data={barChartData}
+                className="chart-container"
+            />
+            : null}
+
+            {showLineChart ?
+            <LineChart
+                data={lineChartData}
                 className="chart-container"
             />
             : null}
