@@ -369,12 +369,6 @@ def get_bar_chart_data():
         unique_assignments.add((assignment_name, assignment_id))
         unique_tas.add(ta_name)
 
-    # for assignment in unique_assignments:
-    #     result_data.append({
-    #         'assignment': assignment,
-    #         'data': {ta: 0 for ta in unique_tas},
-    #     })
-
     for assignment in unique_assignments:
         assignment_name = assignment[0]
         assignment_id = assignment[1]
