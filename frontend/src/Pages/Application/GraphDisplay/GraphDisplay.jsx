@@ -41,7 +41,6 @@ export default function GraphDisplay({ course_pk }) {
             if (data.assignments) {
                 setFetchedAssignments(data.assignments)
                 setFetchedAssignments(prev => [{ value: "all", label: "All Assignments"}, ...prev])
-
             }
         })
         .catch((error) => {
@@ -64,7 +63,6 @@ export default function GraphDisplay({ course_pk }) {
         .catch((error) => {
             console.error("Error fetching TAs:", error.error)
         })
-
     }, [])
 
     const chartTypes = [
@@ -190,7 +188,6 @@ export default function GraphDisplay({ course_pk }) {
     }
 
     function createLineChart() {
-        console.log("Creating line chart!")
         setShowPieChart(false)
         setShowBarChart(false)
 

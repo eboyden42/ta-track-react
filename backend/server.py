@@ -364,14 +364,24 @@ def get_bar_chart_data():
     for i in range(len(bar_chart_data)):
         assignment_name = bar_chart_data[i][1]
         ta_name = bar_chart_data[i][0]
+        assignment_id = bar_chart_data[i][3]
 
-        unique_assignments.add(assignment_name)
+        unique_assignments.add((assignment_name, assignment_id))
         unique_tas.add(ta_name)
 
+    # for assignment in unique_assignments:
+    #     result_data.append({
+    #         'assignment': assignment,
+    #         'data': {ta: 0 for ta in unique_tas},
+    #     })
+
     for assignment in unique_assignments:
+        assignment_name = assignment[0]
+        assignment_id = assignment[1]
         result_data.append({
-            'assignment': assignment,
-            'data': {ta: 0 for ta in unique_tas}
+            'assignment': assignment_name,
+            'data': {ta: 0 for ta in unique_tas},
+            'id': assignment_id
         })
 
     for i in range(len(bar_chart_data)):
@@ -381,6 +391,8 @@ def get_bar_chart_data():
         for item in result_data:
             if item['assignment'] == assignment_name:
                 item['data'][ta_name] += value
+
+    result_data.sort(key=lambda x: x['id'], reverse=True)
 
     return jsonify({'data': result_data})
 

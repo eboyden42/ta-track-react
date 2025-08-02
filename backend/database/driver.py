@@ -316,7 +316,8 @@ def get_bar_chart_data(course_pk: int, assignment_pks: list, ta_pks: list):
         SELECT 
             tas.name AS ta_name,
             assignments.name AS assignment_name,
-            SUM(ta_question_stats.graded_count) AS total_graded
+            SUM(ta_question_stats.graded_count) AS total_graded,
+            assignments.id AS assignment_id
         FROM ta_question_stats
         JOIN tas ON ta_question_stats.ta_id = tas.id
         JOIN questions ON ta_question_stats.question_id = questions.id
@@ -324,7 +325,8 @@ def get_bar_chart_data(course_pk: int, assignment_pks: list, ta_pks: list):
         WHERE assignments.course_id = %s
           AND assignments.id IN ({assignment_ids})
           AND tas.id IN ({ta_ids})
-        GROUP BY tas.name, assignments.name;
+        GROUP BY tas.name, assignments.name, assignments.id
+        ORDER BY assignments.id;
     """
     
     try:
