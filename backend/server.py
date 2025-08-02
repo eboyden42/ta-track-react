@@ -356,9 +356,33 @@ def get_bar_chart_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 200
 
-    
+    result_data = []
 
-    return jsonify({'data': bar_chart_data})
+    unique_assignments = set()
+    unique_tas = set()
+
+    for i in range(len(bar_chart_data)):
+        assignment_name = bar_chart_data[i][1]
+        ta_name = bar_chart_data[i][0]
+
+        unique_assignments.add(assignment_name)
+        unique_tas.add(ta_name)
+
+    for assignment in unique_assignments:
+        result_data.append({
+            'assignment': assignment,
+            'data': {ta: 0 for ta in unique_tas}
+        })
+
+    for i in range(len(bar_chart_data)):
+        assignment_name = bar_chart_data[i][1]
+        ta_name = bar_chart_data[i][0]
+        value = bar_chart_data[i][2]
+        for item in result_data:
+            if item['assignment'] == assignment_name:
+                item['data'][ta_name] += value
+
+    return jsonify({'data': result_data})
 
 @app.after_request
 def add_csp(response):

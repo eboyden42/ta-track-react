@@ -54,7 +54,7 @@ export default function BarChart({ data, ...rest }) {
         },
     }
 
-    const assignmentLabels = data.map(item => item.assignment)
+    const assignmentLabels = data?.map(item => item.assignment)
     const tas = Object.keys(data[0].data)
     const datasets = tas.map((ta, index) => ({
         label: ta,

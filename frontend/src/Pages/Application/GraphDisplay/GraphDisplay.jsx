@@ -16,8 +16,8 @@ export default function GraphDisplay({ course_pk }) {
     const [showPieChart, setShowPieChart] = useState(false)
 
     // state to manage fetched bar chart data
-    const [barChartData, setBarChartData] = useState({})
-    const [showBarChart, setShowBarChart] = useState(true)
+    const [barChartData, setBarChartData] = useState([])
+    const [showBarChart, setShowBarChart] = useState(false)
 
     // state to manage fetched assignments and TAs
     const [fetchedAssignments, setFetchedAssignments] = useState([])
@@ -107,6 +107,8 @@ export default function GraphDisplay({ course_pk }) {
     }
 
     function createPieChart() {
+        setShowBarChart(false)
+
         let includedAssignments = assignments
         let includedTAs = tas
 
@@ -143,6 +145,8 @@ export default function GraphDisplay({ course_pk }) {
     }
 
     function createBarChart() {
+        setShowPieChart(false)
+
         let includedAssignments = assignments
         let includedTAs = tas
 
@@ -168,8 +172,8 @@ export default function GraphDisplay({ course_pk }) {
         }).then((res) => res.json()).then((data) => {
             if (data.data) {
                 console.log("Bar chart data:", data.data)
-                // setBarChartData(data.data)
-                // setShowBarChart(true)
+                setBarChartData(data.data)
+                setShowBarChart(true)
             }
 
             if (data.error) {
@@ -247,7 +251,7 @@ export default function GraphDisplay({ course_pk }) {
 
             {showBarChart ?
             <BarChart
-                data={testBarChartData}
+                data={barChartData}
                 className="chart-container"
             />
             : null}
