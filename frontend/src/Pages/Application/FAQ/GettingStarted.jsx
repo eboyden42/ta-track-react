@@ -157,6 +157,50 @@ export default function GettingStarted() {
                             </Banner.Content>
                         </Banner>   
                     </section>
+                    <section className="visualization" ref={step4Ref}>
+                        <h2>Step 4: Visualization</h2>
+                        {/* explain how users can select which assignments to include, which tas to include and which type of graph they want to create */}
+                        <p>Now that you've got the course data, you can visualize it in multiple ways. You should be able to see three slectors and a button that says "Create Chart".</p>
+
+                        <h4>Assignments Selector:</h4>
+                        <p>
+                            The first selector allows you to choose which assignments you want to include in the chart. You can select specific assignments, or choose the all assignments option to include all assignments in the course.
+                        </p>
+                        <h4>TA Selector:</h4>
+                        <p>
+                            The second selector allows you to choose which TAs you want to include in the chart. You can select specific TAs, or choose the all TAs option to include all TAs in the course.
+                        </p>
+                        <h4>Chart Type Selector:</h4>
+                        <p>
+                            The third selector allows you to choose the type of graph you want to create. You can select from options like bar graphs, line graphs, or pie charts, depending on how you want to visualize the data.
+                        </p>
+
+                        <p>
+                            Once you've made your selections, click the "Create Chart" button to generate your visualization. You can always go back and adjust your selections if needed.
+                        </p>
+
+                        <h3>Example Analysis:</h3>
+                        <p>
+                            Let's say I'm curious about how each TA performed on a specific assignment. I would select the assignment from the first selector, choose the specific TAs I'm interested in from the second selector, and then pick a bar graph from the third selector. After clicking "Create Chart", I would see a bar graph comparing the selected TAs' performance on the chosen assignment.
+                        </p>
+                        <p>
+                            To get some more context, I could select a few adjacent assignments and create a line chart comparing two TAs grading progress over time.
+                        </p>
+                    </section>
+                    <section className="troubleshooting" ref={troubleshootingRef}>
+                        <h2>Troubleshooting</h2>
+                        <p>
+                            If you encounter any issues while using the visualization tool, here are some common troubleshooting steps you can follow:
+                        </p>
+                        <h4>Check Your Data:</h4>
+                        <p>
+                            Ensure that the data you are trying to visualize is correctly formatted and complete. Missing or incorrect data can lead to errors in the visualization.
+                        </p>
+                        <h4>Review Your Selections:</h4>
+                        <p>
+                            Double-check your selections in the assignment, TA, and chart type selectors. Make sure you have chosen valid options before clicking "Create Chart".
+                        </p>
+                    </section>
                 </div>
             </div>
         </div>
