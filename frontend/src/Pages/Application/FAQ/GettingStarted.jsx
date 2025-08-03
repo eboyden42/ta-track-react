@@ -115,6 +115,7 @@ export default function GettingStarted() {
                             </Banner.Content>
                         </Banner>
                     </section>
+                    <hr />
                     <section className="adding-course" ref={step2Ref}>
                         <h2>Step 2: Adding a Course</h2>
                         <p>
@@ -134,6 +135,7 @@ export default function GettingStarted() {
                         <p> It can also be found by navigating to your course in gradescope, and looking just below the course title on the main dashboard. You should see text like <code>Course ID: 123456</code>.</p>
                         <p>Once you've confirmed the course ID, press submit to create the course. You should see the course appear in the course list on the left Dashboard.</p>
                     </section>
+                    <hr />
                     <section className="running-job" ref={step3Ref}>
                         <h2>Step 3: Running a Job</h2>
                         <p>
@@ -157,6 +159,7 @@ export default function GettingStarted() {
                             </Banner.Content>
                         </Banner>   
                     </section>
+                    <hr />
                     <section className="visualization" ref={step4Ref}>
                         <h2>Step 4: Visualization</h2>
                         {/* explain how users can select which assignments to include, which tas to include and which type of graph they want to create */}
@@ -193,6 +196,7 @@ export default function GettingStarted() {
                             </Banner.Content>
                         </Banner>
                     </section>
+                    <hr />
                     <section className="troubleshooting" ref={troubleshootingRef}>
                         <h2>Troubleshooting</h2>
                         <p>
