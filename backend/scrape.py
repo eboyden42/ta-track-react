@@ -39,6 +39,9 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
     driver.update_status_by_id(course_id=course_pk, status="started_ta_scrape")
     socketio.emit('started_ta_scrape', {'course': course_pk})
 
+    # Delete any data for the course that may exist - starting a new scrape means a clean slate
+    driver.reset_course(course_pk=course_pk)
+
     # _____________________ Initialize WebDriver ________________________
 
     web_driver = None
@@ -137,7 +140,7 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
             percent_graded = row.find_element(By.CLASS_NAME, "progressBar--captionPercent").text
 
             driver.add_assignment(course_pk=course_pk, name=assignment_name, gradescope_id=gradescope_id, percent_graded=percent_graded, ws_link=href)
-        except:
+        except Exception as e:
             pass
 
     # ________________________ End of Worksheet Submission Links _____________________________
@@ -156,7 +159,6 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
     # Get the assignments for the course, need to query the database to get the assignment_pk
     # Same for TAs
     db_ws = driver.get_assignments_by_course_id(course_pk)
-    course_tas = driver.get_tas_by_course_id(course_pk)
 
     for i in range(len(db_ws)):
         assignment_pk = db_ws[i][0] # Extract the assignment primary key
@@ -383,38 +385,52 @@ def scrape_assignment(assignment_pk: int, assignment_name: str, course_pk: int, 
     """
 
     # Get the questions for the assignment and the course tas, need to query the database to get the question_pk
-    questions = driver.get_questions_by_assignment_id(assignment_id=assignment_pk)
-    course_tas = driver.get_tas_by_course_id(course_pk)
+    try:
+        sendMessage(socketio=socketio, message="before", course_pk=course_pk)
 
-    for j in range(len(questions)):
-        # get question data
-        question_pk = questions[j][0]
-        question_link = questions[j][4]
+        questions = driver.get_questions_by_assignment_id(assignment_id=assignment_pk)
+        course_tas = driver.get_tas_by_course_id(course_pk)
 
-        # set up TA question counters
-        ta_questions = []
-        for ta in course_tas:
-            ta_questions.append({'name': ta[2], 'count': 0, 'ta_id': ta[0]})  # (ta name, # graded for this question, ta id)
+        sendMessage(socketio=socketio, message="after", course_pk=course_pk)
 
-        web_driver.get(question_link)
+        for j in range(len(questions)):
+            # get question data
 
-        try:
-            rows = web_driver.find_elements(By.CSS_SELECTOR, '#question_submissions tbody tr')
-            if len(rows) == 0:
-                raise Exception("No submissions found for this question")
-            for row in rows:
-                name_cell = row.find_elements(By.TAG_NAME, 'td')[2]
-                ta_name = name_cell.text
-                for ta in ta_questions:
-                    if ta['name'] in ta_name:  # if the ta names match, increment the questions graded
-                        ta['count'] += 1
-        except Exception as e:
-            pass
-            # sendMessage(socketio, f"Error counting questions: {str(e)}", course_pk)
+            sendMessage(socketio=socketio, message=str(questions), course_pk=course_pk)
 
-        for ta in ta_questions:
+            question_pk = questions[j][0]
+            question_link = questions[j][2]
+
+            sendMessage(socketio=socketio, message=f"Scraping question {question_pk} for assignment {assignment_name}", course_pk=course_pk)
+
+            # set up TA question counters
+            ta_questions = []
+            for ta in course_tas:
+                sendMessage(socketio=socketio, message=f"Setting up TA {ta[2]}", course_pk=course_pk)
+                ta_questions.append({'name': ta[2], 'count': 0, 'ta_id': ta[0]})  # (ta name, # graded for this question, ta id)
+
+            web_driver.get(question_link)
+
             try:
-                driver.add_ta_question_stats(ta_id=ta['ta_id'], question_id=question_pk, count=ta['count'])
+                rows = web_driver.find_elements(By.CSS_SELECTOR, '#question_submissions tbody tr')
+                if len(rows) == 0:
+                    raise Exception("No submissions found for this question")
+                for row in rows:
+                    name_cell = row.find_elements(By.TAG_NAME, 'td')[2]
+                    ta_name = name_cell.text
+                    for ta in ta_questions:
+                        if ta['name'] in ta_name:  # if the ta names match, increment the questions graded
+                            ta['count'] += 1
             except Exception as e:
+                sendMessage(socketio, f"Error counting questions: {str(e)}", course_pk)
                 pass
-                # sendMessage(socketio, f"Error adding TA question stats: {str(e)}", course_pk)
+
+            for ta in ta_questions:
+                try:
+                    driver.add_ta_question_stats(ta_id=ta['ta_id'], question_id=question_pk, count=ta['count'])
+                except Exception as e:
+                    sendMessage(socketio, f"Error adding TA question stats: {str(e)}", course_pk)
+                    pass
+    except Exception as e:
+        displayErrorMessage(socketio=socketio, course_pk=course_pk, error_msg=str(e))
+        raise e

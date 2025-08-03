@@ -49,8 +49,7 @@ def create_tables():
 
 def drop_all_tables():
     cursor.execute("""
-        DROP TABLE IF EXISTS 
-            ta_question_history,
+        DROP TABLE IF EXISTS
             ta_question_stats,
             tas,
             questions,
