@@ -30,7 +30,6 @@ export default function AuthRequired() {
             })
             .then(data => {
                 // Session found, update user context
-                console.log("Session persisted...")
                 setUser(data.user)
                 setAuthenticated(true)
             })

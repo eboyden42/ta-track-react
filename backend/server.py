@@ -23,7 +23,7 @@ scheduler.start()
 # Initialize the database connection, this route is just for testing the connection
 @app.route('/api/data')
 def get_data():
-    return jsonify({'message': 'Connection successful...'})
+    return jsonify({'message': 'Connected to server'})
 
 # Route to check if an username exists in the database already
 @app.route('/api/check_username', methods=['POST'])

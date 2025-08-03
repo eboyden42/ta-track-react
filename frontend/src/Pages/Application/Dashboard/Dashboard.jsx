@@ -55,12 +55,10 @@ export default function Dashboard() {
         }).then((response) => response.json())
         .then((data) => {
             if (data.courses && data.courses.length > 0) {
-                console.log("Courses fetched successfully:", data.courses)
                 setCourses(data.courses)
                 return
             } else {
                 setCourses([])
-                console.log("No courses found for this user.")
             }
         })
         .catch((error) => {
@@ -99,7 +97,6 @@ export default function Dashboard() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data.message)
             setCourseID("")
             setCourseTitle("")
             setShowForm(false)
@@ -139,8 +136,8 @@ export default function Dashboard() {
 
     const sortedCourses = [...courses].sort((a, b) => a[0] - b[0])
     const courseList = sortedCourses.map((course, index) => {
-        const course_pk = course[0];
-        const title = course[2];
+        const course_pk = course[0]
+        const title = course[2]
 
         return (
             <div className="course-link-container" key={course_pk}>

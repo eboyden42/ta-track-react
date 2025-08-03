@@ -48,7 +48,6 @@ export default function CourseCard() {
     
     // useEffect for updating status after inital load
     useEffect(() => {
-        console.log(status)
         setStatusMessage(handleStatusUpdates(status))
         if (status === 'scrape_complete') {
             // schedulePeriodicUpdates()
@@ -149,7 +148,6 @@ export default function CourseCard() {
         .then(res => res.json())
         .then(data => {
             const message =  data.message
-            console.log(message)
             if (message === "Course deleted successfully") {
                 // upadate course list
                 update()
@@ -205,7 +203,6 @@ export default function CourseCard() {
         e.preventDefault()
         setIsLoading(true)
         setButtonMessage(handleButtonMessage('started_ta_scrape'))
-        console.log(`Starting scraping for ${course_pk}`)
         fetch(`${import.meta.env.VITE_API_URL}/api/initial_scrape_task`, {
             method: 'POST',
             headers: {
@@ -214,16 +211,11 @@ export default function CourseCard() {
             credentials: 'include',
             body: JSON.stringify({id: course_pk})
         })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data.message)
-        })
         .catch(err => console.error(err))
     }
 
     // Function to schedule periodic updates for the course
     function schedulePeriodicUpdates() {
-        console.log("Scheduling periodic updates for course:", course_pk)
         fetch(`${import.meta.env.VITE_API_URL}/api/schedule_update`, {
             method: 'POST',
             credentials: 'include',
@@ -231,10 +223,6 @@ export default function CourseCard() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({id: course_pk})
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data.message)
         })
         .catch(err => console.error(err))
     }
@@ -250,9 +238,7 @@ export default function CourseCard() {
         })
         .then(res => res.json())
         .then(data => {
-            console.log("Error message:", data)
             if (data.error_message) {
-                console.log("Error message:", data.error_message)
                 setStatusMessage(data.error_message)
             }
         })
@@ -279,7 +265,6 @@ export default function CourseCard() {
 
     function handleTitleUpdates(e) {
         e.preventDefault()
-        console.log("Updating title")
         fetch(`${import.meta.env.VITE_API_URL}/api/update_title`, {
             method: 'POST',
             credentials: 'include',
@@ -291,7 +276,6 @@ export default function CourseCard() {
         .then(res => res.json())
         .then(data => {
             if (data.message) {
-                console.log(data.message)
                 setShowPopup(false)
                 setShowUpdateForm(false)
                 update()
@@ -309,7 +293,6 @@ export default function CourseCard() {
             return
         }
 
-        console.log("Updating id")
         fetch(`${import.meta.env.VITE_API_URL}/api/update_gs_id`, {
             method: 'POST',
             credentials: 'include',
@@ -321,7 +304,6 @@ export default function CourseCard() {
         .then(res => res.json())
         .then(data => {
             if (data.message) {
-                console.log(data.message)
                 setShowPopup(false)
                 setShowUpdateForm(false)
                 update()
@@ -331,7 +313,6 @@ export default function CourseCard() {
     }
     
     function handleButtonMessage(status) {
-        console.log("Got status:", status)
         switch (status) {
             case 'scrape_not_started':
                 return "Start Scraping Job"

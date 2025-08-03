@@ -111,7 +111,6 @@ export default function LoginPage() {
     .then((res) => res.json())
     .then((data) => {
       // execute code based on response
-      console.log(data)
       const message = data.message
       switch (message) {
         case "verified":
@@ -132,7 +131,6 @@ export default function LoginPage() {
 
   function handleSignupSubmit(event) {
     event.preventDefault()
-    console.log("Signing up...")
 
     fetch(`${import.meta.env.VITE_API_URL}/api/create_user`, {
       method: 'POST',
