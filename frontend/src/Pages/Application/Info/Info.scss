@@ -2,6 +2,23 @@ body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     background-color: floralwhite;
 
+    h2 {
+        font-weight: 100;
+        color: var(--russian-violet);
+        margin-top: 20px;
+    }
+
+    h3 {
+        color: var(--russian-violet);
+        font-weight: 100;
+        font-size: 20px;
+        
+        span {
+            color: var(--silver-lake);
+        }
+    }
+
+
     .foursquare-rli-bounding-box {
         display: flex;
         justify-content: center;
@@ -18,30 +35,25 @@ body {
         padding: 12px 30px;
         text-align: center;
     }
+    
+        .form-container {
+            max-width: 1200px;
+            padding: 20px 40px;
+            display: block;
+            margin: 0 auto;
 
-    .form-container {
-        padding: 20px 40px;
+            .flex-container {
+                display: flex;
+                justify-content: start;
 
-            h2 {
-                font-weight: 100;
-                margin-bottom: 20px;
-                color: var(--russian-violet);
-            }
-
-            h3 {
-                font-weight: 400;
-                color: var(--silver-lake);
-                margin-bottom: 20px;
-            }
-
-        .info-form {
+            .info-form {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                justify-content: center;
-                width: 60%;
+                width: 400px;
                 padding: 20px;
-                margin: 0 auto;
+                margin-left: auto;
+                margin-right: auto;
 
                 input {
                     width: 100%;
@@ -64,7 +76,7 @@ body {
                     background-color: var(--aqua-blue);
                     color: var(--floral-white);
                     padding: 10px;
-                    width: 103%;
+                    width: 106%;
                     box-sizing: border-box;
                     border-radius: 5px;
 
@@ -76,36 +88,40 @@ body {
                     }
                 }
             }
+
+            .info-banner {
+                max-width: 600px;
+            }
+        }
     }
 
     .info-container {
         padding: 20px 40px;
-
-        h2 {
-            font-weight: 100;
-            margin-bottom: 20px;
-            color: var(--russian-violet);
-        }
-
-        h3 {
-            font-weight: 400;
-            color: var(--silver-lake);
-            margin-bottom: 20px;
-        }
+        max-width: 1200px;
+        display: block;
+        margin: 0 auto;
 
         .update-btn {
             cursor: pointer;
             border: none;
             background-color: var(--aqua-blue);
             color: var(--floral-white);
-            padding: 10px 20px;
+            padding: 10px 15px 10px 20px;
             border-radius: 5px;
+            display: flex;
+            align-self: center;
+            justify-content: center;
 
             transition: transform 0.2s ease, box-shadow 0.2s ease;
 
             &:hover {
                 transform: scale(1.025);
                 box-shadow: 0 4px 16px rgba(12, 192, 223, 0.2);
+            }
+
+            svg {
+                margin-left: 5px;
+                color: var(--floral-white);
             }
         }
     }

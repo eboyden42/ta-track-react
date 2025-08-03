@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect, use } from 'react'
+import Banner from "../../../components/Banner/index"
 import { FourSquare } from "react-loading-indicators"
+import { FaArrowRight } from "react-icons/fa"
 import { UserContext } from '../../../App'
 import './Info.scss'
 
@@ -104,33 +106,51 @@ export default function Info() {
         ) : (
             showForm ? (
                 <div className="form-container">
-                    <h2>We'll need your gradescope login information to get started, don't worry all information is securely encrypted.</h2>
-                    <h3>Please enter your gradescope login below. If there are any issues, we'll let you know.</h3>
-                    <form className="info-form" onSubmit={handleSubmit}>
-                        <input
-                            type="text"
-                            value={gradescopeUsername}
-                            onChange={handleUsernameChange}
-                            placeholder="Gradescope email or username"
-                        />
-                        <input
-                            type="password"
-                            value={gradescopePassword}
-                            onChange={handlePasswordChange}
-                            placeholder="Gradescope password"
-                        />
-                        <button className="submit" type="submit">
-                            Submit
-                        </button>
-                    </form>
+                    <h2>Gradescope Configuration</h2>
+                    <hr />
+                    <h3>Please enter your Gradescope login info below, <span>all information is securely encrypted.</span></h3>
+                    <div className="flex-container" >
+                        <form className="info-form" onSubmit={handleSubmit}>
+                            <input
+                                type="text"
+                                value={gradescopeUsername}
+                                onChange={handleUsernameChange}
+                                placeholder="Gradescope email or username"
+                            />
+                            <input
+                                type="password"
+                                value={gradescopePassword}
+                                onChange={handlePasswordChange}
+                                placeholder="Gradescope password"
+                            />
+                            <button className="submit" type="submit">
+                                Submit
+                            </button>
+                        </form>
+                    </div>
+                    <Banner type="neutral" className="info-banner">
+                        <Banner.Title>Questions?</Banner.Title>
+                        <Banner.Content>
+                            If you have any questions about configuring your Gradescope account, please refer to our <a href="/user/getting-started">Getting Started</a> page.
+                        </Banner.Content>
+                    </Banner>
+                    
                 </div>
             ) : (
                 <div className="info-container">
                     <h2>Gradescope Information</h2>
+                    <hr />
+                    <Banner type="success">
+                        <Banner.Title>Configuration Complete!</Banner.Title>
+                        <Banner.Content>
+                            Your Gradescope account is successfully configured. You can now track your courses and assignments.
+                        </Banner.Content>
+                    </Banner>
                     <p>Your Gradescope username is: {fetchedUsername}</p>
                     <p>Your Gradescope password is securely stored on our encrypted database and not displayed here.</p>
                     <button className="update-btn" onClick={handleUpdateClick}>
                         Update Gradescope Information
+                        <FaArrowRight />
                     </button>
                 </div>
             )

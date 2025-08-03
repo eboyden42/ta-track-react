@@ -4,7 +4,7 @@ import Icon from "./Icon"
 
 const BannerContext = React.createContext()
 
-export default function Banner({ children, type }) {
+export default function Banner({ children, type, ...rest }) {
     
     const classNames = classnames("banner", type ? `banner-${type}` : "banner-neutral")
     
@@ -12,11 +12,13 @@ export default function Banner({ children, type }) {
     
     return (
         <BannerContext.Provider value={type} >
+        <div {...rest}>
         <div className={classNames}>
             <Icon type={type} />
             <div className="banner-text">
                 {children}
             </div>
+        </div>
         </div>
         </BannerContext.Provider>
     )
