@@ -186,20 +186,40 @@ export default function GettingStarted() {
                         <p>
                             To get some more context, I could select a few adjacent assignments and create a line chart comparing two TAs grading progress over time.
                         </p>
+                        <Banner type="neutral">
+                            <Banner.Title>Note</Banner.Title>
+                            <Banner.Content>
+                                The bar and line charts order assignments by their due date, so you can see how grading progressed over time.
+                            </Banner.Content>
+                        </Banner>
                     </section>
                     <section className="troubleshooting" ref={troubleshootingRef}>
                         <h2>Troubleshooting</h2>
                         <p>
                             If you encounter any issues while using the visualization tool, here are some common troubleshooting steps you can follow:
                         </p>
-                        <h4>Check Your Data:</h4>
+                        <h4>Check Your Configuration:</h4>
                         <p>
-                            Ensure that the data you are trying to visualize is correctly formatted and complete. Missing or incorrect data can lead to errors in the visualization.
+                            Go to Configution and ensure that your Gradescope email and password are correct. If you recently changed your Gradescope password, make sure to update it in TAGuide.
+                        </p>
+                        <h4>Verify Course ID:</h4>
+                        <p>
+                            Make sure you have entered the correct Course ID when adding a course. An incorrect Course ID can lead to errors during the scraping process. If you have already started a scraping job, you will need to delete the course and add it again with the correct ID.
+                        </p>
+                        <h4>Check Network Connection:</h4>
+                        <p>
+                            Ensure that you have a stable internet connection while using the webapp. Network issues can cause problems with data retrieval and visualization.
                         </p>
                         <h4>Review Your Selections:</h4>
                         <p>
                             Double-check your selections in the assignment, TA, and chart type selectors. Make sure you have chosen valid options before clicking "Create Chart".
                         </p>
+                        <Banner type="error">
+                            <Banner.Title>Find an Error? Contact Me.</Banner.Title>
+                            <Banner.Content>
+                                If you encounter an error that you can't resolve, please open an issue on the GitHub repository or contact me directly. I appreciate your feedback and will work to fix any bugs as soon as possible.
+                            </Banner.Content>
+                        </Banner>
                     </section>
                 </div>
             </div>
