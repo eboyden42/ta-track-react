@@ -95,7 +95,6 @@ export default function LoginPage() {
   // Handle login submit, update login status
   function handleLoginSubmit(e) {
     e.preventDefault()
-    console.log("Authenticating...")
 
     logUserIn(username, password)
       .catch((err) => console.error('Error loggin in:', err));

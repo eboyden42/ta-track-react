@@ -35,7 +35,6 @@ export default function Dashboard() {
         if (savedActiveCourse) {
             const { index, course_pk } = JSON.parse(savedActiveCourse)
             setActiveCourse(index)
-
             // validate the course_pk to ensure it exists in the current course list
             if (!courses.some(course => course[0] === course_pk)) {
                 localStorage.removeItem('activeCourse')
@@ -198,7 +197,7 @@ export default function Dashboard() {
                 </div>
                 </> : null
             }
-            <Outlet context={{course: courses[activeCourse], update: fetchCourses}} />
+            <Outlet context={{course: courses[activeCourse], update: fetchCourses, validIds: courses.map(course => course[0])}} />
         </main>
     )
 }

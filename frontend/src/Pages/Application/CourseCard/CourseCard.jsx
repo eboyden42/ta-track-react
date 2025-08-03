@@ -1,4 +1,4 @@
-import { useParams, useOutletContext, useNavigate } from "react-router-dom"
+import { useParams, useOutletContext, useNavigate, Navigate } from "react-router-dom"
 import { IoSettings, IoClose } from "react-icons/io5"
 import { GoDotFill } from "react-icons/go"
 import { VscDebugRestart } from "react-icons/vsc";
@@ -15,12 +15,9 @@ export default function CourseCard() {
     // use params to get course_pk 
     const params = useParams()
     const course_pk = params.id;
-    
-    // State for settings popup
-    const [showPopup, setShowPopup] = useState(false)
-    
+
     // Get course info from outlet contex
-    const { course, update } = useOutletContext()
+    const { course, update, validIds } = useOutletContext()
     let gradescope_id 
     let title 
     let status
@@ -29,6 +26,15 @@ export default function CourseCard() {
         title = course[2]
         status = course[3]
     }
+
+    // check if course_pk is a integer, and if it is accessible by the current user
+    if (isNaN(course_pk) || !Number.isInteger(Number(course_pk)) || !validIds.includes(Number(course_pk))) {
+        return <Navigate to="/user/dashboard" />
+    }
+    
+    // State for settings popup
+    const [showPopup, setShowPopup] = useState(false)
+    
     
     // State to handle changing course title and id
     const [formType, setFormType] = useState("")
