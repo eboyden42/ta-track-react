@@ -1,12 +1,13 @@
 import { Outlet } from "react-router-dom"
 import { UserContext } from "../App"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import Loading from "./Loading/Loading"
 
 export default function AuthRequired() {
 
-    const { user, setUser } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext)
+    const [autheticated, setAuthenticated] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -28,18 +29,20 @@ export default function AuthRequired() {
                 return res.json()
             })
             .then(data => {
-                // Session found, update user context and redirect
+                // Session found, update user context
                 console.log("Session persisted...")
                 setUser(data.user)
+                setAuthenticated(true)
             })
-            .catch(() => {
-                console.log("User not logged in")
+            .catch((err) => {
+                console.log(err)
+                setAuthenticated(false)
                 navigate("/login", { state: { from: location } })
             })
         }
     }, [])
 
-    if (!user) {
+    if (!autheticated) {
         return <Loading />
     }
 

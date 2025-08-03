@@ -96,10 +96,13 @@ def get_user_by_id(id: int):
     return response
 
 def get_username_by_id(id: int) -> str:
-    cursor.execute("SELECT username FROM users WHERE id = %s", (id,))
-    response = cursor.fetchone()
-    if response:
-        return response[0]
+    try:
+        cursor.execute("SELECT username FROM users WHERE id = %s", (id,))
+        response = cursor.fetchone()
+        if response:
+            return response[0]
+    except Exception as e:
+        raise e
     return None
 
 def get_gradescope_info(username: str):

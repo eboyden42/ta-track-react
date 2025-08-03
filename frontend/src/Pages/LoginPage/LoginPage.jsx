@@ -115,7 +115,7 @@ export default function LoginPage() {
       const message = data.message
       switch (message) {
         case "verified":
-          setUser(data.user)
+          setUser({id: data.user.id, username: username})
           let from = location.state?.from?.pathname || "/user/dashboard"
           navigate(from)
           break

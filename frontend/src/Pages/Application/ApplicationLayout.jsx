@@ -18,12 +18,6 @@ export default function ApplicationLayout() {
         setShowDropdown((prev) => !prev)
     }
 
-    // Navigate to user profile page and close dropdown
-    function handleProfile() {
-        navigate("/user/profile") 
-        setShowDropdown(false)
-    }
-
     // Log out user, clear context, close dropdown, and redirect to login
     function handleLogout() {
         sessionStorage.setItem('isReload', 'false')
@@ -66,11 +60,6 @@ export default function ApplicationLayout() {
                     <FaRegUserCircle />
                     {showDropdown && (
                         <div className="profile-dropdown">
-                            {/* Profile button */}
-                            <button onClick={handleProfile}>
-                                <FaUser />
-                                {" Profile"}
-                            </button>
                             {/* Logout button */}
                             <button onClick={handleLogout}>
                                 <IoIosExit />

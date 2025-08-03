@@ -16,7 +16,7 @@ export default function App() {
     fetch('/api/data')
       .then(res => res.json())
       .then(data => console.log(data.message))
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
   }, []);
 
   return (
