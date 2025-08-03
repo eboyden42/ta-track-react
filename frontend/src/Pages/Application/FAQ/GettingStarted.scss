@@ -34,7 +34,7 @@
     }
 
     hr {
-        border: 1px solid var(--russian-violet-light);
+        // border: 0.5px solid var(--russian-violet-light);
         margin: 25px 0;
     }
     .main-content {
@@ -101,6 +101,10 @@
                 padding: 5px 10px;
                 font-size: 12px;
                 border-radius: 4px;
+            }
+
+            .section-content {
+                padding-left: 30px;
             }
 
             code {
