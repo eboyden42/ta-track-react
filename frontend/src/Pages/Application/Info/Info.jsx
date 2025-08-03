@@ -57,7 +57,7 @@ export default function Info() {
             }
         })
         .catch((error) => {
-            console.log('Error fetching Gradescope user info:', error)
+            console.error('Error fetching Gradescope user info:', error)
         })
 
     }, [user, fetchedUsername])
@@ -85,7 +85,6 @@ export default function Info() {
             body: JSON.stringify({ gradescope_username: gradescopeUsername, gradescope_password: gradescopePassword }),
         }).then((response) => {
             if (response.ok) {
-                console.log('Gradescope user info updated successfully')
                 setFetchedUsername(gradescopeUsername)
                 setShowForm(false)
             } else {
