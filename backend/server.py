@@ -10,17 +10,18 @@ from scrape import initial_scrape_task, check_for_updates
 from concurrent.futures import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 
-
 load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("COOKIES_KEY")
 CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*")
 thread_pool = ThreadPoolExecutor(max_workers=10)
-scheduler = BackgroundScheduler() # default scheduler has a thread pool executor with a max worker count of 10, I think 10 is fine for now, but maybe it will need to be changed later
+scheduler = BackgroundScheduler() # default scheduler has a thread pool executor with a max worker count of 10
 scheduler.start()
 
-# Initialize the database connection, this route is just for testing the connection
+# create tables if they do not exist
+driver.create_tables()
+
 @app.route('/api/data')
 def get_data():
     return jsonify({'message': 'Connected to server'})
@@ -204,7 +205,7 @@ def schedule_update():
     scheduler.add_job(
         check_for_updates, 
         'interval', 
-        seconds=30, 
+        hours=1, 
         args=[course_pk, user_id, socketio],
         id=str(course_pk)  # Use course_pk as the job ID
     )

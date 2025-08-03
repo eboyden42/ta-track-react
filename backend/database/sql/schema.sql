@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
@@ -6,59 +6,49 @@ CREATE TABLE users (
     gradescope_password_hash TEXT
 );
 
-CREATE TABLE courses (
+CREATE TABLE IF NOT EXISTS courses (
     id SERIAL PRIMARY KEY,
     gradescope_id TEXT NOT NULL,
     name TEXT
 );
 
-CREATE TABLE user_courses (
+CREATE TABLE IF NOT EXISTS user_courses (
     user_id INTEGER REFERENCES users(id),
     course_id INTEGER REFERENCES courses(id),
-    status TEXT DEFAULT 'pending', -- 'pending', 'active', 'inactive'
-    last_scraped TIMESTAMP,
+    status TEXT DEFAULT 'pending',
     name TEXT,
+    error_message TEXT,
     PRIMARY KEY (user_id, course_id)
 );
 
-CREATE TABLE assignments (
+CREATE TABLE IF NOT EXISTS assignments (
     id SERIAL PRIMARY KEY,
     course_id INTEGER REFERENCES courses(id),
     gradescope_id TEXT NOT NULL,
     name TEXT,
-    percent_graded TEXT
+    percent_graded TEXT,
+    ws_link TEXT
 );
 
-CREATE TABLE questions (
+CREATE TABLE IF NOT EXISTS questions (
     id SERIAL PRIMARY KEY,
     assignment_id INTEGER REFERENCES assignments(id),
-    name TEXT,
-    number INTEGER,
     qs_link TEXT
 );
 
-CREATE TABLE tas (
+CREATE TABLE IF NOT EXISTS tas (
     id SERIAL PRIMARY KEY,
     course_id INTEGER REFERENCES courses(id),
     name TEXT NOT NULL,
     email TEXT
 );
 
-CREATE TABLE ta_question_stats (
+CREATE TABLE IF NOT EXISTS ta_question_stats (
     ta_id INTEGER REFERENCES tas(id),
     question_id INTEGER REFERENCES questions(id),
     graded_count INTEGER DEFAULT 0 NOT NULL,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (ta_id, question_id)
 );
-
-CREATE TABLE ta_question_history (
-    id SERIAL PRIMARY KEY,
-    ta_id INTEGER NOT NULL REFERENCES tas(id),
-    question_id INTEGER NOT NULL REFERENCES questions(id),
-    graded_count INTEGER NOT NULL,
-    scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX idx_ta_question_time ON ta_question_history (ta_id, question_id, scraped_at);
 
 

@@ -39,9 +39,13 @@ cursor = conn.cursor()
 def create_tables():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     schema_path = os.path.join(base_dir, "sql", "schema.sql")
-    with open(schema_path, "r") as f:
-        cursor.execute(f.read())
-    conn.commit()
+    try:
+        with open(schema_path, "r") as f:
+            cursor.execute(f.read())
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
 
 def drop_all_tables():
     cursor.execute("""
