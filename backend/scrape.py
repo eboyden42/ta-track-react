@@ -63,8 +63,6 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
     # Check if login credentials are correct
 
-    sendMessage(socketio, str(web_driver.current_url), course_pk)
-
     if str(web_driver.current_url) == 'https://www.gradescope.com/login':
         error_msg = "Login failed, please check your Gradescope credentials in Configuration"
         driver.update_status_by_id(course_id=course_pk, status='scrape_not_started') # reset status
@@ -76,8 +74,6 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
     # navigate to the TA page for the course
     web_driver.get(f'https://www.gradescope.com/courses/{gradescope_id}/memberships?role=2')
-
-    sendMessage(socketio, f'https://www.gradescope.com/courses/{gradescope_id}/memberships?role=2', course_pk)
 
     page_status = web_driver.find_element(By.ID, "dataTable-status")
 
@@ -142,7 +138,7 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
             driver.add_assignment(course_pk=course_pk, name=assignment_name, gradescope_id=gradescope_id, percent_graded=percent_graded, ws_link=href)
         except:
-            sendMessage(socketio, "No link found in this row", course_pk)
+            pass
 
     # ________________________ End of Worksheet Submission Links _____________________________
 
@@ -187,7 +183,8 @@ def initial_scrape_task(course_pk: int, user_id: int, socketio):
 
                 driver.add_question(assignment_id=assignment_pk, question_link=href)
             except Exception as e:
-                sendMessage(socketio, f"Error: No link found in this row... {str(e)}", course_pk)
+                pass
+                # sendMessage(socketio, f"Error: No link found in this row... {str(e)}", course_pk)
 
         # _________________________ End of Scraping Questions For Each Assignment ________________________
 
@@ -230,12 +227,10 @@ def get_config_info(course_pk: int, user_id: int, socketio):
         course = driver.get_course_by_id(course_pk)
         if not course or not course[1]:
             error_msg = f"Course not found with ID {course_pk}"
-            sendMessage(socketio, str(course), course_pk)
             displayErrorMessage(socketio, course_pk, error_msg)
             return
     except Exception as e:
         error_msg = f"Course not found with ID {course_pk}"
-        sendMessage(socketio, str(e), course_pk)
         displayErrorMessage(socketio, course_pk, error_msg)
         return
 
@@ -282,13 +277,9 @@ def displayErrorMessage(socketio, course_pk, error_msg):
     Helper function to emit an error message to the client.
     """
     driver.reset_course(course_pk)  # delete any existing data for this course so that it can be re-scraped
-    sendMessage(socketio, "deleted data", course_pk)
     driver.update_status_by_id(course_id=course_pk, status='scrape_failed')
-    sendMessage(socketio, "updated status", course_pk)
     driver.set_error_message(course_pk=course_pk, error_message=error_msg)
-    sendMessage(socketio, "set error message", course_pk)
     socketio.emit('scrape_failed', {'course': course_pk, 'error': error_msg})
-    sendMessage(socketio, "emitted scrape_failed", course_pk)
 
 def sendMessage(socketio, message, course_pk):
     """
@@ -343,7 +334,7 @@ def check_for_updates(course_pk: int, user_id: int, socketio):
     # check if login credentials are correct
 
     if str(web_driver.current_url) == 'https://www.gradescope.com/login':
-        error_msg = "Login failed, please check your Gradescope credentials in Configuration"
+        error_msg = "Login failed for scheduled update, please check your Gradescope credentials in Configuration."
         sendMessage(socketio, error_msg, course_pk)
         web_driver.quit()
         return
@@ -375,7 +366,8 @@ def check_for_updates(course_pk: int, user_id: int, socketio):
             # Rescrape the assignment
             scrape_assignment(assignment_pk=assignment[0], assignment_name=assignment[3], course_pk=course_pk,socketio=socketio, web_driver=web_driver)
         else:
-            sendMessage(socketio, f"Assignment {assignment[3]} has not changed, percent graded is still {current_percent_graded}", course_pk)
+            pass
+            # sendMessage(socketio, f"Assignment {assignment[3]} has not changed, percent graded is still {current_percent_graded}", course_pk)
 
 def scrape_assignment(assignment_pk: int, assignment_name: str, course_pk: int, socketio, web_driver):
     """
@@ -395,8 +387,6 @@ def scrape_assignment(assignment_pk: int, assignment_name: str, course_pk: int, 
     course_tas = driver.get_tas_by_course_id(course_pk)
 
     for j in range(len(questions)):
-        sendMessage(socketio, f"Counting questions graded for question {j} of {len(questions)} for assignment {assignment_name}", course_pk)
-
         # get question data
         question_pk = questions[j][0]
         question_link = questions[j][4]
@@ -419,11 +409,12 @@ def scrape_assignment(assignment_pk: int, assignment_name: str, course_pk: int, 
                     if ta['name'] in ta_name:  # if the ta names match, increment the questions graded
                         ta['count'] += 1
         except Exception as e:
-            sendMessage(socketio, f"Error counting questions: {str(e)}", course_pk)
+            pass
+            # sendMessage(socketio, f"Error counting questions: {str(e)}", course_pk)
 
         for ta in ta_questions:
-            sendMessage(socketio, f"TA {ta['name']} graded {ta['count']} questions for question {question_pk}", course_pk)
             try:
                 driver.add_ta_question_stats(ta_id=ta['ta_id'], question_id=question_pk, count=ta['count'])
             except Exception as e:
-                sendMessage(socketio, f"Error adding TA question stats: {str(e)}", course_pk)
+                pass
+                # sendMessage(socketio, f"Error adding TA question stats: {str(e)}", course_pk)
