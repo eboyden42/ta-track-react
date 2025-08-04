@@ -386,27 +386,17 @@ def scrape_assignment(assignment_pk: int, assignment_name: str, course_pk: int, 
 
     # Get the questions for the assignment and the course tas, need to query the database to get the question_pk
     try:
-        sendMessage(socketio=socketio, message="before", course_pk=course_pk)
-
         questions = driver.get_questions_by_assignment_id(assignment_id=assignment_pk)
         course_tas = driver.get_tas_by_course_id(course_pk)
 
-        sendMessage(socketio=socketio, message="after", course_pk=course_pk)
-
         for j in range(len(questions)):
             # get question data
-
-            sendMessage(socketio=socketio, message=str(questions), course_pk=course_pk)
-
             question_pk = questions[j][0]
             question_link = questions[j][2]
-
-            sendMessage(socketio=socketio, message=f"Scraping question {question_pk} for assignment {assignment_name}", course_pk=course_pk)
 
             # set up TA question counters
             ta_questions = []
             for ta in course_tas:
-                sendMessage(socketio=socketio, message=f"Setting up TA {ta[2]}", course_pk=course_pk)
                 ta_questions.append({'name': ta[2], 'count': 0, 'ta_id': ta[0]})  # (ta name, # graded for this question, ta id)
 
             web_driver.get(question_link)

@@ -12,7 +12,7 @@ export default function CourseCard() {
 
     const navigate = useNavigate()
     
-    // use params to get course_pk 
+    // use params to get course_pk
     const params = useParams()
     const course_pk = params.id;
 
@@ -34,7 +34,6 @@ export default function CourseCard() {
     
     // State for settings popup
     const [showPopup, setShowPopup] = useState(false)
-    
     
     // State to handle changing course title and id
     const [formType, setFormType] = useState("")
@@ -208,6 +207,9 @@ export default function CourseCard() {
     function handleStartScraping(e) {
         e.preventDefault()
         setIsLoading(true)
+        setShowGraphDisplay(false)
+        setShowStatus(true)
+        setStatusMessage("Loading")
         setButtonMessage(handleButtonMessage('started_ta_scrape'))
         fetch(`${import.meta.env.VITE_API_URL}/api/initial_scrape_task`, {
             method: 'POST',
