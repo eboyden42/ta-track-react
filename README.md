@@ -16,7 +16,7 @@ TAGuide is a full-stack web application that allows users to initiate course inf
 
 This project was developed to replace a previous command-line-based course scraper with a more intuitive, accessible interface. By bringing it to the web, teachers and head TAs can initiate scraping tasks and access results without needing to run scripts locally.
 
-## Check it out!
+## Set Up
 
 Follow these steps to set up and run the app on your local machine:
 
