@@ -10,16 +10,23 @@ from scrape import initial_scrape_task, check_for_updates
 from concurrent.futures import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 
+# Load environment variables from .env file
 load_dotenv()
+
+# Initialize Flask app and configure CORS
 app = Flask(__name__)
 app.secret_key = os.environ.get("COOKIES_KEY")
 CORS(app, supports_credentials=True)
+
+# Initialize SocketIO 
 socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Initialize thread pool executor and background scheduler
 thread_pool = ThreadPoolExecutor(max_workers=10)
 scheduler = BackgroundScheduler() # default scheduler has a thread pool executor with a max worker count of 10
 scheduler.start()
 
-# create tables if they do not exist
+# Create tables if they do not yet exist
 driver.create_tables()
 
 @app.route('/api/data')
@@ -40,24 +47,20 @@ def check_username():
 # Route for user registration
 @app.route('/api/create_user', methods=['POST'])
 def create_user():
-    # Get JSON data from the request
     data = request.get_json()
-    # Extract username and password from the data
+    
     username = data.get('username')
-    password = data.get('password')
 
-    # Hash the password for secure storage
-    password_hash = hash_password(password)
-    # Add the user to the database with the hashed password
+    password_hash = hash_password(data.get('password'))
     driver.add_user(username=username, password_hash=password_hash)
-    # Close the database connection
+
     return jsonify({'message': 'user created'})
 
 # Route for user login
 @app.route('/api/user_login', methods=["POST"])
 def user_login():
-    # Get login data
     data = request.get_json()
+
     username = data.get('username')
     password = data.get('password')
 
@@ -183,8 +186,6 @@ def start_scrape_task():
     course_id = data.get("id")
     user_id = session.get('user_id')
 
-    # use thread pool to run the initial scrape task in a separate thread
-
     thread_pool.submit(initial_scrape_task, course_id, user_id, socketio)
 
     return jsonify({"message": "Scraping started"}), 202
@@ -196,12 +197,11 @@ def schedule_update():
     course_pk = data.get("id")
     user_id = session.get('user_id')
 
-    # check if a job already exists for this course
+    # Check if a job already exists for this course
     existing_job = scheduler.get_job(str(course_pk))
     if existing_job:
         return jsonify({"message": "Job already exists for this course"}), 202
 
-    # schedule the update check task to run every 30 seconds (for development), change to every hour in production
     scheduler.add_job(
         check_for_updates, 
         'interval', 
@@ -216,7 +216,6 @@ def schedule_update():
 @app.route('/api/status', methods=['POST', 'OPTIONS'])
 def get_scrape_status():
     if request.method == 'OPTIONS':
-        # Allow the preflight request
         return '', 200
     data = request.get_json()
     course_id = data.get('id')
@@ -226,13 +225,11 @@ def get_scrape_status():
     if status:
         return jsonify({'status': status, 'error_message': error_message})
     return jsonify({'error': 'Course not found'}), 404
-    # I want to change this later
 
 # Route to update the title of a course
 @app.route('/api/update_title', methods=['POST', 'OPTIONS'])
 def update_title():
     if request.method == 'OPTIONS':
-        # Allow the preflight request
         return '', 200
     data = request.get_json()
     course_pk = data.get('course_pk')
@@ -247,7 +244,6 @@ def update_title():
 @app.route('/api/update_gs_id', methods=['POST', 'OPTIONS'])
 def update_gs_id():
     if request.method == 'OPTIONS':
-        # Allow the preflight request
         return '', 200
     data = request.get_json()
     course_pk = data.get('course_pk')
@@ -262,7 +258,6 @@ def update_gs_id():
 @app.route('/api/get_error_message', methods=['POST', 'OPTIONS'])
 def get_error_message():
     if request.method == 'OPTIONS':
-        # Allow the preflight request
         return '', 200
     data = request.get_json()
     course_id = data.get('id')
@@ -272,10 +267,10 @@ def get_error_message():
         return jsonify({'error_message': error_message})
     return jsonify({'error': 'Course not found'}), 404
 
+# Route to get assignments for visualization
 @app.route('/api/get_assignments', methods=['POST', 'OPTIONS'])
 def get_assignments():
     if request.method == 'OPTIONS':
-        # Allow the preflight request
         return '', 200
     data = request.get_json()
     course_id = data.get('course_id')
@@ -283,7 +278,6 @@ def get_assignments():
     if not assignments:
         return jsonify({'error': 'No assignments found for this course'}), 404
 
-    # Convert assignments to a list of dictionaries
     assignments = [
         {
             'value': assignment[0],
@@ -293,10 +287,10 @@ def get_assignments():
 
     return jsonify({'assignments': assignments})
 
+# Route to get TAs for visualization
 @app.route('/api/get_tas', methods=['POST', 'OPTIONS'])
 def get_tas():
     if request.method == 'OPTIONS':
-        # Allow the preflight request
         return '', 200
     data = request.get_json()
     course_id = data.get('course_id')
@@ -313,10 +307,10 @@ def get_tas():
 
     return jsonify({'tas': tas})
 
+# Route to get assignments and TAs for visualization
 @app.route('/api/get_assignments_and_tas', methods=['POST', 'OPTIONS'])
 def get_assignments_and_tas():
     if request.method == 'OPTIONS':
-        # Allow the preflight request
         return '', 200
     data = request.get_json()
     course_id = data.get('course_id')
@@ -326,7 +320,6 @@ def get_assignments_and_tas():
     if not assignments or not tas:
         return jsonify({'error': 'No assignments or no TAs found for this course'}), 404
 
-    # Convert assignments and TAs to a list of dictionaries
     assignments = [
         {
             'value': assignment[0],
@@ -343,10 +336,10 @@ def get_assignments_and_tas():
 
     return jsonify({'assignments': assignments, 'tas': tas})
 
+# Route to get pie chart data for visualization
 @app.route('/api/get_pie_chart_data', methods=['POST', 'OPTIONS'])
 def get_pie_chart_data():
     if request.method == 'OPTIONS':
-        # Allow the preflight request
         return '', 200
     
     data = request.get_json()
@@ -368,10 +361,10 @@ def get_pie_chart_data():
 
     return jsonify({'data': pie_chart_data})
 
+# Route to get bar chart data for visualization (this route is also used to get the line chart data, since they share the same data structure)
 @app.route('/api/get_bar_chart_data', methods=['POST', 'OPTIONS'])
 def get_bar_chart_data():
     if request.method == 'OPTIONS':
-        # Allow the preflight request
         return '', 200
     
     data = request.get_json()
@@ -441,5 +434,3 @@ def add_csp(response):
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000)
-    # app.run(debug=True)
-    # serve(app, host='0.0.0.0', port=os.environ.get("PORT"))
