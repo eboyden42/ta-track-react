@@ -155,6 +155,7 @@ def get_id_from_gs_id(gradescope_id: int):
     conn.commit()
     return course_pk
 
+# deletes ALL data related to a course, including assignments, questions, and TA stats
 def delete_course(id: int):
     try:
         cursor.execute("DELETE FROM ta_question_stats WHERE question_id IN (SELECT id FROM questions WHERE assignment_id IN (SELECT id FROM assignments WHERE course_id = %s))", (id,))
@@ -170,7 +171,7 @@ def delete_course(id: int):
 
 def get_courses(username: str):
     try:
-        clear = cursor.fetchall()  # Clear any previous results
+        clear = cursor.fetchall()  # for some reason, this fixed a bug ¯\_(ツ)_/¯
     except:
         pass
     try:
@@ -187,7 +188,6 @@ def get_course_by_id(course_pk: int):
     cursor.execute("SELECT * FROM courses WHERE id = %s", (course_pk,))
     return cursor.fetchone()
 
-# add emails later
 def add_ta(course_id: int, name: str):
     cursor.execute("INSERT INTO tas (course_id, name) VALUES (%s, %s)", (course_id, name))
     conn.commit()
