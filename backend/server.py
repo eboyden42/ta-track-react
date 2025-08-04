@@ -302,7 +302,7 @@ def get_tas():
     course_id = data.get('course_id')
     tas = driver.get_tas_by_course_id(course_id)
     if not tas:
-        return jsonify({'error': 'No TAs found for this course'}), 404
+        return jsonify({'error': 'No TAs found for this course'}), 200
 
     tas = [
         {
@@ -312,6 +312,36 @@ def get_tas():
     ]
 
     return jsonify({'tas': tas})
+
+@app.route('/api/get_assignments_and_tas', methods=['POST', 'OPTIONS'])
+def get_assignments_and_tas():
+    if request.method == 'OPTIONS':
+        # Allow the preflight request
+        return '', 200
+    data = request.get_json()
+    course_id = data.get('course_id')
+    assignments = driver.get_assignments_by_course_id(course_id)
+    tas = driver.get_tas_by_course_id(course_id)
+
+    if not assignments or not tas:
+        return jsonify({'error': 'No assignments or no TAs found for this course'}), 404
+
+    # Convert assignments and TAs to a list of dictionaries
+    assignments = [
+        {
+            'value': assignment[0],
+            'label': assignment[3]
+        } for assignment in assignments
+    ]
+
+    tas = [
+        {
+            'value': ta[0],
+            'label': ta[2]
+        } for ta in tas
+    ]
+
+    return jsonify({'assignments': assignments, 'tas': tas})
 
 @app.route('/api/get_pie_chart_data', methods=['POST', 'OPTIONS'])
 def get_pie_chart_data():

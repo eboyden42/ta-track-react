@@ -17,7 +17,7 @@ export default function CourseCard() {
     const course_pk = params.id;
 
     // Get course info from outlet contex
-    const { course, update, validIds } = useOutletContext()
+    const { course, update } = useOutletContext()
     let gradescope_id 
     let title 
     let status
@@ -28,7 +28,7 @@ export default function CourseCard() {
     }
 
     // check if course_pk is a integer, and if it is accessible by the current user
-    if (isNaN(course_pk) || !Number.isInteger(Number(course_pk)) || !validIds.includes(Number(course_pk))) {
+    if (isNaN(course_pk) || !Number.isInteger(Number(course_pk))) {
         return <Navigate to="/user/dashboard" />
     }
     

@@ -30,7 +30,7 @@ export default function GraphDisplay({ course_pk }) {
 
     useEffect(() => {
         // fetch assignments and TAs from the server
-        fetch(`${import.meta.env.VITE_API_URL}/api/get_assignments`, {
+        fetch(`${import.meta.env.VITE_API_URL}/api/get_assignments_and_tas`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -39,29 +39,14 @@ export default function GraphDisplay({ course_pk }) {
             body: JSON.stringify({ course_id: course_pk })
         }).then((res) => res.json()).then((data) => {
             if (data.assignments) {
-                setFetchedAssignments(data.assignments)
-                setFetchedAssignments(prev => [{ value: "all", label: "All Assignments"}, ...prev])
+                setFetchedAssignments([{ value: "all", label: "All Assignments" }, ...data.assignments])
+            }
+            if (data.tas) {
+                setFetchedTAs([{ value: "all", label: "All TAs" }, ...data.tas])
             }
         })
         .catch((error) => {
             console.error("Error fetching assignments:", error)
-        })
-
-        fetch(`${import.meta.env.VITE_API_URL}/api/get_tas`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ course_id: course_pk })
-        }).then((res) => res.json()).then((data) => {
-            if (data.tas) {
-                setFetchedTAs(data.tas)
-                setFetchedTAs(prev => [{ value: "all", label: "All TAs"}, ...prev])
-            }
-        })
-        .catch((error) => {
-            console.error("Error fetching TAs:", error.error)
         })
     }, [])
 

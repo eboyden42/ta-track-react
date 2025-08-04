@@ -197,7 +197,7 @@ export default function Dashboard() {
                 </div>
                 </> : null
             }
-            <Outlet context={{course: courses[activeCourse], update: fetchCourses, validIds: courses.map(course => course[0])}} />
+            <Outlet context={{course: courses[activeCourse], update: fetchCourses}} />
         </main>
     )
 }
