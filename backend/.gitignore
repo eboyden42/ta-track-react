@@ -102,7 +102,6 @@ dmypy.json
 
 # Environment variables
 .env
-.env.*
 .venv/
 venv/
 ENV/
